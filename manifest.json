@@ -1,0 +1,29 @@
+{
+    "manifest_version": 3,
+    "name": "AIM",
+    "version": "1.0.1",
+    "permissions":[
+      "activeTab",
+      "tabs"
+    ],
+    "action": {
+        "default_title": "Schedule a meeting",
+        "default_popup": "index.html"
+      },
+      "icons": {
+        "16": "./graphic/favicon.png",
+        "32": "./graphic/favicon.png",
+        "48": "./graphic/favicon.png",
+        "128": "./graphic/favicon.png"
+      },
+    "content_scripts":[
+      {
+          "matches":["<all_urls>"],
+          "js":["./src/index.js"],
+          "run_at":"document_end"
+      }
+    ],
+    "background":{
+      "service-worker":"./src/config/config.js"
+  }
+}
