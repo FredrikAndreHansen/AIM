@@ -1,10 +1,11 @@
 import { displayErrorMessage } from '../controller/errorController.js';
-import { displayLoading , removeLoading } from '../controller/loadController.js';
+import { displayLoading } from '../controller/loadController.js';
+import { createToken } from '../helpers/userToken.js';
 
-function signInUser(email, password) {
+export function signInUser(email, password) {
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
-        removeLoading();
+        createToken(userCredential.user.uid);
     })
     .catch((error) => {
         const errorCode = error.code;

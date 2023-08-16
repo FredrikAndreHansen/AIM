@@ -7,14 +7,14 @@
       "tabs"
     ],
     "action": {
-        "default_title": "Schedule a meeting",
+        "default_title": "Schedule a Meeting",
         "default_popup": "index.html"
       },
       "icons": {
-        "16": "./graphic/favicon.png",
-        "32": "./graphic/favicon.png",
-        "48": "./graphic/favicon.png",
-        "128": "./graphic/favicon.png"
+        "16": "./graphic/favIcon.png",
+        "32": "./graphic/favIcon.png",
+        "48": "./graphic/favIcon.png",
+        "128": "./graphic/favIcon.png"
       },
     "content_scripts":[
       {

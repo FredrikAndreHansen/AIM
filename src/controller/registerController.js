@@ -9,18 +9,20 @@ export function setViewRegister() {
     displayLoading();
     // Set view & select DOM elements
     viewDOMElement.innerHTML = registerView;
+    //viewDOMElement.style.overflow = "hidden";
     const registerButtonNavigateDOMElement = document.querySelector('#register-button-navigate');
     const signInNavigateDOMElement = document.querySelector('#sign-in-navigate');
     const passwordResetNavigateDOMElement = document.querySelector('#password-reset-navigate');
     const nameDOMElement = document.querySelector('#name');
     const emailDOMElement = document.querySelector('#email');
+    const companyDOMElement = document.querySelector('#company');
     const passwordDOMElement = document.querySelector('#password');
     const confirmPasswordDOMElement = document.querySelector('#confirm-password');
 
     // Register user
     registerButtonNavigateDOMElement.addEventListener('click', function(e) {
         e.preventDefault();
-        isUserInputValid(nameDOMElement.value, emailDOMElement.value, passwordDOMElement.value, confirmPasswordDOMElement.value);
+        isUserInputValid(nameDOMElement.value, emailDOMElement.value, companyDOMElement.value, passwordDOMElement.value, confirmPasswordDOMElement.value);
     });
 
     // Go to sign in section
