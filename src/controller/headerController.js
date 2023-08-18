@@ -1,31 +1,40 @@
-import { headerView } from '../view/headerView.js';
-import { displayLoading } from './loadController.js';
-import { setViewUsers } from './usersController.js';
-import { setViewIndex } from './indexController.js';
-import { removeToken } from '../helpers/userToken.js';
 import { headerDOMElement } from '../index.js';
+import { headerView } from '../view/headerView.js';
+import { LoadController } from './loadController.js';
+import { UsersController } from './usersController.js';
+import { IndexController } from './indexController.js';
+import { AuthHelper } from '../helpers/auth.js';
 
-export function setViewHeader() {
+export class HeaderController {
 
-    // Set the header
-    headerDOMElement.innerHTML = headerView(true);
-    const mainMenuLogoDOMElement = document.querySelector('#main-menu-logo');
-    const mainMenuSignOutDOMElement = document.querySelector('#main-menu-sign-out');
-    const mainMenuUsersDOMElement = document.querySelector('#main-menu-users');
+    setViewHeader() {
+        // Initialize classes
+        const authHelper = new AuthHelper();
+        const usersController = new UsersController();
+        const loadController = new LoadController();
+        const indexController = new IndexController();
 
-    // Index
-    mainMenuLogoDOMElement.addEventListener('click', function() {
-        setViewIndex();
-    });
+        // Set the header
+        headerDOMElement.innerHTML = headerView(true);
+        const mainMenuLogoDOMElement = document.querySelector('#main-menu-logo');
+        const mainMenuSignOutDOMElement = document.querySelector('#main-menu-sign-out');
+        const mainMenuUsersDOMElement = document.querySelector('#main-menu-users');
 
-    // Manage Users
-    mainMenuUsersDOMElement.addEventListener('click', function() {
-        setViewUsers();
-    });
+        // Index
+        mainMenuLogoDOMElement.addEventListener('click', function() {
+            indexController.setViewIndex();
+        });
 
-    // Log out
-    mainMenuSignOutDOMElement.addEventListener('click', function() {
-        displayLoading();
-        removeToken();
-    });
+        // Manage Users
+        mainMenuUsersDOMElement.addEventListener('click', function() {
+            usersController.setViewUsers();
+        });
+
+        // Log out
+        mainMenuSignOutDOMElement.addEventListener('click', function() {
+            loadController.displayLoading();
+            authHelper.removeToken();
+        });
+    }
+
 }

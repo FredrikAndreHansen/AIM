@@ -7,4 +7,5 @@ export function successView(successMessage) {
             <p class="paragraph-center">${successMessage}</p>
             <button class="btn" id="error-button">OK</button>
         </div>
-    `};
+    `
+};

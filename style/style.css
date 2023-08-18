@@ -1,6 +1,7 @@
 :root {
     --font: 'Lato', sans-serif;
     --red: #8B0000;
+    --light-red: #9F0000;
     --blue: #4169E1;
     --light-blue: #4B71E2;
     --white: #FFFFFF;
@@ -160,6 +161,14 @@ body::-webkit-scrollbar {
     font-size: var(--x-big);
     color: var(--black-shade);
 }
+
+.header-small {
+    text-align: center;
+    font-family: var(--font);
+    font-size: var(--big);
+    color: var(--black-shade);
+}
+
 .paragraph-center-big {
     text-align: center;
     font-family: var(--font);
@@ -189,12 +198,31 @@ body::-webkit-scrollbar {
     padding: var(--x-small);
     border-radius: 50%;
 }
+.exit-icon {
+    position: absolute;
+    width: var(--big);
+    height: var(--big);
+    right: -12px;
+    top: -12px;
+    background-color: var(--red);
+    padding: var(--x-small);
+    border-radius: 50%;
+}
+.exit-icon:hover{
+    cursor: pointer;
+    background-color: var(--light-red);
+}
 .tea-icon {
     position: relative;
     width: var(--xxx-big);
     height: var(--xxx-big);
     left: 50%;
     transform: translateX(-50%);
+}
+.user-icon {
+    position: relative;
+    width: var(--big);
+    height: var(--big);
 }
 .header-icon {
     position: relative;
@@ -276,6 +304,28 @@ body::-webkit-scrollbar {
     cursor: pointer;
     background-color: var(--light-blue);
 }
+.btn-red {
+    background-color: var(--red);
+    color: var(--white);
+    display: block;
+    position: relative;
+    width: 80%;
+    border: none;
+    border-radius: 25px;
+    margin-top: var(--small);
+    margin-bottom: var(--small);
+    padding: var(--x-small);
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: var(--medium);
+    font-family: var(--font);
+    font-weight: bold;
+}
+.btn-red:hover {
+    cursor: pointer;
+    background-color: var(--light-red);
+}
 
 .link-text {
     color: var(--dark-grey);
@@ -330,8 +380,31 @@ body::-webkit-scrollbar {
     border-collapse: collapse;
 }
 td{
-    padding: 16px;
+    padding: 8px;
 }
+.user-td{
+    padding: 32px;
+    background-color: rgba(65,105,225, 0.75);
+    width: 28px;
+}
+
+.popup-box {
+    z-index: 3;
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    left: var(--medium);
+    right: var(--medium);
+    background-color: var(--white);
+    padding: var(--medium);
+    border-radius: 25px;
+    opacity: 1;
+	animation-name: fadeInOpacity;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: 0.15s;
+}
+
 tr:nth-child(even){background-color:  rgba(0, 0, 0, 0.05);}
 tr:nth-child(odd){background-color:  rgba(0, 0, 0, 0.1);}
 tr:hover{

@@ -1,35 +1,45 @@
-import { passwordResetView } from '../view/passwordResetView.js';
-import { isEmailValid } from '../model/passwordResetModel.js';
-import { setViewSignIn } from './signInController.js'
-import { setViewRegister } from './registerController.js';
-import { displayLoading, removeLoading } from './loadController.js';
 import { viewDOMElement } from '../index.js';
+import { passwordResetView } from '../view/passwordResetView.js';
+import { PasswordResetModel } from '../model/passwordResetModel.js';
+import { SignInController } from './signInController.js'
+import { RegisterController } from './registerController.js';
+import { LoadController } from './loadController.js';
 
-export function setViewPasswordReset() {
-    displayLoading();
-    // Set view & select DOM elements
-    viewDOMElement.innerHTML = passwordResetView;
-    const signInNavigateDOMElement = document.querySelector('#sign-in-navigate');
-    const registerNavigateDOMElement = document.querySelector('#register-navigate');
-    const passwordResetButton = document.querySelector('#password-reset-button');
-    const emailDOMElement = document.querySelector('#email');
+export class PasswordResetController {
 
-    // Reset password
-    passwordResetButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        isEmailValid(emailDOMElement.value);
-        emailDOMElement.value = '';
-    });
+    setViewPasswordReset() {
+        // Initialize classes
+        const loadController = new LoadController();
+        loadController.displayLoading();
+        const passwordResetModel = new PasswordResetModel();
+        const signInController = new SignInController();
+        const registerController = new RegisterController();
 
-    // Go to sign in section
-    signInNavigateDOMElement.addEventListener('click', function() {
-        setViewSignIn();
-    });
+        // Set view & select DOM elements
+        viewDOMElement.innerHTML = passwordResetView;
+        const signInNavigateDOMElement = document.querySelector('#sign-in-navigate');
+        const registerNavigateDOMElement = document.querySelector('#register-navigate');
+        const passwordResetButton = document.querySelector('#password-reset-button');
+        const emailDOMElement = document.querySelector('#email');
 
-    // Go to register section
-    registerNavigateDOMElement.addEventListener('click', function() {
-        setViewRegister();
-    });
+        // Reset password
+        passwordResetButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            passwordResetModel.isEmailValid(emailDOMElement.value);
+            emailDOMElement.value = '';
+        });
 
-    removeLoading();
+        // Go to sign in section
+        signInNavigateDOMElement.addEventListener('click', function() {
+            signInController.setViewSignIn();
+        });
+
+        // Go to register section
+        registerNavigateDOMElement.addEventListener('click', function() {
+            registerController.setViewRegister();
+        });
+
+        loadController.removeLoading();
+    }
+
 }
