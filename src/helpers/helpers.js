@@ -18,4 +18,18 @@ export function SALT() {
         });
     });
 }
+
+export function TRIMSTRING(string) {
+    let a = string.replaceAll('"', '');
+    let b = a.replaceAll('[', '');
+    const c = b.replaceAll(']', '');
+    return c;
+}
+
+export function PARSESTRING(string) {
+    let a = JSON.parse(string);
+    const b = JSON.stringify(a);
+    return b;
+}
+
 export const REGEX = new RegExp('[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}');

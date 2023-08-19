@@ -14,7 +14,7 @@ export class SignInModel {
 
         firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            authHelper.createToken(userCredential.user.uid);
+            authHelper.createToken(userCredential.user.uid, email, password);
         })
         .catch((error) => {
             const errorCode = error.code;
@@ -22,6 +22,7 @@ export class SignInModel {
             if (errorCode === 'auth/wrong-password') {errorMessage = 'The credentials are incorrect!'}
             const formattedErrorMessage = errorMessage.replace('Firebase: ','').replace('auth/', '');
             errorController.displayErrorMessage(formattedErrorMessage);
+            AuthHelper.removeToken();
         });
     }
 

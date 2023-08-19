@@ -25,7 +25,7 @@ export class UsersController {
 
         viewDOMElement.innerHTML = usersView;
 
-        usersModel.fetchAllUsers().then(res => {
+        usersModel.fetchUsers().then(res => {
             const userListDOMElement = document.querySelector('#user-list');
             userListDOMElement.innerHTML = res;
 
@@ -46,8 +46,6 @@ export class UsersController {
                 })
             });
         });
-
-        loadController.removeLoading();
     }
 
 }

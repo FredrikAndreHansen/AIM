@@ -1,9 +1,14 @@
 import { popupDOMElement } from "../index.js";
 import { individualUserView } from "../view/individualUserView.js";
+import { AuthHelper } from "../helpers/auth.js";
 
 export class IndividualUserController {
 
     getUser(userName, company) {
+        // Validate
+        const authHelper = new AuthHelper();
+        authHelper.validateIfLoggedIn();
+
         popupDOMElement.innerHTML = individualUserView(userName, company);
 
         // Exit the user

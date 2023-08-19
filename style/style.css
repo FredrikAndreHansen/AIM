@@ -124,6 +124,11 @@ body::-webkit-scrollbar {
     bottom: 0;
     right: 0;
     background-color: rgba(0, 0, 0, 0.8);
+    opacity: 1;
+	animation-name: fadeInOpacity;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: 0.15s;
 }
 .error-box {
     position: fixed;
@@ -418,6 +423,11 @@ tr:hover{
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    opacity: 1;
+	animation-name: fadeInOpacity;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: 0.15s;
 }
 .sk-chase {
     width: var(--xx-big);

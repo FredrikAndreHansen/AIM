@@ -14,6 +14,9 @@ export class HeaderController {
         const loadController = new LoadController();
         const indexController = new IndexController();
 
+        // Validate
+        authHelper.validateIfLoggedIn();
+
         // Set the header
         headerDOMElement.innerHTML = headerView(true);
         const mainMenuLogoDOMElement = document.querySelector('#main-menu-logo');

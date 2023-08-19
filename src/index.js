@@ -9,6 +9,7 @@ let isLoggedIn = false;
 // Check if user is logged in
 if (localStorage.getItem('AIMNomadToken')) {
     isLoggedIn = true;
+    firebase.auth().signInWithEmailAndPassword("", "").then((_) => {})
 }
 
 // Go to sign in if not logged in, or go to main if logged in
