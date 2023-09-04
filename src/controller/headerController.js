@@ -8,13 +8,11 @@ import { AuthHelper } from '../helpers/auth.js';
 export class HeaderController {
 
     setViewHeader() {
-        // Initialize classes
         const authHelper = new AuthHelper();
         const usersController = new UsersController();
         const loadController = new LoadController();
         const indexController = new IndexController();
 
-        // Validate
         authHelper.validateIfLoggedIn();
 
         // Set the header

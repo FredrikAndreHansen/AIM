@@ -4,11 +4,11 @@ import { PasswordResetModel } from '../model/passwordResetModel.js';
 import { SignInController } from './signInController.js'
 import { RegisterController } from './registerController.js';
 import { LoadController } from './loadController.js';
+import { VALIDATE_USER_INPUT } from '../helpers/helpers.js';
 
 export class PasswordResetController {
 
     setViewPasswordReset() {
-        // Initialize classes
         const loadController = new LoadController();
         loadController.displayLoading();
         const passwordResetModel = new PasswordResetModel();
@@ -25,7 +25,10 @@ export class PasswordResetController {
         // Reset password
         passwordResetButton.addEventListener('click', function(e) {
             e.preventDefault();
-            passwordResetModel.isEmailValid(emailDOMElement.value);
+            if (VALIDATE_USER_INPUT({email: emailDOMElement.value})) {
+                passwordResetModel.resetPassword(emailDOMElement.value);
+            }
+            
             emailDOMElement.value = '';
         });
 

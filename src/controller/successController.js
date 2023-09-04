@@ -6,14 +6,15 @@ export class SuccessController {
     displaySuccessMessage(successMessage) {
         const errorDOMElement = document.querySelector('#error');
         errorDOMElement.innerHTML = successView(successMessage);
-        this.close();
-        // Initialize classes
+        
+        this.#close();
+
         const loadController = new LoadController();
         loadController.removeLoading();
     }
     
     // Close the success message on click
-    close() {
+    #close() {
         const errorDOMElement = document.querySelector('#error');
         errorDOMElement.addEventListener('click', function() {
             errorDOMElement.innerHTML = '';

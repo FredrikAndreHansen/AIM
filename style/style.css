@@ -128,7 +128,7 @@ body::-webkit-scrollbar {
 	animation-name: fadeInOpacity;
 	animation-iteration-count: 1;
 	animation-timing-function: ease-in;
-	animation-duration: 0.15s;
+	animation-duration: 0.1s;
 }
 .error-box {
     position: fixed;
@@ -144,7 +144,7 @@ body::-webkit-scrollbar {
 	animation-name: fadeInOpacity;
 	animation-iteration-count: 1;
 	animation-timing-function: ease-in;
-	animation-duration: 0.15s;
+	animation-duration: 0.025s;
 }
 @keyframes fadeInOpacity {
 	0% {
@@ -407,7 +407,7 @@ td{
 	animation-name: fadeInOpacity;
 	animation-iteration-count: 1;
 	animation-timing-function: ease-in;
-	animation-duration: 0.15s;
+	animation-duration: 0.025s;
 }
 
 tr:nth-child(even){background-color:  rgba(0, 0, 0, 0.05);}
@@ -427,7 +427,7 @@ tr:hover{
 	animation-name: fadeInOpacity;
 	animation-iteration-count: 1;
 	animation-timing-function: ease-in;
-	animation-duration: 0.15s;
+	animation-duration: 0.1s;
 }
 .sk-chase {
     width: var(--xx-big);

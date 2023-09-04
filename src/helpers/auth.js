@@ -1,4 +1,3 @@
-import { SignInModel } from "../model/signInModel.js";
 import { SignInController } from "../controller/signInController.js";
 import { IndexController } from "../controller/indexController.js";
 import { ErrorController } from "../controller/errorController.js";
@@ -11,21 +10,20 @@ export class AuthHelper {
 
     createToken(userId, email, password) {
         SALT().then((salt) => {
-            // Encrypt values
             const encrypt = encryptHelper.cipher(salt);
             const encryptedUserId = encrypt(userId);
             const encryptedEmail = encrypt(email);
             const encryptedPassword = encrypt(password);
             const userValues = [encryptedUserId, encryptedEmail, encryptedPassword];
+
             localStorage.setItem("AIMNomadToken", JSON.stringify(userValues));
-            // Initialize classes
+
             const indexController = new IndexController();
             indexController.setViewIndex();
         });
     }
 
     removeToken() {
-        // Initialize classes
         const signInController = new SignInController();
         const errorController = new ErrorController();
 
@@ -39,7 +37,6 @@ export class AuthHelper {
             localStorage.removeItem("AIMNomadToken");
             signInController.setViewSignIn();
         } else {
-            errorController.displayErrorMessage(`Oops, something went wrong!`);
             signInController.setViewSignIn();
         }
     }
@@ -57,7 +54,6 @@ export class AuthHelper {
             // Decrypt values and validate
             const dbRef = firebase.database().ref();
             SALT().then((salt) => {
-                // Decrypt values
                 const decrypt = encryptHelper.decipher(salt);
                 const decryptedUserId = decrypt(userIdTrim);
                 const decryptedEmail = decrypt(emailTrim);
@@ -68,7 +64,6 @@ export class AuthHelper {
                         // Check if the session is expired in firebase, if the usersession is expired then log the user back in again
                         firebase.auth().onAuthStateChanged((user) => {
                             if (!user) {
-                                // If the firebase session is lost then retrieve it if the user has the token
                                 firebase.auth().signInWithEmailAndPassword(decryptedEmail, decryptedPassword)
                                 .then((_) => {
                                 })

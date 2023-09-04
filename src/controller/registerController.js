@@ -4,11 +4,11 @@ import { RegisterModel } from "../model/registerModel.js";
 import { SignInController } from './signInController.js'
 import { PasswordResetController } from './passwordResetController.js';
 import { LoadController } from './loadController.js';
+import { VALIDATE_USER_INPUT } from '../helpers/helpers.js';
 
 export class RegisterController {
 
     setViewRegister() {
-        // Initialize classes
         const loadController = new LoadController();
         loadController.displayLoading();
         const registerModel = new RegisterModel();
@@ -17,7 +17,6 @@ export class RegisterController {
 
         // Set view & select DOM elements
         viewDOMElement.innerHTML = registerView;
-        //viewDOMElement.style.overflow = "hidden";
         const registerButtonNavigateDOMElement = document.querySelector('#register-button-navigate');
         const signInNavigateDOMElement = document.querySelector('#sign-in-navigate');
         const passwordResetNavigateDOMElement = document.querySelector('#password-reset-navigate');
@@ -30,8 +29,18 @@ export class RegisterController {
         // Register user
         registerButtonNavigateDOMElement.addEventListener('click', function(e) {
             e.preventDefault();
-            registerModel.isUserInputValid(nameDOMElement.value, emailDOMElement.value, companyDOMElement.value, passwordDOMElement.value, confirmPasswordDOMElement.value);
-        });
+            const userInputValues = {
+                name: nameDOMElement.value,
+                email: emailDOMElement.value,
+                company: companyDOMElement.value,
+                password: passwordDOMElement.value,
+                confirmPassword: confirmPasswordDOMElement.value
+            };
+
+            if (VALIDATE_USER_INPUT(userInputValues)) {
+                registerModel.registerUser(userInputValues);
+            }
+        });   
 
         // Go to sign in section
         signInNavigateDOMElement.addEventListener('click', function() {

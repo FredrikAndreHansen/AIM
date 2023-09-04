@@ -6,18 +6,24 @@ export class ErrorController {
     displayErrorMessage(errorMessage) {
         const errorDOMElement = document.querySelector('#error');
         errorDOMElement.innerHTML = errorView(errorMessage);
-        this.close();
-        // Initialize classes
+        
+        this.#close();
+
         const loadController = new LoadController();
         loadController.removeLoading();
     }
 
     // Close the error message on click
-    close() {
+    #close() {
         const errorDOMElement = document.querySelector('#error');
         errorDOMElement.addEventListener('click', function() {
             errorDOMElement.innerHTML = '';
         });
+    }
+
+    throwError(errorMessage) {
+        const error = new Error(errorMessage);
+        throw error.message;
     }
 
 }

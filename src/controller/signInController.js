@@ -5,11 +5,11 @@ import { RegisterController } from './registerController.js';
 import { PasswordResetController } from './passwordResetController.js';
 import { LoadController } from './loadController.js';
 import { SignInModel } from '../model/signInModel.js';
+import { VALIDATE_USER_INPUT } from '../helpers/helpers.js';
 
 export class SignInController {
 
     setViewSignIn() {
-        // Initialize classes
         const loadController = new LoadController();
         loadController.displayLoading();
         const signInModel = new SignInModel();
@@ -28,7 +28,12 @@ export class SignInController {
         // Sign in user
         signInButtonNavigateDOMElement.addEventListener('click', function(e) {
             e.preventDefault();
-            signInModel.isUserInputValid(emailDOMElement.value, passwordDOMElement.value);
+            const email = emailDOMElement.value;
+            const password = passwordDOMElement.value;
+
+            if (VALIDATE_USER_INPUT({email, password})) {
+                signInModel.signInUser(email, password);
+            }
         });
 
         // Go to register section
