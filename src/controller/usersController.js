@@ -23,50 +23,67 @@ export class UsersController {
         const mainMenuUsersDOMElement = document.querySelector('#main-menu-users');
         mainMenuUsersDOMElement.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
 
-        viewDOMElement.innerHTML = usersView;
+        usersModel.checkIfAnyUsersAreBlocked().then((hasBlockedUsers) => {
+            viewDOMElement.innerHTML = usersView(hasBlockedUsers);
 
-        function showUsers(searchQuery = '') {
-            usersModel.fetchUsers(searchQuery).then(res => {
-                const userListDOMElement = document.querySelector('#user-list');
-                userListDOMElement.innerHTML = res;
+            showUsers();
 
-                // Click on individual user
-                document.querySelectorAll('#all-users').forEach(function(getIndividualUser) {
-                    getIndividualUser.addEventListener('click', function() {
-                        // Get userId and then output user information
-                        const userId = this.getAttribute('data-id');
-                        SALT().then((salt) => {
-                            const decrypt = encryptHelper.decipher(salt);
-                            const decryptedId = decrypt(userId);
-                            usersModel.fetchUserInfo(decryptedId).then(res => {
-                                const userName = res[0];
-                                const company = res[1];
-                                individualUserController.getUser(userName, company);
-                            });
+            function showUsers(searchQuery = '', onlyDisplayBlockedUsers = false) {
+                usersModel.fetchUsers(searchQuery, onlyDisplayBlockedUsers).then(res => {
+                    const userListDOMElement = document.querySelector('#user-list');
+                    userListDOMElement.innerHTML = res;
+
+                    // Click on individual user
+                    document.querySelectorAll('#all-users').forEach(function(getIndividualUser) {
+                        getIndividualUser.addEventListener('click', function() {
+                            // Get userId and then output user information
+                            const userId = this.getAttribute('data-id');
+
+                            SALT().then((salt) => {
+                                const decrypt = encryptHelper.decipher(salt);
+                                const decryptedId = decrypt(userId);
+                                usersModel.fetchUserInfo(decryptedId).then(res => {
+                                    const userName = res[0];
+                                    const company = res[1];
+                                    const userIsBlocked = res[2];
+                                    individualUserController.getUser(userId, userName, company, userIsBlocked);
+                                });
+                            })
                         })
-                    })
+                    });
                 });
-            });
-        }
-
-        showUsers();
-
-        // Search for users
-        const searchUsersBtnDOMElement = document.querySelector('#search-users-button');
-        searchUsersBtnDOMElement.addEventListener('click', function(e) {
-            try {
-                e.preventDefault();
-                const searchQuery = document.querySelector('#search-user').value;
-                usersModel.validateSearch(searchQuery);
-
-                showUsers(searchQuery);
-            } catch(error) {
-                const errorController = new ErrorController();
-                errorController.displayErrorMessage(error);
             }
+
+            // Search for users
+            const searchUsersBtnDOMElement = document.querySelector('#search-users-button');
+            searchUsersBtnDOMElement.addEventListener('click', function(e) {
+                try {
+                    e.preventDefault();
+                    const searchQuery = document.querySelector('#search-user').value;
+
+                    showUsers({
+                        searchQuery: searchQuery, 
+                        onlyDisplayBlockedUsers: false
+                    });
+                } catch(error) {
+                    const errorController = new ErrorController();
+                    errorController.displayErrorMessage(error);
+                }
+            });
+
+            // Get blocked users
+            if (hasBlockedUsers === true) {
+                const hasBlockedUsersBtnDOMElement = document.querySelector('#has-blocked-users-button');
+                hasBlockedUsersBtnDOMElement.addEventListener('click', function() {
+                    showUsers({
+                        searchQuery: '', 
+                        onlyDisplayBlockedUsers: true
+                    });
+                });
+            }
+
         });
 
-
-    }
+    }  
 
 }

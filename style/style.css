@@ -2,8 +2,11 @@
     --font: 'Lato', sans-serif;
     --red: #8B0000;
     --light-red: #9F0000;
+    --white-red: #FFCCCC;
     --blue: #4169E1;
     --light-blue: #4B71E2;
+    --green: #228B22;
+    --light-green: #28A428;
     --white: #FFFFFF;
     --white-grey: #F2F2F2;
     --light-grey: #DDDDDD;
@@ -116,6 +119,9 @@ body::-webkit-scrollbar {
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.3);
 }
+.red-background-override {
+    background-color: var(--white-red) !important;
+}
 .error-box-container {
     z-index: 2;
     position: fixed;
@@ -192,6 +198,17 @@ body::-webkit-scrollbar {
     font-family: var(--font);
     font-size: var(--small);
     color: var(--dark-grey);
+}
+
+.paragraph-absolute-center {
+    text-align: center;
+    font-family: var(--font);
+    font-size: var(--medium);
+    color: var(--dark-grey);
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .error-icon {
@@ -331,6 +348,28 @@ body::-webkit-scrollbar {
     cursor: pointer;
     background-color: var(--light-red);
 }
+.btn-green {
+    background-color: var(--green);
+    color: var(--white);
+    display: block;
+    position: relative;
+    width: 80%;
+    border: none;
+    border-radius: 25px;
+    margin-top: var(--small);
+    margin-bottom: var(--small);
+    padding: var(--x-small);
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: var(--medium);
+    font-family: var(--font);
+    font-weight: bold;
+}
+.btn-green:hover {
+    cursor: pointer;
+    background-color: var(--light-green);
+}
 
 .link-text {
     color: var(--dark-grey);
@@ -390,6 +429,11 @@ td{
 .user-td{
     padding: 32px;
     background-color: rgba(65,105,225, 0.75);
+    width: 28px;
+}
+.user-td-blocked{
+    padding: 32px;
+    background-color: rgba(139, 0, 0, 0.75);
     width: 28px;
 }
 

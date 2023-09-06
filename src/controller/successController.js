@@ -1,9 +1,11 @@
+import { popupDOMElement } from "../index.js";
 import { successView } from '../view/successView.js';
 import { LoadController } from './loadController.js';
 
 export class SuccessController {
 
     displaySuccessMessage(successMessage) {
+        popupDOMElement.innerHTML = '';
         const errorDOMElement = document.querySelector('#error');
         errorDOMElement.innerHTML = successView(successMessage);
         

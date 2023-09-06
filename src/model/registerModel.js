@@ -6,7 +6,9 @@ const errorController = new ErrorController();
 
 export class RegisterModel {
 
-    registerUser(name, email, company, password) {
+    registerUser(userData) {
+        const { name, email, company, password } = userData;
+        
         firebase.auth().createUserWithEmailAndPassword(email, password).then((userCredential) => {
             const signInModel = new SignInModel();
             const user = userCredential.user;
@@ -15,8 +17,8 @@ export class RegisterModel {
                 userId: user.uid, 
                 name: name, 
                 company: company, 
-                teams: [''], 
-                blockedUsers: ['']
+                teams: [""], 
+                blockedUsers: [""]
             });
 
             signInModel.signInUser(email, password);
