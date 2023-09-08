@@ -11,6 +11,6 @@ try {
 
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
-} catch(errorMessage) {
-  alert(errorMessage);
+} catch(error) {
+    alert(error);
 }

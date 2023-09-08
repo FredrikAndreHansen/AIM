@@ -10,7 +10,7 @@ import { SALT } from '../helpers/helpers.js';
 
 export class UsersController {
 
-    setViewUsers() {
+    setView() {
         const loadController = new LoadController();
         loadController.displayLoading();
         const headerController = new HeaderController();
@@ -18,10 +18,9 @@ export class UsersController {
         const usersModel = new UsersModel();
         const encryptHelper = new EncryptHelper();
 
-        headerController.setViewHeader();
+        headerController.setView();
 
-        const mainMenuUsersDOMElement = document.querySelector('#main-menu-users');
-        mainMenuUsersDOMElement.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+        this.usersSelectInMenu();
 
         usersModel.checkIfAnyUsersAreBlocked().then((hasBlockedUsers) => {
             viewDOMElement.innerHTML = usersView(hasBlockedUsers);
@@ -29,12 +28,15 @@ export class UsersController {
             showUsers();
 
             function showUsers(searchQuery = '', onlyDisplayBlockedUsers = false) {
+
                 usersModel.fetchUsers(searchQuery, onlyDisplayBlockedUsers).then(res => {
+
                     const userListDOMElement = document.querySelector('#user-list');
                     userListDOMElement.innerHTML = res;
 
                     // Click on individual user
                     document.querySelectorAll('#all-users').forEach(function(getIndividualUser) {
+
                         getIndividualUser.addEventListener('click', function() {
                             // Get userId and then output user information
                             const userId = this.getAttribute('data-id');
@@ -46,7 +48,7 @@ export class UsersController {
                                     const userName = res[0];
                                     const company = res[1];
                                     const userIsBlocked = res[2];
-                                    individualUserController.getUser(userId, userName, company, userIsBlocked);
+                                    individualUserController.setView(userId, userName, company, userIsBlocked);
                                 });
                             })
                         })
@@ -84,6 +86,13 @@ export class UsersController {
 
         });
 
-    }  
+    }
+
+    usersSelectInMenu() {
+        const mainMenuUsersDOMElement = document.querySelector('#main-menu-users');
+        mainMenuUsersDOMElement.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+    }
+
+
 
 }

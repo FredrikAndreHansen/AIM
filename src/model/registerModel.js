@@ -1,6 +1,6 @@
 import { ErrorController } from '../controller/errorController.js';
 import { SignInModel } from './signInModel.js';
-import { FORMAT_ERROR_MESSAGE } from '../helpers/helpers.js';
+import { FORMAT_ERROR_MESSAGE, GET_DB_REFERENCE, GET_AUTH } from '../helpers/helpers.js';
 
 const errorController = new ErrorController();
 
@@ -9,7 +9,7 @@ export class RegisterModel {
     registerUser(userData) {
         const { name, email, company, password } = userData;
         
-        firebase.auth().createUserWithEmailAndPassword(email, password).then((userCredential) => {
+        GET_AUTH.createUserWithEmailAndPassword(email, password).then((userCredential) => {
             const signInModel = new SignInModel();
             const user = userCredential.user;
             
@@ -31,7 +31,9 @@ export class RegisterModel {
     #writeUserData(userData) {
         const { userId, name, company, teams, blockedUsers } = userData;
 
-        firebase.database().ref('users/' + userId).set({
+        const dbRef = GET_DB_REFERENCE('users/' + userId);
+
+        dbRef.set({
             username: name,
             company: company,
             teams: teams,

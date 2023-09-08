@@ -15,7 +15,6 @@ export class ErrorController {
         loadController.removeLoading();
     }
 
-    // Close the error message on click
     #close() {
         const errorDOMElement = document.querySelector('#error');
         errorDOMElement.addEventListener('click', function() {

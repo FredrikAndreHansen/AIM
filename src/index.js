@@ -1,3 +1,4 @@
+import { GET_AUTH, GET_TOKEN } from './helpers/helpers.js';
 import { SignInController } from './controller/signInController.js';
 import { IndexController } from './controller/indexController.js';
 
@@ -7,16 +8,16 @@ export const popupDOMElement = document.querySelector('#popup');
 let isLoggedIn = false;
 
 // Check if user is logged in
-if (localStorage.getItem('AIMNomadToken')) {
+if (GET_TOKEN()) {
     isLoggedIn = true;
-    firebase.auth().signInWithEmailAndPassword("", "").then((_) => {})
+    GET_AUTH.signInWithEmailAndPassword("", "").then((_) => {})
 }
 
 // Go to sign in if not logged in, or go to main if logged in
 if (isLoggedIn === false) {
     const signInController = new SignInController();
-    signInController.setViewSignIn();
+    signInController.setView();
 } else {
     const indexController = new IndexController();
-    indexController.setViewIndex();
+    indexController.setView();
 }

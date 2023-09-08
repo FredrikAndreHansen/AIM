@@ -5,10 +5,9 @@ const errorController = new ErrorController();
 export function SALT() {
     // Get salt from database
     return new Promise(function(resolve) {
-        const dbRef = firebase.database().ref();
-        dbRef.child("salt").get().then((snapshot) => {
-            if (snapshot.exists()) {
-                resolve(snapshot.val());
+        get_db_salt_info().then((snapshot) => {
+            if (IF_EXISTS(snapshot)) {
+                resolve(GET_VALUE(snapshot));
             } else {
                 errorController.throwError("No data available!");
             }
@@ -18,22 +17,26 @@ export function SALT() {
     });
 }
 
+function get_db_salt_info() {
+    const dbRef = GET_DB_REFERENCE();
+
+    return dbRef.child("salt").get();
+}
+
 export function TRIMSTRING(string) {
     let a = string.replaceAll('"', '');
     let b = a.replaceAll('[', '');
-    const c = b.replaceAll(']', '');
-    return c;
+    return b.replaceAll(']', '');
 }
 
 export function PARSESTRING(string) {
     let a = JSON.parse(string);
-    const b = JSON.stringify(a);
-    return b;
+    return JSON.stringify(a);
 }
 
 export function VALIDATE_USER_INPUT(userInput) {
     try {
-        const { name = false, email = false, company = false, password = false, confirmPassword = false } = userInput;
+        const { name = false, email, company = false, password = false, confirmPassword = false } = userInput;
 
         const loadController = new LoadController();
         loadController.displayLoading();
@@ -42,9 +45,7 @@ export function VALIDATE_USER_INPUT(userInput) {
             validateNameOrCompany(name);
         }
 
-        if (email !== false) {
-            validateEmail(email);
-        }
+        validateEmail(email);
 
         if (company !== false) {
             validateNameOrCompany(company, 'company');
@@ -60,7 +61,7 @@ export function VALIDATE_USER_INPUT(userInput) {
     }
 }
 
-export function validateNameOrCompany(name, company = '') {
+function validateNameOrCompany(name, company = '') {
     if (name.length > 64) {
         errorController.throwError(`The ${company} name is too long!<br>Maximum length is 64 characters`);
     }
@@ -70,7 +71,7 @@ export function validateNameOrCompany(name, company = '') {
     }
 }
 
-export function validateEmail(email) {
+function validateEmail(email) {
     if (email.length === 0) {
         errorController.throwError("The email address cannot be empty!");
     }
@@ -88,7 +89,7 @@ export function validateEmail(email) {
 // Email validation, text followed by "@" followed by text, followed by "." followed by text
 const regExp = new RegExp('[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}');
 
-export function validatePassword(password, confirmPassword = false) {
+function validatePassword(password, confirmPassword = false) {
     if (password.length === 0) {
         errorController.throwError("The password cannot be empty!");
     }
@@ -113,7 +114,52 @@ export function FORMAT_ERROR_MESSAGE(error) {
     if (errorCode === 'auth/wrong-password') {errorMessage = 'The credentials are incorrect!'}
     if (errorCode === 'auth/email-already-in-use') {errorMessage = 'The email address is already taken!'}
     if (errorCode === 'auth/invalid-email') {errorMessage = 'The email address is not properly formatted!'}
-    const formattedErrorMessage = errorMessage.replace('Firebase: ','').replace('auth/', '');
 
-    return formattedErrorMessage;
+    return errorMessage.replace('Firebase: ','').replace('auth/', '');
+}
+
+export function GET_DB_REFERENCE(refArgument = false) {
+    if (refArgument === false) {
+        return firebase.database().ref();
+    } else {
+        return firebase.database().ref(refArgument);
+    }
+}
+
+export function GET_DB_USERS_INFO(dbReference, child) {
+    return dbReference.child('users').child(child).get();
+}
+
+export function SAVE_TO_DB_IN_USERS(databaseRows) {
+    const { dbReference, firstChild, secondChild, saveValue } = databaseRows;
+
+    dbReference.child("users").child(firstChild).child(secondChild).set(saveValue);
+}
+
+export const GET_AUTH = firebase.auth();
+
+export function IF_EXISTS(argumentToCheck) {
+    if (argumentToCheck.exists()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export function GET_VALUE(value) {
+    return value.val();
+}
+
+const tokenString = "AIMNomadToken";
+
+export function GET_TOKEN() {
+    return localStorage.getItem(tokenString);
+}
+
+export function REMOVE_TOKEN() {
+    return localStorage.removeItem(tokenString);
+}
+
+export function ADD_TOKEN(setValue) {
+    return localStorage.setItem(tokenString, JSON.stringify(setValue));
 }

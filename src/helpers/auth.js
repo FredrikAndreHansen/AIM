@@ -2,7 +2,7 @@ import { SignInController } from "../controller/signInController.js";
 import { IndexController } from "../controller/indexController.js";
 import { ErrorController } from "../controller/errorController.js";
 import { EncryptHelper } from "./encrypt.js";
-import { SALT, TRIMSTRING, PARSESTRING } from "./helpers.js";
+import { SALT, TRIMSTRING, PARSESTRING, GET_AUTH, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_TOKEN, ADD_TOKEN, REMOVE_TOKEN } from "./helpers.js";
 
 const encryptHelper = new EncryptHelper();
 
@@ -16,10 +16,10 @@ export class AuthHelper {
             const encryptedPassword = encrypt(password);
             const userValues = [encryptedUserId, encryptedEmail, encryptedPassword];
 
-            localStorage.setItem("AIMNomadToken", JSON.stringify(userValues));
+            ADD_TOKEN(userValues);
 
             const indexController = new IndexController();
-            indexController.setViewIndex();
+            indexController.setView();
         });
     }
 
@@ -28,23 +28,23 @@ export class AuthHelper {
         const errorController = new ErrorController();
 
         // Sign out from Firebase
-        firebase.auth().signOut().then(() => {
+        GET_AUTH.signOut().then(() => {
         }).catch((error) => {
             errorController.displayErrorMessage(error);
         });
 
-        if (localStorage.getItem("AIMNomadToken")) {
-            localStorage.removeItem("AIMNomadToken");
-            signInController.setViewSignIn();
+        if (GET_TOKEN()) {
+            REMOVE_TOKEN();
+            signInController.setView();
         } else {
-            signInController.setViewSignIn();
+            signInController.setView();
         }
     }
 
     validateIfLoggedIn() {
         // Validate and parse localstorage
-        if (localStorage.getItem("AIMNomadToken")) {
-            const token = PARSESTRING(localStorage.getItem('AIMNomadToken'));
+        if (GET_TOKEN()) {
+            const token = PARSESTRING(GET_TOKEN());
             const [userId, email, password] = token.split(',');
 
             const userIdTrim = TRIMSTRING(userId);
@@ -52,19 +52,19 @@ export class AuthHelper {
             const passwordTrim = TRIMSTRING(password);
 
             // Decrypt values and validate
-            const dbRef = firebase.database().ref();
+            const dbRef = GET_DB_REFERENCE();
             SALT().then((salt) => {
                 const decrypt = encryptHelper.decipher(salt);
                 const decryptedUserId = decrypt(userIdTrim);
                 const decryptedEmail = decrypt(emailTrim);
                 const decryptedPassword = decrypt(passwordTrim);
 
-                dbRef.child("users").child(decryptedUserId).get().then((snapshot) => {
-                    if (snapshot.exists()) {
+                GET_DB_USERS_INFO(dbRef, decryptedUserId).then((snapshot) => {
+                    if (IF_EXISTS(snapshot)) {
                         // Check if the session is expired in firebase, if the usersession is expired then log the user back in again
-                        firebase.auth().onAuthStateChanged((user) => {
+                        GET_AUTH.onAuthStateChanged((user) => {
                             if (!user) {
-                                firebase.auth().signInWithEmailAndPassword(decryptedEmail, decryptedPassword)
+                                GET_AUTH.signInWithEmailAndPassword(decryptedEmail, decryptedPassword)
                                 .then((_) => {
                                 })
                             }

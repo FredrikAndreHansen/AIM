@@ -9,16 +9,16 @@ import { VALIDATE_USER_INPUT } from '../helpers/helpers.js';
 
 export class SignInController {
 
-    setViewSignIn() {
+    setView() {
         const loadController = new LoadController();
         loadController.displayLoading();
         const signInModel = new SignInModel();
         const registerController = new RegisterController();
         const passwordResetController = new PasswordResetController();
 
-        // Set view & select DOM elements
         viewDOMElement.innerHTML = signInView;
         headerDOMElement.innerHTML = headerView(false);
+
         const registerNavigateDOMElement = document.querySelector('#register-navigate');
         const passwordResetNavigateDOMElement = document.querySelector('#password-reset-navigate');
         const signInButtonNavigateDOMElement = document.querySelector('#sign-in-button-navigate');
@@ -31,19 +31,19 @@ export class SignInController {
             const email = emailDOMElement.value;
             const password = passwordDOMElement.value;
 
-            if (VALIDATE_USER_INPUT({email, password})) {
+            if (VALIDATE_USER_INPUT({ email: email, password: password })) {
                 signInModel.signInUser(email, password);
             }
         });
 
         // Go to register section
         registerNavigateDOMElement.addEventListener('click', function() {
-            registerController.setViewRegister();
+            registerController.setView();
         });
 
         // Go to password reset section
         passwordResetNavigateDOMElement.addEventListener('click', function() {
-            passwordResetController.setViewPasswordReset();
+            passwordResetController.setView();
         });
 
         loadController.removeLoading();

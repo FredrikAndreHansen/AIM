@@ -7,7 +7,7 @@ import { AuthHelper } from '../helpers/auth.js';
 
 export class HeaderController {
 
-    setViewHeader() {
+    setView() {
         const authHelper = new AuthHelper();
         const usersController = new UsersController();
         const loadController = new LoadController();
@@ -23,12 +23,12 @@ export class HeaderController {
 
         // Index
         mainMenuLogoDOMElement.addEventListener('click', function() {
-            indexController.setViewIndex();
+            indexController.setView();
         });
 
         // Manage Users
         mainMenuUsersDOMElement.addEventListener('click', function() {
-            usersController.setViewUsers();
+            usersController.setView();
         });
 
         // Log out

@@ -8,17 +8,16 @@ import { SALT, TRIMSTRING, PARSESTRING } from '../helpers/helpers.js';
 
 export class IndexController {
 
-    setViewIndex() {
+    setView() {
         const loadController = new LoadController();
         loadController.displayLoading();
         const headerController = new HeaderController();
         const usersModel = new UsersModel();
         const encryptHelper = new EncryptHelper();
 
-        headerController.setViewHeader();
+        headerController.setView();
 
-        const mainMenuLogoDOMElement = document.querySelector('#main-menu-logo');
-        mainMenuLogoDOMElement.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+        this.indexSelectInMenu();
 
         const token = PARSESTRING(localStorage.getItem('AIMNomadToken'));
         const [userId, _, __] = token.split(',');
@@ -37,6 +36,11 @@ export class IndexController {
                 viewDOMElement.innerHTML = setIndexView; 
             });
         });
+    }
+
+    indexSelectInMenu() {
+        const mainMenuLogoDOMElement = document.querySelector('#main-menu-logo');
+        mainMenuLogoDOMElement.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
     }
 
 }

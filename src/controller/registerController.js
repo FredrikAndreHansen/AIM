@@ -8,15 +8,15 @@ import { VALIDATE_USER_INPUT } from '../helpers/helpers.js';
 
 export class RegisterController {
 
-    setViewRegister() {
+    setView() {
         const loadController = new LoadController();
         loadController.displayLoading();
         const registerModel = new RegisterModel();
         const signInController = new SignInController();
         const passwordResetController = new PasswordResetController();
 
-        // Set view & select DOM elements
         viewDOMElement.innerHTML = registerView;
+        
         const registerButtonNavigateDOMElement = document.querySelector('#register-button-navigate');
         const signInNavigateDOMElement = document.querySelector('#sign-in-navigate');
         const passwordResetNavigateDOMElement = document.querySelector('#password-reset-navigate');
@@ -44,12 +44,12 @@ export class RegisterController {
 
         // Go to sign in section
         signInNavigateDOMElement.addEventListener('click', function() {
-            signInController.setViewSignIn();
+            signInController.setView();
         });
 
         // Go to password reset section
         passwordResetNavigateDOMElement.addEventListener('click', function() {
-            passwordResetController.setViewPasswordReset();
+            passwordResetController.setView();
         });
 
         loadController.removeLoading();

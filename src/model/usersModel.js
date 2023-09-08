@@ -3,7 +3,7 @@ import { ErrorController } from "../controller/errorController.js";
 import { LoadController } from "../controller/loadController.js";
 import { AuthHelper } from "../helpers/auth.js";
 import { EncryptHelper } from "../helpers/encrypt.js";
-import { SALT, PARSESTRING, TRIMSTRING } from "../helpers/helpers.js";
+import { SALT, PARSESTRING, TRIMSTRING, GET_DB_REFERENCE, GET_DB_USERS_INFO, SAVE_TO_DB_IN_USERS, IF_EXISTS, GET_VALUE } from "../helpers/helpers.js";
 
 const errorController = new ErrorController();
 const encryptHelper = new EncryptHelper();
@@ -17,7 +17,7 @@ export class UsersModel {
 
         const currentUserId = this.#getUserId();
 
-        const dbRef = firebase.database().ref();
+        const dbRef = GET_DB_REFERENCE();
 
         return await new Promise(function(resolve) {
 
@@ -25,23 +25,18 @@ export class UsersModel {
                 const decrypt = encryptHelper.decipher(salt);
                 const decryptedCurrentUserId = decrypt(currentUserId);
 
-                dbRef.child("users").child(userId).get().then((snapshot) => {
+                GET_DB_USERS_INFO(dbRef, userId).then((snapshot) => {
 
-                    dbRef.child("users").child(decryptedCurrentUserId).get().then((currentUser) => {
-                        const loggedInUser = currentUser.val();
+                    GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((currentUser) => {
+                        const loggedInUser = GET_VALUE(currentUser);
                         const blockedUsers = loggedInUser.blockedUsers;
                         
-                        let isBlocked = false;
-                        if (checkIfBlockedUserExists(blockedUsers, userId)) {
-                            isBlocked = false;
-                        } else {
-                            isBlocked = true;
-                        }
+                        const isBlocked = !checkIfBlockedUserExists(blockedUsers, userId);
                     
-                        if (snapshot.exists()) {
-                            const user = snapshot.val();
+                        if (IF_EXISTS(snapshot)) {
+                            const user = GET_VALUE(snapshot);
                             loadController.removeLoading();
-                            resolve([user.username, user.company, isBlocked]);
+                            resolve([ user.username, user.company, isBlocked ]);
                         } else {
                             loadController.removeLoading();
                             errorController.throwError("No data available!");
@@ -56,28 +51,29 @@ export class UsersModel {
     }
 
     async fetchUsers(displayArguments) {
-        const {searchQuery = '', onlyDisplayBlockedUsers = false} = displayArguments;
+        const { searchQuery = '', onlyDisplayBlockedUsers = false } = displayArguments;
 
         const authHelper = new AuthHelper();
         authHelper.validateIfLoggedIn();
 
-        const starCountRef = firebase.database().ref('users/');
+        const starCountRef = GET_DB_REFERENCE('users/');
+
         const userId = this.#getUserId();
         let HTMLInput = '';
 
         return await new Promise(function(resolve) {
             starCountRef.on('value', (snapshot) => {
-                const users = snapshot.val();
+                const users = GET_VALUE(snapshot);
 
                 SALT().then((salt) => {
-                    const decrypt = encryptHelper.decipher(salt); 
+                    const decrypt = encryptHelper.decipher(salt);
                     const decryptedUserId = decrypt(userId);
-                    const dbRef = firebase.database().ref();
+                    const dbRef = GET_DB_REFERENCE();
 
-                    dbRef.child("users").child(decryptedUserId).get().then((snapshot) => {
+                    GET_DB_USERS_INFO(dbRef, decryptedUserId).then((snapshot) => {
                         try {
-                            if (snapshot.exists()) {
-                                const user = snapshot.val();
+                            if (IF_EXISTS(snapshot)) {
+                                const user = GET_VALUE(snapshot);
                                 const blockedUsers = user.blockedUsers;
 
                                 HTMLInput = outputUsers(users, decryptedUserId, searchQuery, salt, blockedUsers);
@@ -100,21 +96,16 @@ export class UsersModel {
             let i = 0;
             let HTMLOutput = '';
         
-            if (searchQuery !== '') {
-                HTMLOutput += `<p class="paragraph-absolute-center">Results for: ${searchQuery}</p><br>`;
-            }
+            HTMLOutput += getSearchOutputInfo(searchQuery);
         
             for (const key in users) {
                 if (key === userId) { continue; }
                 
-                // Get search results, if any
-                const getFormattedUserName = users[key].username.toLowerCase();
-                const getFormattedCompany = users[key].company.toLowerCase();
-                const formattedSearchQuery = searchQuery.toLowerCase();
                 const blockedCurrentUser = users[key].blockedUsers;
+                const userName = users[key].username;
+                const company = users[key].company;
 
-                // Print the user based on search and also don't print the logged in user
-                if (getFormattedUserName.includes(formattedSearchQuery) || getFormattedCompany.includes(formattedSearchQuery)) {
+                if (ifSearchIncludesValues(userName, company, searchQuery)) {
                     const encrypt = encryptHelper.cipher(salt);
                     const encryptedKey = encrypt(key);
 
@@ -131,12 +122,34 @@ export class UsersModel {
                 }
                 if (i > 99) { break };
             }
-        
-            if (i === 0) {
-                HTMLOutput += '<p class="paragraph-center">No results!</p>'
-            }
+
+            HTMLOutput += getSearchOutputInfo(false, i);
         
             return HTMLOutput;
+        }
+
+        function getSearchOutputInfo(searchQuery = false, i = -1) {
+            if (searchQuery !== '' && searchQuery !== false && i === -1) {
+                return `<p class="paragraph-absolute-center">Results for: ${searchQuery}</p><br>`;
+            }
+
+            if (i === 0) {
+                return '<p class="paragraph-center">No results!</p>';
+            }
+
+            return '';
+        }
+
+        function ifSearchIncludesValues(userName, company, searchQuery) {
+            const formattedUserName = userName.toLowerCase();
+            const formattedCompany = company.toLowerCase();
+            const formattedSearchQuery = searchQuery.toLowerCase();
+
+            if (formattedUserName.includes(formattedSearchQuery) || formattedCompany.includes(formattedSearchQuery)) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         function outputUserInfo(userData) {
@@ -173,27 +186,28 @@ export class UsersModel {
             const encryptedLoggedInUserId = decrypt(loggedInUser);
             const encryptedUserId = decrypt(userId);
 
-            const dbRef = firebase.database().ref();
+            const dbRef = GET_DB_REFERENCE();
 
-            dbRef.child("users").child(encryptedLoggedInUserId).get().then((snapshot) => {
+            GET_DB_USERS_INFO(dbRef, encryptedLoggedInUserId).then((snapshot) => {
                 try{
-                    if (snapshot.exists()) {
-                        const user = snapshot.val();
+                    if (IF_EXISTS(snapshot)) {
+                        const user = GET_VALUE(snapshot);
                         let blockedUsers = user.blockedUsers;
+                        blockedUsers = this.#checkIfBlockedUsersIsDefined(blockedUsers);
 
-                        if (blockUser === true) {
-                            if (checkIfBlockedUserExists(blockedUsers, encryptedUserId)) {
-                                blockedUsers.push(encryptedUserId);
-                            }
-                        } else {
-                            if (!checkIfBlockedUserExists(blockedUsers, encryptedUserId)) {
-                                blockedUsers = blockedUsers.filter((getBlockedUserId) => {
-                                    return getBlockedUserId !== encryptedUserId;
-                                })
-                            }
-                        }
+                        blockedUsers = this.#blockOrUnblockUser({
+                            toggleBlock: blockUser, 
+                            blockedUsers: blockedUsers, 
+                            encryptedUserId: encryptedUserId,
+                            checkIfBlockedUserExists: checkIfBlockedUserExists(blockedUsers, encryptedUserId)
+                        });
 
-                        dbRef.child("users").child(encryptedLoggedInUserId).child("blockedUsers").set(blockedUsers);
+                        SAVE_TO_DB_IN_USERS({
+                            dbReference: dbRef,
+                            firstChild: encryptedLoggedInUserId,
+                            secondChild: 'blockedUsers',
+                            saveValue: blockedUsers
+                        });
                     } else {
                         errorController.throwError("No data available!");
                     }
@@ -204,48 +218,74 @@ export class UsersModel {
         });
     }
 
+    #blockOrUnblockUser(blockedUserInfo) {
+        const { toggleBlock, blockedUsers, encryptedUserId, checkIfBlockedUserExists } = blockedUserInfo;
+
+        if (toggleBlock === true && checkIfBlockedUserExists === true) {
+            blockedUsers.push(encryptedUserId);
+            return blockedUsers;
+        } else {
+            return blockedUsers.filter((getBlockedUserId) => {
+                return getBlockedUserId !== encryptedUserId;
+            });
+        }
+    }
+
+    #checkIfBlockedUsersIsDefined(blockedUsers) {
+        if (!blockedUsers || blockedUsers === undefined || blockedUsers === null) {
+            return [""];
+        } else {
+            return blockedUsers;
+        }
+    }
+
     async checkIfAnyUsersAreBlocked() {
         const userId = this.#getUserId();
 
         return await new Promise(function(resolve) {
 
-        SALT().then((salt) => {
-            const decrypt = encryptHelper.decipher(salt); 
-            const decryptedUserId = decrypt(userId);
-            const dbRef = firebase.database().ref();
+            SALT().then((salt) => {
+                const decrypt = encryptHelper.decipher(salt); 
+                const decryptedUserId = decrypt(userId);
+                const dbRef = GET_DB_REFERENCE();
 
-            dbRef.child("users").child(decryptedUserId).get().then((snapshot) => {
-                try {
-                    if (snapshot.exists()) {
-                        const user = snapshot.val();
-                        const blockedUsers = user.blockedUsers;
+                GET_DB_USERS_INFO(dbRef, decryptedUserId).then((snapshot) => {
+                    try {
+                        if (IF_EXISTS(snapshot)) {
+                            const user = GET_VALUE(snapshot);
+                            const blockedUsers = user.blockedUsers;
 
-                        if (blockedUsers.length > 1) {
-                            resolve(true);
+                            resolve(ifAnyBlockedUsers(blockedUsers));
                         } else {
-                            resolve(false);
+                            errorController.throwError("No data available!");
                         }
-                    } else {
-                        errorController.throwError("No data available!");
+                    } catch (error) {
+                        errorController.displayErrorMessage(error);
                     }
-                } catch (error) {
-                    errorController.displayErrorMessage(error);
-                }
+                })
             })
         })
-        
-
-    })
-
     }
 
 }
 
+function ifAnyBlockedUsers(blockedUsers) {
+    if (blockedUsers && blockedUsers.length > 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function checkIfBlockedUserExists(blockedUsers, encryptedUserId) {
+    if (!blockedUsers) {
+        return true;
+    }
+
     for(let i = 0; i < blockedUsers.length; i++) {
         if (blockedUsers[i] === encryptedUserId) {
             return false;
         }
     }
-    return true;
+    return true; 
 }

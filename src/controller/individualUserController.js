@@ -10,7 +10,7 @@ const successController = new SuccessController();
 
 export class IndividualUserController {
 
-    getUser(userId, userName, company, isBlocked) {
+    setView(userId, userName, company, isBlocked) {
         const authHelper = new AuthHelper();
         authHelper.validateIfLoggedIn();
 
@@ -23,9 +23,6 @@ export class IndividualUserController {
         const errorBoxContainerDomElement = document.querySelector('.error-box-container');
         const exitIconDOMElement = document.querySelector('.exit-icon');
         const usersController = new UsersController();
-
-        document.addEventListener('touchstart', function(e) {e.preventDefault()}, false);
-        document.addEventListener('touchmove', function(e) {e.preventDefault()}, false);
 
         // Exit the user
         exitIconDOMElement.addEventListener('click', function() {
@@ -44,7 +41,7 @@ export class IndividualUserController {
                 blockUser: !isBlocked
             });
             successController.displaySuccessMessage(`${userName} has been ${isBlocked === true ? 'unblocked' : 'blocked'}!`);
-            usersController.setViewUsers();
+            usersController.setView();
         });
 
     }
