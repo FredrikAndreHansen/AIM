@@ -1,6 +1,6 @@
-import { SignInController } from "../controller/signInController.js";
-import { IndexController } from "../controller/indexController.js";
-import { ErrorController } from "../controller/errorController.js";
+import { SignInController } from "../controller/signedOut/signInController.js";
+import { IndexController } from "../controller/app/indexController.js";
+import { HandlerController } from "../controller/handlers/handlerController.js";
 import { EncryptHelper } from "./encrypt.js";
 import { SALT, TRIMSTRING, PARSESTRING, GET_AUTH, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_TOKEN, ADD_TOKEN, REMOVE_TOKEN } from "./helpers.js";
 
@@ -25,12 +25,12 @@ export class AuthHelper {
 
     removeToken() {
         const signInController = new SignInController();
-        const errorController = new ErrorController();
+        const handlerController = new HandlerController();
 
         // Sign out from Firebase
         GET_AUTH.signOut().then(() => {
         }).catch((error) => {
-            errorController.displayErrorMessage(error);
+            handlerController.displayMessage({message: error, isError: true});
         });
 
         if (GET_TOKEN()) {

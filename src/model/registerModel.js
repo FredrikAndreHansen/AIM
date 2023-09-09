@@ -1,8 +1,8 @@
-import { ErrorController } from '../controller/errorController.js';
+import { HandlerController } from '../controller/handlers/handlerController.js';
 import { SignInModel } from './signInModel.js';
 import { FORMAT_ERROR_MESSAGE, GET_DB_REFERENCE, GET_AUTH } from '../helpers/helpers.js';
 
-const errorController = new ErrorController();
+const handlerController = new HandlerController();
 
 export class RegisterModel {
 
@@ -24,7 +24,7 @@ export class RegisterModel {
             signInModel.signInUser(email, password);
         }).catch((error) => {
             const formattedErrorMessage = FORMAT_ERROR_MESSAGE(error);
-            errorController.displayErrorMessage(formattedErrorMessage);
+            handlerController.displayMessage({message: formattedErrorMessage, isError: true});
         });
     }
 

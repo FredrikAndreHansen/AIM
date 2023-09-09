@@ -1,11 +1,11 @@
-import { userOutputView } from "../view/usersView.js";
-import { ErrorController } from "../controller/errorController.js";
-import { LoadController } from "../controller/loadController.js";
+import { userOutputView } from "../view/app/usersView.js";
+import { HandlerController } from "../controller/handlers/handlerController.js";
+import { LoadController } from "../controller/handlers/loadController.js";
 import { AuthHelper } from "../helpers/auth.js";
 import { EncryptHelper } from "../helpers/encrypt.js";
 import { SALT, PARSESTRING, TRIMSTRING, GET_DB_REFERENCE, GET_DB_USERS_INFO, SAVE_TO_DB_IN_USERS, IF_EXISTS, GET_VALUE } from "../helpers/helpers.js";
 
-const errorController = new ErrorController();
+const handlerController = new HandlerController();
 const encryptHelper = new EncryptHelper();
 const loadController = new LoadController();
 
@@ -39,11 +39,11 @@ export class UsersModel {
                             resolve([ user.username, user.company, isBlocked ]);
                         } else {
                             loadController.removeLoading();
-                            errorController.throwError("No data available!");
+                            handlerController.throwError("No data available!");
                         }
                         }).catch((error) => {
                             loadController.removeLoading();
-                            errorController.displayErrorMessage(error);
+                            handlerController.displayMessage({message: error, isError: true});
                     })
                 })
             })
@@ -82,10 +82,10 @@ export class UsersModel {
 
                                 resolve(HTMLInput);
                             } else {
-                                errorController.throwError("No data available!");
+                                handlerController.throwError("No data available!");
                             }
                         } catch (error) {
-                            errorController.displayErrorMessage(error);
+                            handlerController.displayMessage({message: error, isError: true});
                         }
                     })
                 })
@@ -128,7 +128,7 @@ export class UsersModel {
             return HTMLOutput;
         }
 
-        function getSearchOutputInfo(searchQuery = false, i = -1) {
+        function getSearchOutputInfo(searchQuery, i = -1) {
             if (searchQuery !== '' && searchQuery !== false && i === -1) {
                 return `<p class="paragraph-absolute-center">Results for: ${searchQuery}</p><br>`;
             }
@@ -209,10 +209,10 @@ export class UsersModel {
                             saveValue: blockedUsers
                         });
                     } else {
-                        errorController.throwError("No data available!");
+                        handlerController.throwError("No data available!");
                     }
                 } catch(error) {
-                    errorController.displayErrorMessage(error);
+                    handlerController.displayMessage({message: error, isError: true});
                 }
             })
         });
@@ -257,10 +257,10 @@ export class UsersModel {
 
                             resolve(ifAnyBlockedUsers(blockedUsers));
                         } else {
-                            errorController.throwError("No data available!");
+                            handlerController.throwError("No data available!");
                         }
                     } catch (error) {
-                        errorController.displayErrorMessage(error);
+                        handlerController.displayMessage({message: error, isError: true});
                     }
                 })
             })

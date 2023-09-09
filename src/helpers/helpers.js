@@ -1,6 +1,7 @@
-import { ErrorController } from "../controller/errorController.js"
-import { LoadController } from "../controller/loadController.js";
-const errorController = new ErrorController();
+import { HandlerController } from "../controller/handlers/handlerController.js";
+import { LoadController } from "../controller/handlers/loadController.js";
+
+const handlerController = new HandlerController();
 
 export function SALT() {
     // Get salt from database
@@ -9,10 +10,10 @@ export function SALT() {
             if (IF_EXISTS(snapshot)) {
                 resolve(GET_VALUE(snapshot));
             } else {
-                errorController.throwError("No data available!");
+                handlerController.throwError("No data available!");
             }
         }).catch((error) => {
-            errorController.displayErrorMessage(error);
+            handlerController.displayMessage({message: error, isError: true});
         });
     });
 }
@@ -57,32 +58,32 @@ export function VALIDATE_USER_INPUT(userInput) {
 
         return true;
     } catch(error) {
-        errorController.displayErrorMessage(error);
+        handlerController.displayMessage({message: error, isError: true});
     }
 }
 
 function validateNameOrCompany(name, company = '') {
     if (name.length > 64) {
-        errorController.throwError(`The ${company} name is too long!<br>Maximum length is 64 characters`);
+        handlerController.throwError(`The ${company} name is too long!<br>Maximum length is 64 characters`);
     }
 
     if (name.length === 0) {
-        errorController.throwError(`The ${company} name cannot be empty!`);
+        handlerController.throwError(`The ${company} name cannot be empty!`);
     }
 }
 
 function validateEmail(email) {
     if (email.length === 0) {
-        errorController.throwError("The email address cannot be empty!");
+        handlerController.throwError("The email address cannot be empty!");
     }
 
     if (email.length > 66) {
-        errorController.throwError(`The email address is too long!<br>Maximum length is 66 characters`);
+        handlerController.throwError(`The email address is too long!<br>Maximum length is 66 characters`);
     }
 
     const regex = regExp;
     if (!regex.test(email)) {
-        errorController.throwError("The email address is not properly formatted!");
+        handlerController.throwError("The email address is not properly formatted!");
     }
 }
 
@@ -91,19 +92,19 @@ const regExp = new RegExp('[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}');
 
 function validatePassword(password, confirmPassword = false) {
     if (password.length === 0) {
-        errorController.throwError("The password cannot be empty!");
+        handlerController.throwError("The password cannot be empty!");
     }
 
     if (password.length > 140) {
-        errorController.throwError(`The password is too long!<br>Maximum length is 140 characters`);
+        handlerController.throwError(`The password is too long!<br>Maximum length is 140 characters`);
     }
 
     if (password.length < 6) {
-        errorController.throwError(`The password is too short!<br>Minimum length is 6 characters`);
+        handlerController.throwError(`The password is too short!<br>Minimum length is 6 characters`);
     }
 
     if (confirmPassword !== false && password !== confirmPassword) {
-        errorController.throwError(`The passwords don't match!<br>Please make sure that the password and the confirmed password are the same`);
+        handlerController.throwError(`The passwords don't match!<br>Please make sure that the password and the confirmed password are the same`);
     }
 }
 
@@ -162,4 +163,25 @@ export function REMOVE_TOKEN() {
 
 export function ADD_TOKEN(setValue) {
     return localStorage.setItem(tokenString, JSON.stringify(setValue));
+}
+
+export function GET_DOM_VALUE(DOMEl) {
+    return DOMEl.value;
+}
+
+export function CLEAR_DOM_VALUE(DOMEl) {
+    return DOMEl.value = '';
+}
+
+export function SET_INNER_HTML_VALUE(DOMElements) {
+    const { set, to = 'clear' } = DOMElements;
+    if (to === 'clear') {
+        return set.innerHTML = '';
+    } else {
+        return set.innerHTML = to;
+    }
+}
+
+export function SET_MENU_HIGHLIGHT(DOMEl) {
+    return DOMEl.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
 }

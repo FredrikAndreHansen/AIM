@@ -1,8 +1,8 @@
-import { ErrorController } from '../controller/errorController.js';
+import { HandlerController } from '../controller/handlers/handlerController.js';
 import { AuthHelper } from '../helpers/auth.js';
 import { FORMAT_ERROR_MESSAGE, GET_AUTH } from '../helpers/helpers.js';
 
-const errorController = new ErrorController();
+const handlerController = new HandlerController();
 
 export class SignInModel {
 
@@ -13,7 +13,7 @@ export class SignInModel {
             authHelper.createToken(userCredential.user.uid, email, password);
         }).catch((error) => {
             const formattedErrorMessage = FORMAT_ERROR_MESSAGE(error);
-            errorController.displayErrorMessage(formattedErrorMessage);
+            handlerController.displayMessage({message: formattedErrorMessage, isError: true});
         });
     }
 
