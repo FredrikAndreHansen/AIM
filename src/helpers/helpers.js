@@ -185,3 +185,30 @@ export function SET_INNER_HTML_VALUE(DOMElements) {
 export function SET_MENU_HIGHLIGHT(DOMEl) {
     return DOMEl.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
 }
+
+export function GET_USER_ID() {
+    const token = PARSESTRING(GET_TOKEN());
+    const [userIdRaw, _, __] = token.split(',');
+    return TRIMSTRING(userIdRaw);
+}
+
+export function CHECK_IF_BLOCKED_USERS_EXISTS(blockedUsers, encryptedUserId) {
+    if (!blockedUsers) {
+        return true;
+    }
+
+    for(let i = 0; i < blockedUsers.length; i++) {
+        if (blockedUsers[i] === encryptedUserId) {
+            return false;
+        }
+    }
+    return true; 
+}
+
+export function IF_ANY_BLOCKED_USERS(blockedUsers) {
+    if (blockedUsers && blockedUsers.length > 1) {
+        return true;
+    } else {
+        return false;
+    }
+}

@@ -1,5 +1,5 @@
 import { popupDOMElement } from "../../index.js";
-import { UsersModel } from "../../model/usersModel.js";
+import { IndividualUserModel } from "../../model/individualUserModel.js";
 import { HandlerController } from "../handlers/handlerController.js";
 import { UsersController } from "./usersController.js";
 import { individualUserView } from "../../view/app/individualUserView.js";
@@ -31,13 +31,13 @@ export class IndividualUserController {
 
     #toggleUserBlock(userId, userName, isBlocked) {
         const usersController = new UsersController();
-        const usersModel = new UsersModel();
+        const individualUserModel = new IndividualUserModel();
         const handlerController = new HandlerController();
 
         const userBlockBtnDOMEl = document.querySelector(`${isBlocked === true ? '#user-unblock-button' : '#user-block-button'}`);
 
         userBlockBtnDOMEl.addEventListener('click', function() {
-            usersModel.toggleUserBlock({
+            individualUserModel.toggleUserBlock({
                 userId: userId,
                 blockUser: !isBlocked
             });

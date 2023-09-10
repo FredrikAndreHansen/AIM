@@ -5,10 +5,12 @@ import { IndividualUserController } from './individualUserController.js';
 import { NavigateController } from '../handlers/navigateController.js';
 import { HandlerController } from '../handlers/handlerController.js';
 import { UsersModel } from '../../model/usersModel.js'
+import { IndividualUserModel } from '../../model/individualUserModel.js';
 import { EncryptHelper } from '../../helpers/encrypt.js';
 import { SALT, GET_DOM_VALUE, SET_INNER_HTML_VALUE, SET_MENU_HIGHLIGHT } from '../../helpers/helpers.js';
 
 const usersModel = new UsersModel();
+const individualUserModel = new IndividualUserModel();
 
 export class UsersController {
 
@@ -37,7 +39,7 @@ export class UsersController {
     }
 
     #displayUsers(searchQuery = '', onlyDisplayBlockedUsers = false) {
-        usersModel.fetchUsers(searchQuery, onlyDisplayBlockedUsers).then(res => {
+        usersModel.getUsers(searchQuery, onlyDisplayBlockedUsers).then(res => {
             this.#outputAllUsers(res);
 
             this.#getIndividualUser();
@@ -60,7 +62,7 @@ export class UsersController {
                     const encryptHelper = new EncryptHelper();
                     const decrypt = encryptHelper.decipher(salt);
                     const decryptedId = decrypt(userId);
-                    usersModel.fetchUserInfo(decryptedId).then(res => {
+                    individualUserModel.getIndividualUser(decryptedId).then(res => {
                         const userName = res[0];
                         const company = res[1];
                         const userIsBlocked = res[2];
