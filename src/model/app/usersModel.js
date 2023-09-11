@@ -1,9 +1,9 @@
-import { userOutputView } from "../view/app/usersView.js";
-import { HandlerController } from "../controller/handlers/handlerController.js";
-import { LoadController } from "../controller/handlers/loadController.js";
-import { AuthHelper } from "../helpers/auth.js";
-import { EncryptHelper } from "../helpers/encrypt.js";
-import { SALT, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, IF_ANY_BLOCKED_USERS } from "../helpers/helpers.js";
+import { userOutputView } from "../../view/app/usersView.js";
+import { HandlerController } from "../../controller/handlers/handlerController.js";
+import { LoadController } from "../../controller/handlers/loadController.js";
+import { AuthHelper } from "../../helpers/auth.js";
+import { EncryptHelper } from "../../helpers/encrypt.js";
+import { SALT, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, IF_ANY_BLOCKED_USERS } from "../../helpers/helpers.js";
 
 const handlerController = new HandlerController();
 const encryptHelper = new EncryptHelper();

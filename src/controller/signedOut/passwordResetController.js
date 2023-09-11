@@ -1,6 +1,6 @@
 import { viewDOMElement } from '../../index.js';
 import { passwordResetView } from '../../view/signedOut/passwordResetView.js';
-import { PasswordResetModel } from "../../model/passwordResetModel.js";
+import { PasswordResetModel } from "../../model/signedOut/passwordResetModel.js";
 import { NavigateController } from '../handlers/navigateController.js';
 import { LoadController } from '../handlers/loadController.js';
 import { VALIDATE_USER_INPUT, GET_DOM_VALUE, CLEAR_DOM_VALUE, SET_INNER_HTML_VALUE } from '../../helpers/helpers.js';

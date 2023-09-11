@@ -1,10 +1,10 @@
 import { popupDOMElement } from "../../index.js";
-import { IndividualUserModel } from "../../model/individualUserModel.js";
+import { IndividualUserModel } from "../../model/app/individualUserModel.js";
 import { HandlerController } from "../handlers/handlerController.js";
 import { UsersController } from "./usersController.js";
 import { individualUserView } from "../../view/app/individualUserView.js";
 import { AuthHelper } from "../../helpers/auth.js";
-import { SET_INNER_HTML_VALUE } from "../../helpers/helpers.js";
+import { SET_INNER_HTML_VALUE, CLOSE_MODAL } from "../../helpers/helpers.js";
 
 export class IndividualUserController {
 
@@ -18,7 +18,7 @@ export class IndividualUserController {
 
         const errorBoxContainerDomElement = document.querySelector('.error-box-container');
         const exitIconDOMElement = document.querySelector('.exit-icon');
-        this.#exitUser([errorBoxContainerDomElement, exitIconDOMElement]);
+        CLOSE_MODAL([errorBoxContainerDomElement, exitIconDOMElement], popupDOMElement);
     }
 
     #generateOutput(userName, company, isBlocked) {
@@ -46,12 +46,6 @@ export class IndividualUserController {
         });
     }
 
-    #exitUser(clickListeners) {
-        for(let i = 0; i < clickListeners.length; i++) {
-            clickListeners[i].addEventListener('click', function() {
-                SET_INNER_HTML_VALUE({set: popupDOMElement, to: 'clear'});
-            });
-        }
-    }
+
 
 }

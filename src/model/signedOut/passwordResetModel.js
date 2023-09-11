@@ -1,6 +1,6 @@
-import { HandlerController } from '../controller/handlers/handlerController.js';
-import { SignInController } from '../controller/signedOut/signInController.js';
-import { FORMAT_ERROR_MESSAGE, GET_AUTH } from '../helpers/helpers.js';
+import { HandlerController } from '../../controller/handlers/handlerController.js';
+import { SignInController } from '../../controller/signedOut/signInController.js';
+import { FORMAT_ERROR_MESSAGE, GET_AUTH } from '../../helpers/helpers.js';
 
 const handlerController = new HandlerController();
 

@@ -42,7 +42,6 @@ export class AuthHelper {
     }
 
     validateIfLoggedIn() {
-        // Validate and parse localstorage
         if (GET_TOKEN()) {
             const token = PARSESTRING(GET_TOKEN());
             const [userId, email, password] = token.split(',');
@@ -51,7 +50,6 @@ export class AuthHelper {
             const emailTrim = TRIMSTRING(email);
             const passwordTrim = TRIMSTRING(password);
 
-            // Decrypt values and validate
             const dbRef = GET_DB_REFERENCE();
             SALT().then((salt) => {
                 const decrypt = encryptHelper.decipher(salt);

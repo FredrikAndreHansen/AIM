@@ -1,7 +1,7 @@
 export function handlerView(message, isError) {
     if (isError === true) {
         return `
-            <div class="error-box-container"></div>
+            <div class="error-box-container" id="error-box-container"></div>
             
             <div class="error-box">
                 <h1 class="header">Error</h1>
@@ -12,7 +12,7 @@ export function handlerView(message, isError) {
         `;
     } else {
         return `
-            <div class="error-box-container"></div>
+            <div class="error-box-container" id="error-box-container"></div>
             
             <div class="error-box">
                 <h1 class="header">Success</h1>

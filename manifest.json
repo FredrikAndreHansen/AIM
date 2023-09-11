@@ -6,6 +6,9 @@
       "activeTab",
       "tabs"
     ],
+    "host_permissions": [
+      "<all_urls>"
+    ],
     "action": {
         "default_title": "Schedule a Meeting",
         "default_popup": "index.html"

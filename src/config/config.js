@@ -10,7 +10,7 @@ try {
   };
 
   firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
+  //const database = firebase.database();
 } catch(error) {
     alert(error);
 }

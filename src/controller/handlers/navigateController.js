@@ -9,12 +9,10 @@ import { IndexController } from '../app/indexController.js';
 import { AuthHelper } from '../../helpers/auth.js';
 import { SET_INNER_HTML_VALUE } from '../../helpers/helpers.js';
 
-
-const authHelper = new AuthHelper();
-
 export class NavigateController {
 
     setView() { 
+        const authHelper = new AuthHelper();
         authHelper.validateIfLoggedIn();
 
         this.#generateOutput();
@@ -35,9 +33,9 @@ export class NavigateController {
 
         const mainMenuLogoDOMElement = document.querySelector('#main-menu-logo');
 
-        mainMenuLogoDOMElement.addEventListener('click', function() {
+         mainMenuLogoDOMElement.addEventListener('click', function() {
             indexController.setView();
-        });
+        }); 
     }
 
     #navigateToUsersPage() {
@@ -57,6 +55,7 @@ export class NavigateController {
 
         mainMenuSignOutDOMElement.addEventListener('click', function() {
             loadController.displayLoading();
+            const authHelper = new AuthHelper();
             authHelper.removeToken();
         });
     }

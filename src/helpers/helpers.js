@@ -1,11 +1,12 @@
 import { HandlerController } from "../controller/handlers/handlerController.js";
 import { LoadController } from "../controller/handlers/loadController.js";
+import { OfflineController } from "../controller/handlers/offlineController.js";
 
 const handlerController = new HandlerController();
 
 export function SALT() {
     // Get salt from database
-    return new Promise(function(resolve) {
+    return new Promise((resolve) => {
         get_db_salt_info().then((snapshot) => {
             if (IF_EXISTS(snapshot)) {
                 resolve(GET_VALUE(snapshot));
@@ -182,8 +183,18 @@ export function SET_INNER_HTML_VALUE(DOMElements) {
     }
 }
 
+export function CHECK_INNER_HTML_VALUE(DOMElement) {
+    if (DOMElement.innerHTML === '' || DOMElement.innerHTML === undefined) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 export function SET_MENU_HIGHLIGHT(DOMEl) {
-    return DOMEl.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+    const clickedElementDOM = document.querySelector("." + DOMEl.id + "-clicked");
+    clickedElementDOM.style.opacity = "1";
+    DOMEl.id = '';
 }
 
 export function GET_USER_ID() {
@@ -211,4 +222,32 @@ export function IF_ANY_BLOCKED_USERS(blockedUsers) {
     } else {
         return false;
     }
+}
+
+export function CLOSE_MODAL(clickListeners, element) {
+    for(let i = 0; i < clickListeners.length; i++) {
+        clickListeners[i].addEventListener('click', function() {
+            SET_INNER_HTML_VALUE({set: element, to: 'clear'});
+        });
+    }
+}
+
+export function ANIMATE_FADE_IN(DOMEl) {
+    for(let i = 0; i < DOMEl.length; i++) {
+        DOMEl[i].style.animationDelay = i/15+"s";
+    }
+}
+
+export function IS_OFFLINE() {
+    setTimeout(() => {
+        if (!HAS_INTERNET_CONNECTION()) {
+            const offlineController = new OfflineController();
+            offlineController.setView();
+        }
+    }, 2000);
+}
+
+export function HAS_INTERNET_CONNECTION() {
+    const online = window.navigator.onLine;
+    return online;
 }

@@ -1,7 +1,7 @@
-import { popupDOMElement } from "../../index.js";
+import { popupDOMElement, errorDOMElement } from "../../index.js";
 import { handlerView } from '../../view/handlers/handlerView.js';
 import { LoadController } from './loadController.js';
-import { SET_INNER_HTML_VALUE } from '../../helpers/helpers.js';
+import { SET_INNER_HTML_VALUE, CLOSE_MODAL } from '../../helpers/helpers.js';
 
 export class HandlerController {
 
@@ -9,8 +9,10 @@ export class HandlerController {
         const { message, isError } = handlerOutputValues;
 
         this.#generateOutput(message, isError);
-        
-        this.#close();
+
+        const errorBtnDOMElement = document.querySelector('#error-button');
+        const errorBoxContainerDomElement = document.querySelector('#error-box-container');
+        CLOSE_MODAL([errorBtnDOMElement, errorBoxContainerDomElement], errorDOMElement);
 
         const loadController = new LoadController();
         loadController.removeLoading();
@@ -18,15 +20,7 @@ export class HandlerController {
 
     #generateOutput(message, isError) {
         SET_INNER_HTML_VALUE({set: popupDOMElement, to: 'clear'});
-        const errorDOMElement = document.querySelector('#error');
         SET_INNER_HTML_VALUE({set: errorDOMElement, to: handlerView(message, isError)});
-    }
-
-    #close() {
-        const errorDOMElement = document.querySelector('#error');
-        errorDOMElement.addEventListener('click', function() {
-            SET_INNER_HTML_VALUE({set: errorDOMElement, to: 'clear'});
-        });
     }
 
     throwError(errorMessage) {

@@ -1,6 +1,6 @@
 import { viewDOMElement } from '../../index.js';
 import { registerView } from "../../view/signedOut/registerView.js";
-import { RegisterModel } from "../../model/registerModel.js";
+import { RegisterModel } from "../../model/signedOut/registerModel.js";
 import { NavigateController } from '../handlers/navigateController.js';
 import { LoadController } from '../handlers/loadController.js';
 import { VALIDATE_USER_INPUT, GET_DOM_VALUE, SET_INNER_HTML_VALUE } from '../../helpers/helpers.js';

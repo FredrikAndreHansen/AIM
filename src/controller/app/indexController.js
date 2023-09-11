@@ -2,7 +2,7 @@ import { viewDOMElement } from '../../index.js';
 import { indexView } from '../../view/app/indexView.js';
 import { LoadController } from '../handlers/loadController.js';
 import { NavigateController } from '../handlers/navigateController.js';
-import { IndividualUserModel } from '../../model/individualUserModel.js';
+import { IndividualUserModel } from '../../model/app/individualUserModel.js';
 import { EncryptHelper } from '../../helpers/encrypt.js';
 import { SALT, TRIMSTRING, PARSESTRING, GET_TOKEN, SET_INNER_HTML_VALUE, SET_MENU_HIGHLIGHT } from '../../helpers/helpers.js';
 

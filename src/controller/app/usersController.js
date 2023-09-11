@@ -4,10 +4,10 @@ import { LoadController } from '../handlers/loadController.js';
 import { IndividualUserController } from './individualUserController.js';
 import { NavigateController } from '../handlers/navigateController.js';
 import { HandlerController } from '../handlers/handlerController.js';
-import { UsersModel } from '../../model/usersModel.js'
-import { IndividualUserModel } from '../../model/individualUserModel.js';
+import { UsersModel } from '../../model/app/usersModel.js'
+import { IndividualUserModel } from '../../model/app/individualUserModel.js';
 import { EncryptHelper } from '../../helpers/encrypt.js';
-import { SALT, GET_DOM_VALUE, SET_INNER_HTML_VALUE, SET_MENU_HIGHLIGHT } from '../../helpers/helpers.js';
+import { SALT, GET_DOM_VALUE, SET_INNER_HTML_VALUE, SET_MENU_HIGHLIGHT, ANIMATE_FADE_IN } from '../../helpers/helpers.js';
 
 const usersModel = new UsersModel();
 const individualUserModel = new IndividualUserModel();
@@ -48,12 +48,16 @@ export class UsersController {
 
     #outputAllUsers(userInfo) {
         const userListDOMElement = document.querySelector('#user-list');
+        SET_INNER_HTML_VALUE({set: userListDOMElement, to: userInfo});
 
-        return SET_INNER_HTML_VALUE({set: userListDOMElement, to: userInfo});
+        const allUsersDOMElement = document.querySelectorAll("#all-users");
+        ANIMATE_FADE_IN(allUsersDOMElement);
     }
 
     #getIndividualUser() {
-        document.querySelectorAll('#all-users').forEach(function(getIndividualUser) {
+        const allUsersDOMElement = document.querySelectorAll("#all-users");
+
+        allUsersDOMElement.forEach((getIndividualUser) => {
 
             getIndividualUser.addEventListener('click', function() {
                 const userId = this.getAttribute('data-id');

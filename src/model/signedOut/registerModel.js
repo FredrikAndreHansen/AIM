@@ -1,6 +1,6 @@
-import { HandlerController } from '../controller/handlers/handlerController.js';
+import { HandlerController } from '../../controller/handlers/handlerController.js';
 import { SignInModel } from './signInModel.js';
-import { FORMAT_ERROR_MESSAGE, GET_DB_REFERENCE, GET_AUTH } from '../helpers/helpers.js';
+import { FORMAT_ERROR_MESSAGE, GET_DB_REFERENCE, GET_AUTH } from '../../helpers/helpers.js';
 
 const handlerController = new HandlerController();
 
@@ -10,7 +10,6 @@ export class RegisterModel {
         const { name, email, company, password } = userData;
         
         GET_AUTH.createUserWithEmailAndPassword(email, password).then((userCredential) => {
-            const signInModel = new SignInModel();
             const user = userCredential.user;
             
             this.#writeUserData({
@@ -21,6 +20,7 @@ export class RegisterModel {
                 blockedUsers: [""]
             });
 
+            const signInModel = new SignInModel();
             signInModel.signInUser(email, password);
         }).catch((error) => {
             const formattedErrorMessage = FORMAT_ERROR_MESSAGE(error);

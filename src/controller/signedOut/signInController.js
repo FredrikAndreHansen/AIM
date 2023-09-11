@@ -3,7 +3,7 @@ import { signInView } from "../../view/signedOut/signInView.js"
 import { headerView } from '../../view/handlers/headerView.js';
 import { NavigateController } from '../handlers/navigateController.js';
 import { LoadController } from '../handlers/loadController.js';
-import { SignInModel } from '../../model/signInModel.js';
+import { SignInModel } from '../../model/signedOut/signInModel.js';
 import { VALIDATE_USER_INPUT, SET_INNER_HTML_VALUE, GET_DOM_VALUE } from '../../helpers/helpers.js';
 
 export class SignInController {
