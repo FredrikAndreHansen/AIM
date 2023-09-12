@@ -1,6 +1,6 @@
 import { HandlerController } from '../../controller/handlers/handlerController.js';
 import { SignInModel } from './signInModel.js';
-import { FORMAT_ERROR_MESSAGE, GET_DB_REFERENCE, GET_AUTH } from '../../helpers/helpers.js';
+import { FORMAT_ERROR_MESSAGE, GET_DB_REFERENCE, GET_AUTH, USERS_REF } from '../../helpers/helpers.js';
 
 const handlerController = new HandlerController();
 
@@ -31,7 +31,7 @@ export class RegisterModel {
     #writeUserData(userData) {
         const { userId, name, company, teams, blockedUsers } = userData;
 
-        const dbRef = GET_DB_REFERENCE('users/' + userId);
+        const dbRef = GET_DB_REFERENCE(USERS_REF + userId);
 
         dbRef.set({
             username: name,

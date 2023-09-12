@@ -1,9 +1,9 @@
-import { userOutputView } from "../../view/app/usersView.js";
+import { userOutputView, userSearchOutput } from "../../view/app/usersView.js";
 import { HandlerController } from "../../controller/handlers/handlerController.js";
 import { LoadController } from "../../controller/handlers/loadController.js";
 import { AuthHelper } from "../../helpers/auth.js";
 import { EncryptHelper } from "../../helpers/encrypt.js";
-import { SALT, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, IF_ANY_BLOCKED_USERS } from "../../helpers/helpers.js";
+import { SALT, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, IF_ANY_BLOCKED_USERS, USERS_REF } from "../../helpers/helpers.js";
 
 const handlerController = new HandlerController();
 const encryptHelper = new EncryptHelper();
@@ -17,12 +17,11 @@ export class UsersModel {
         const authHelper = new AuthHelper();
         authHelper.validateIfLoggedIn();
 
-        const starCountRef = GET_DB_REFERENCE('users/');
+        const starCountRef = GET_DB_REFERENCE(USERS_REF);
 
         const userId = GET_USER_ID();
-        let HTMLInput = '';
         
-        return await new Promise((resolve) => {
+        return await new Promise((resolve, reject) => {
             starCountRef.on('value', (snapshot) => {
                 const users = GET_VALUE(snapshot);
                 
@@ -37,13 +36,13 @@ export class UsersModel {
                                 const user = GET_VALUE(snapshot);
                                 const blockedUsers = user.blockedUsers;
 
-                                HTMLInput = outputUsers(users, decryptedUserId, searchQuery, salt, blockedUsers);
+                                const HTMLInput = outputUsers(users, decryptedUserId, searchQuery, salt, blockedUsers);
                                 
                                 loadController.removeLoading();
 
                                 resolve(HTMLInput);
                             } else {
-                                handlerController.throwError("No data available!");
+                                reject(handlerController.throwError("No data available!"));
                             }
                         } catch (error) {
                             handlerController.displayMessage({message: error, isError: true});
@@ -91,11 +90,11 @@ export class UsersModel {
 
         function getSearchOutputInfo(searchQuery, i = -1) {
             if (searchQuery !== '' && searchQuery !== false && i === -1) {
-                return `<p class="paragraph-absolute-center">Results for: ${searchQuery}</p><br>`;
+                return userSearchOutput(searchQuery);
             }
 
             if (i === 0) {
-                return '<p class="paragraph-center">No results!</p>';
+                return userSearchOutput();
             }
 
             return '';

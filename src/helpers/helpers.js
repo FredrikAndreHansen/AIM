@@ -38,7 +38,7 @@ export function PARSESTRING(string) {
 
 export function VALIDATE_USER_INPUT(userInput) {
     try {
-        const { name = false, email, company = false, password = false, confirmPassword = false } = userInput;
+        const { name = false, email = false, company = false, password = false, confirmPassword = false } = userInput;
 
         const loadController = new LoadController();
         loadController.displayLoading();
@@ -47,7 +47,9 @@ export function VALIDATE_USER_INPUT(userInput) {
             validateNameOrCompany(name);
         }
 
-        validateEmail(email);
+        if (email !== false) {
+            validateEmail(email);
+        }
 
         if (company !== false) {
             validateNameOrCompany(company, 'company');
@@ -127,15 +129,24 @@ export function GET_DB_REFERENCE(refArgument = false) {
         return firebase.database().ref(refArgument);
     }
 }
+export const USERS_GET_CHILD_REF = "users";
+export const USERS_REF = USERS_GET_CHILD_REF + "/";
+
+export const TEAMS_GET_CHILD_REF = "teams";
+export const TEAMS_REF = TEAMS_GET_CHILD_REF + "/";
+
+export function GET_DB_TEAMS_INFO(dbReference) {
+    return dbReference.child(TEAMS_GET_CHILD_REF).get();
+}
 
 export function GET_DB_USERS_INFO(dbReference, child) {
-    return dbReference.child('users').child(child).get();
+    return dbReference.child(USERS_GET_CHILD_REF).child(child).get();
 }
 
 export function SAVE_TO_DB_IN_USERS(databaseRows) {
     const { dbReference, firstChild, secondChild, saveValue } = databaseRows;
 
-    dbReference.child("users").child(firstChild).child(secondChild).set(saveValue);
+    dbReference.child(USERS_GET_CHILD_REF).child(firstChild).child(secondChild).set(saveValue);
 }
 
 export const GET_AUTH = firebase.auth();

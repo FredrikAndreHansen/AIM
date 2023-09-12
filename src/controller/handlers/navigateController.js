@@ -5,6 +5,7 @@ import { SignInController } from '../signedOut/signInController.js';
 import { RegisterController } from '../signedOut/registerController.js';
 import { PasswordResetController } from '../signedOut/passwordResetController.js';
 import { UsersController } from '../app/usersController.js';
+import { TeamsController } from '../app/teamsController.js';
 import { IndexController } from '../app/indexController.js';
 import { AuthHelper } from '../../helpers/auth.js';
 import { SET_INNER_HTML_VALUE } from '../../helpers/helpers.js';
@@ -20,6 +21,8 @@ export class NavigateController {
         this.#navigateToIndexPage();
 
         this.#navigateToUsersPage();
+
+        this.#navigateToTeamsPage();
 
         this.#logOut();
     }
@@ -45,6 +48,16 @@ export class NavigateController {
 
         mainMenuUsersDOMElement.addEventListener('click', function() {
             usersController.setView();
+        });
+    }
+
+    #navigateToTeamsPage() {
+        const teamsController = new TeamsController();
+
+        const mainMenuTeamsDOMElement = document.querySelector('#main-menu-teams');
+
+        mainMenuTeamsDOMElement.addEventListener('click', function() {
+            teamsController.setView();
         });
     }
 

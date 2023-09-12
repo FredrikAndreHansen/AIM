@@ -13,12 +13,11 @@ export class IndividualUserModel {
     async getIndividualUser(userId) {
         const authHelper = new AuthHelper();
         authHelper.validateIfLoggedIn();
-
+    
         const currentUserId = GET_USER_ID();
-
         const dbRef = GET_DB_REFERENCE();
 
-        return await new Promise(function(resolve) {
+        return await new Promise((resolve, reject) => {
 
             SALT().then((salt) => {
                 const decrypt = encryptHelper.decipher(salt);
@@ -39,15 +38,15 @@ export class IndividualUserModel {
                             resolve([ user.username, user.company, isBlocked ]);
                         } else {
                             loadController.removeLoading();
-                            handlerController.throwError("No data available!");
+                            reject(handlerController.throwError("No data available!"));
                         }
-                        }).catch((error) => {
-                            loadController.removeLoading();
-                            handlerController.displayMessage({message: error, isError: true});
-                    })
-                })
-            })
-        })
+                    }).catch((error) => {
+                        loadController.removeLoading();
+                        handlerController.displayMessage({message: error, isError: true});
+                    });
+                });
+            });
+        });
     }
 
     toggleUserBlock(userinfo) {

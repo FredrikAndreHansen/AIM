@@ -27,3 +27,11 @@ export function userOutputView(encryptedKey, users, key, isBlocked) {
         </tr>
     `;
 }
+
+export function userSearchOutput(searchQuery = false) {
+    if (searchQuery !== false) {
+        return `<p class="paragraph-absolute-center">Results for: ${searchQuery}</p><br>`;
+    } else {
+        return '<p class="paragraph-center">No results!</p>';
+    }
+}

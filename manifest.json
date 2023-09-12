@@ -10,7 +10,7 @@
       "<all_urls>"
     ],
     "action": {
-        "default_title": "Schedule a Meeting",
+        "default_title": "Plan Meetings",
         "default_popup": "index.html"
       },
       "icons": {

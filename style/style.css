@@ -22,7 +22,8 @@
     --x-big: 32px;
     --xx-big: 64px;
     --xxx-big: 96px;
-    --xxxx-big: 256px;
+    --xxxx-big: 128px;
+    --xxxxx-big: 256px;
 }
 
 body{
@@ -100,6 +101,18 @@ body::-webkit-scrollbar {
 #main-menu-users:hover {
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.15);
+}
+.main-menu-teams-clicked {
+    position: fixed;
+    left: 128px;
+    height: var(--xx-big);
+    width: var(--xx-big);
+    background-image: url('../graphic/teamsIcon.svg');
+    background-size: 35%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    opacity: 0;
 }
 #main-menu-teams {
     position: fixed;
@@ -273,10 +286,17 @@ body::-webkit-scrollbar {
     left: 50%;
     transform: translateX(-50%);
 }
-.offline-icon {
+.sad-icon {
     position: relative;
     width: var(--xxxx-big);
     height: var(--xxxx-big);
+    left: 50%;
+    transform: translateX(-50%);
+}
+.offline-icon {
+    position: relative;
+    width: var(--xxxxx-big);
+    height: var(--xxxxx-big);
     left: 50%;
     transform: translateX(-50%);
 }
@@ -316,6 +336,25 @@ body::-webkit-scrollbar {
     transform: translateX(-50%);
     padding: 0 var(--small) 0 var(--small);
     top: var(--xxx-big);
+}
+.index-section-fadein {
+    animation: 0.1s;
+	animation-name: index-fade-in;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+    opacity: 0;
+    transform: translateY(50px);
+}
+@keyframes index-fade-in {
+	0% {
+		opacity: 0;
+        transform: translateY(50px);
+	}
+	100% {
+		opacity: 1;
+        transform: translateY(0);
+	}
 }
 
 .offline-section {
@@ -469,6 +508,11 @@ body::-webkit-scrollbar {
     width: 100%;
     border-collapse: collapse;
 }
+#teams-list {
+    position: relative;
+    width: 100%;
+    border-collapse: collapse;
+}
 td {
     padding: 8px;
 }
@@ -492,7 +536,11 @@ tr {
         transform: translateX(0);
 	}
 }
-
+.team-td{
+    padding: 32px;
+    background-color: rgba(34,139,34, 0.75);
+    width: 28px;
+}
 .user-td{
     padding: 32px;
     background-color: rgba(65,105,225, 0.75);
