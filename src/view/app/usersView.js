@@ -1,6 +1,6 @@
 export function usersView(hasBlockedUsers) {
     return `
-        <div class="index-section">
+        <div class="content-section">
             <h1 class="header">Manage Users</h1>
             <form>
                 <input type="text" id="search-user" placeholder="Find users by name or company" class="input" maxlength="24" required />

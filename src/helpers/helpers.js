@@ -1,6 +1,5 @@
 import { HandlerController } from "../controller/handlers/handlerController.js";
 import { LoadController } from "../controller/handlers/loadController.js";
-import { OfflineController } from "../controller/handlers/offlineController.js";
 
 const handlerController = new HandlerController();
 
@@ -247,15 +246,6 @@ export function ANIMATE_FADE_IN(DOMEl) {
     for(let i = 0; i < DOMEl.length; i++) {
         DOMEl[i].style.animationDelay = i/15+"s";
     }
-}
-
-export function IS_OFFLINE() {
-    setTimeout(() => {
-        if (!HAS_INTERNET_CONNECTION()) {
-            const offlineController = new OfflineController();
-            offlineController.setView();
-        }
-    }, 2000);
 }
 
 export function HAS_INTERNET_CONNECTION() {

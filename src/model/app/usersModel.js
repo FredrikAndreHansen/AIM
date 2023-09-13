@@ -1,21 +1,19 @@
 import { userOutputView, userSearchOutput } from "../../view/app/usersView.js";
-import { HandlerController } from "../../controller/handlers/handlerController.js";
-import { LoadController } from "../../controller/handlers/loadController.js";
-import { AuthHelper } from "../../helpers/auth.js";
-import { EncryptHelper } from "../../helpers/encrypt.js";
 import { SALT, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, IF_ANY_BLOCKED_USERS, USERS_REF } from "../../helpers/helpers.js";
 
-const handlerController = new HandlerController();
-const encryptHelper = new EncryptHelper();
-const loadController = new LoadController();
-
 export class UsersModel {
-    
+
+    constructor(authHelper, loadController, handlerController, encryptHelper) {
+        this.authHelper = authHelper;
+        this.loadController = loadController;
+        this.handlerController = handlerController;
+        this.encryptHelper = encryptHelper;
+    }
+   
     async getUsers(displayArguments) {
         const { searchQuery = '', onlyDisplayBlockedUsers = false } = displayArguments;
         
-        const authHelper = new AuthHelper();
-        authHelper.validateIfLoggedIn();
+        this.authHelper.validateIfLoggedIn();
 
         const starCountRef = GET_DB_REFERENCE(USERS_REF);
 
@@ -26,7 +24,7 @@ export class UsersModel {
                 const users = GET_VALUE(snapshot);
                 
                 SALT().then((salt) => {
-                    const decrypt = encryptHelper.decipher(salt);
+                    const decrypt = this.encryptHelper.decipher(salt);
                     const decryptedUserId = decrypt(userId);
                     const dbRef = GET_DB_REFERENCE();
 
@@ -35,24 +33,25 @@ export class UsersModel {
                             if (IF_EXISTS(snapshot)) {
                                 const user = GET_VALUE(snapshot);
                                 const blockedUsers = user.blockedUsers;
+                                const encrypt = this.encryptHelper.cipher(salt);
 
-                                const HTMLInput = outputUsers(users, decryptedUserId, searchQuery, salt, blockedUsers);
+                                const HTMLInput = outputUsers(users, decryptedUserId, searchQuery, blockedUsers, encrypt);
                                 
-                                loadController.removeLoading();
+                                this.loadController.removeLoading();
 
                                 resolve(HTMLInput);
                             } else {
-                                reject(handlerController.throwError("No data available!"));
+                                reject(this.handlerController.throwError("No data available!"));
                             }
                         } catch (error) {
-                            handlerController.displayMessage({message: error, isError: true});
+                            this.handlerController.displayMessage({message: error, isError: true});
                         }
                     })
                 })
             });
         })
 
-        function outputUsers(users, userId, searchQuery, salt, blockedUsers) {
+        function outputUsers(users, userId, searchQuery, blockedUsers, encrypt) {
             let i = 0;
             let HTMLOutput = '';
         
@@ -66,7 +65,7 @@ export class UsersModel {
                 const company = users[key].company;
 
                 if (ifSearchIncludesValues(userName, company, searchQuery)) {
-                    const encrypt = encryptHelper.cipher(salt);
+                    
                     const encryptedKey = encrypt(key);
 
                     HTMLOutput += outputUserInfo({
@@ -133,10 +132,10 @@ export class UsersModel {
     async checkIfAnyUsersAreBlocked() {
         const userId = GET_USER_ID();
 
-        return await new Promise(function(resolve) {
+        return await new Promise((resolve, reject) => {
 
             SALT().then((salt) => {
-                const decrypt = encryptHelper.decipher(salt); 
+                const decrypt = this.encryptHelper.decipher(salt); 
                 const decryptedUserId = decrypt(userId);
                 const dbRef = GET_DB_REFERENCE();
 
@@ -148,10 +147,10 @@ export class UsersModel {
 
                             resolve(IF_ANY_BLOCKED_USERS(blockedUsers));
                         } else {
-                            handlerController.throwError("No data available!");
+                            reject(this.handlerController.throwError("No data available!"));
                         }
                     } catch (error) {
-                        handlerController.displayMessage({message: error, isError: true});
+                        this.handlerController.displayMessage({message: error, isError: true});
                     }
                 })
             })

@@ -1,39 +1,31 @@
 import { viewDOMElement } from '../../index.js';
 import { indexView } from '../../view/app/indexView.js';
-import { LoadController } from '../handlers/loadController.js';
-import { NavigateController } from '../handlers/navigateController.js';
-import { IndividualUserModel } from '../../model/app/individualUserModel.js';
-import { EncryptHelper } from '../../helpers/encrypt.js';
+import { AppController } from '../appController.js';
 import { SALT, TRIMSTRING, PARSESTRING, GET_TOKEN, SET_INNER_HTML_VALUE, SET_MENU_HIGHLIGHT } from '../../helpers/helpers.js';
 
-export class IndexController {
+export class IndexController extends AppController {
+
+    constructor(individualUserModel) {
+        super(individualUserModel);
+    }
 
     setView() {
-        const loadController = new LoadController();
-        loadController.displayLoading();
-
-        const navigateController = new NavigateController();
-        navigateController.setView();
-
         this.#generateOutput();
 
         this.#indexMenuHighlight();
     }
 
     #generateOutput() {
-        const individualUserModel = new IndividualUserModel();
-        const encryptHelper = new EncryptHelper();
-
         const token = PARSESTRING(GET_TOKEN());
         const [userId, _, __] = token.split(',');
         
         const userIdTrim = TRIMSTRING(userId);
 
         SALT().then((salt) => {
-            const decryptId = encryptHelper.decipher(salt);
+            const decryptId = this.encryptHelper.decipher(salt);
             const decryptedUserId = decryptId(userIdTrim);
             
-            individualUserModel.getIndividualUser(decryptedUserId).then(res => {
+            this.individualUserModel.getIndividualUser(decryptedUserId).then(res => {
                 const setIndexView = indexView({
                     userName: res[0], 
                     company: res[1]

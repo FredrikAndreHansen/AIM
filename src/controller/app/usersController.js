@@ -1,29 +1,18 @@
 import { viewDOMElement } from '../../index.js';
 import { usersView } from '../../view/app/usersView.js';
-import { LoadController } from '../handlers/loadController.js';
-import { IndividualUserController } from './individualUserController.js';
-import { NavigateController } from '../handlers/navigateController.js';
-import { HandlerController } from '../handlers/handlerController.js';
-import { UsersModel } from '../../model/app/usersModel.js'
-import { IndividualUserModel } from '../../model/app/individualUserModel.js';
-import { EncryptHelper } from '../../helpers/encrypt.js';
+import { AppController } from '../appController.js';
 import { SALT, GET_DOM_VALUE, SET_INNER_HTML_VALUE, SET_MENU_HIGHLIGHT, ANIMATE_FADE_IN } from '../../helpers/helpers.js';
 
-const usersModel = new UsersModel();
-const individualUserModel = new IndividualUserModel();
+export class UsersController extends AppController {
 
-export class UsersController {
+    constructor(individualUserController, handlerController, encryptHelper, usersModel, individualUserModel) {
+        super(individualUserController, handlerController, encryptHelper, usersModel, individualUserModel);
+    }
 
     setView() {
-        const loadController = new LoadController();
-        loadController.displayLoading();
-
-        const navigateController = new NavigateController();
-        navigateController.setView();
-
         this.#usersMenuHighlight();
 
-        usersModel.checkIfAnyUsersAreBlocked().then((hasBlockedUsers) => {
+        this.usersModel.checkIfAnyUsersAreBlocked().then((hasBlockedUsers) => {
             this.#generateOutput(hasBlockedUsers);
 
             this.#displayUsers();
@@ -39,7 +28,7 @@ export class UsersController {
     }
 
     #displayUsers(searchQuery = '', onlyDisplayBlockedUsers = false) {
-        usersModel.getUsers(searchQuery, onlyDisplayBlockedUsers).then(res => {
+        this.usersModel.getUsers(searchQuery, onlyDisplayBlockedUsers).then(res => {
             this.#outputAllUsers(res);
 
             this.#getIndividualUser();
@@ -58,21 +47,21 @@ export class UsersController {
         const allUsersDOMElement = document.querySelectorAll("#all-users");
 
         allUsersDOMElement.forEach((getIndividualUser) => {
-
-            getIndividualUser.addEventListener('click', function() {
-                const userId = this.getAttribute('data-id');
-
+            
+            getIndividualUser.addEventListener('click', () => {
+                
+                const userId = getIndividualUser.getAttribute('data-id');
+                
                 SALT().then((salt) => {
-                    const encryptHelper = new EncryptHelper();
-                    const decrypt = encryptHelper.decipher(salt);
+                    const decrypt = this.encryptHelper.decipher(salt);
                     const decryptedId = decrypt(userId);
-                    individualUserModel.getIndividualUser(decryptedId).then(res => {
+                    
+                    this.individualUserModel.getIndividualUser(decryptedId).then(res => {
                         const userName = res[0];
                         const company = res[1];
                         const userIsBlocked = res[2];
-                        const individualUserController = new IndividualUserController();
-                            
-                        individualUserController.setView(userId, userName, company, userIsBlocked);
+                        console.log(this.individualUserController);
+                        this.individualUserController.setView(userId, userName, company, userIsBlocked);
                     });
                 })
             })
@@ -91,8 +80,7 @@ export class UsersController {
                     onlyDisplayBlockedUsers: false
                 });
             } catch(error) {
-                const handlerController = new HandlerController();
-                handlerController.displayMessage({message: error, isError: true});
+                this.handlerController.displayMessage({message: error, isError: true});
             }
         });
     }

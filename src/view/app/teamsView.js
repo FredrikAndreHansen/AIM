@@ -1,5 +1,5 @@
 export const teamsView = `
-    <div class="index-section">
+    <div class="content-section">
         <h1 class="header">Manage Teams</h1>
         <form>
             <input type="text" id="new-team" placeholder="Give the new team a name!" class="input" maxlength="24" required />

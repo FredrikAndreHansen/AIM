@@ -1,12 +1,17 @@
 import { SignInController } from "../controller/signedOut/signInController.js";
-import { IndexController } from "../controller/app/indexController.js";
 import { HandlerController } from "../controller/handlers/handlerController.js";
 import { EncryptHelper } from "./encrypt.js";
+import { initApp } from "../config/init.js";
 import { SALT, TRIMSTRING, PARSESTRING, GET_AUTH, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_TOKEN, ADD_TOKEN, REMOVE_TOKEN } from "./helpers.js";
 
 const encryptHelper = new EncryptHelper();
 
 export class AuthHelper {
+
+    constructor(handlerController, encryptHelper) {
+        this.handlerController = handlerController;
+        this.encryptHelper = encryptHelper;
+    }
 
     createToken(userId, email, password) {
         SALT().then((salt) => {
@@ -18,8 +23,7 @@ export class AuthHelper {
 
             ADD_TOKEN(userValues);
 
-            const indexController = new IndexController();
-            indexController.setView();
+            initApp();
         });
     }
 

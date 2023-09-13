@@ -1,28 +1,23 @@
 import { viewDOMElement } from '../../index.js';
 import { teamsView } from "../../view/app/teamsView.js";
-import { NavigateController } from '../handlers/navigateController.js';
-import { LoadController } from '../handlers/loadController.js';
-import { TeamsModel } from '../../model/app/teamsModel.js';
+import { AppController } from '../appController.js';
+import { initApp } from '../../config/init.js';
 import { SET_INNER_HTML_VALUE, SET_MENU_HIGHLIGHT, ANIMATE_FADE_IN, GET_DOM_VALUE, VALIDATE_USER_INPUT } from '../../helpers/helpers.js';
 
-const teamsModel = new TeamsModel();
+export class TeamsController extends AppController {
 
-export class TeamsController {
-
-    setView() {
-        const loadController = new LoadController();
-        loadController.displayLoading();
-
-        const navigateController = new NavigateController();
-        navigateController.setView();
-
-        this.#indexMenuHighlight();
-
-        this.generateOutput();
+    constructor(teamsModel) {
+        super(teamsModel);
     }
 
-    generateOutput() {
-        teamsModel.getTeams().then((teams) => {
+    setView() {
+        this.#indexMenuHighlight();
+
+        this.#generateOutput();
+    }
+
+    #generateOutput() {
+        this.teamsModel.getTeams().then((teams) => {
             SET_INNER_HTML_VALUE({set: viewDOMElement, to: teamsView});
 
             this.#outputAllTeams(teams);
@@ -53,9 +48,17 @@ export class TeamsController {
             const teamName = GET_DOM_VALUE(newTeamDOMElement);
 
             if (VALIDATE_USER_INPUT({name: teamName})) {
-                teamsModel.addTeam(teamName);
+                this.teamsModel.addTeam(teamName);
+
+                this.#delayRefresh();
             }
         })
+    }
+
+    #delayRefresh() {
+        setTimeout(() => {
+            this.#generateOutput();
+        }, 100);
     }
 
 }

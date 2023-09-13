@@ -12,66 +12,66 @@ import { SET_INNER_HTML_VALUE } from '../../helpers/helpers.js';
 
 export class NavigateController {
 
-    setView() { 
-        const authHelper = new AuthHelper();
-        authHelper.validateIfLoggedIn();
+    // setView() { 
+    //     const authHelper = new AuthHelper();
+    //     authHelper.validateIfLoggedIn();
 
-        this.#generateOutput();
+    //     this.#generateOutput();
         
-        this.#navigateToIndexPage();
+    //     this.#navigateToIndexPage();
 
-        this.#navigateToUsersPage();
+    //     this.#navigateToUsersPage();
 
-        this.#navigateToTeamsPage();
+    //     this.#navigateToTeamsPage();
 
-        this.#logOut();
-    }
+    //     this.#logOut();
+    // }
 
-    #generateOutput() {
-        return SET_INNER_HTML_VALUE({set: headerDOMElement, to: headerView(true)});
-    }
+    // #generateOutput() {
+    //     return SET_INNER_HTML_VALUE({set: headerDOMElement, to: headerView(true)});
+    // }
 
-    #navigateToIndexPage() {
-        const indexController = new IndexController();
+    // #navigateToIndexPage() {
+    //     const indexController = new IndexController();
 
-        const mainMenuLogoDOMElement = document.querySelector('#main-menu-logo');
+    //     const mainMenuLogoDOMElement = document.querySelector('#main-menu-logo');
 
-         mainMenuLogoDOMElement.addEventListener('click', function() {
-            indexController.setView();
-        }); 
-    }
+    //      mainMenuLogoDOMElement.addEventListener('click', function() {
+    //         indexController.setView();
+    //     }); 
+    // }
 
-    #navigateToUsersPage() {
-        const usersController = new UsersController();
+    // #navigateToUsersPage() {
+    //     const usersController = new UsersController();
 
-        const mainMenuUsersDOMElement = document.querySelector('#main-menu-users');
+    //     const mainMenuUsersDOMElement = document.querySelector('#main-menu-users');
 
-        mainMenuUsersDOMElement.addEventListener('click', function() {
-            usersController.setView();
-        });
-    }
+    //     mainMenuUsersDOMElement.addEventListener('click', function() {
+    //         usersController.setView();
+    //     });
+    // }
 
-    #navigateToTeamsPage() {
-        const teamsController = new TeamsController();
+    // #navigateToTeamsPage() {
+    //     const teamsController = new TeamsController();
 
-        const mainMenuTeamsDOMElement = document.querySelector('#main-menu-teams');
+    //     const mainMenuTeamsDOMElement = document.querySelector('#main-menu-teams');
 
-        mainMenuTeamsDOMElement.addEventListener('click', function() {
-            teamsController.setView();
-        });
-    }
+    //     mainMenuTeamsDOMElement.addEventListener('click', function() {
+    //         teamsController.setView();
+    //     });
+    // }
 
-    #logOut() {
-        const loadController = new LoadController();
+    // #logOut() {
+    //     const loadController = new LoadController();
 
-        const mainMenuSignOutDOMElement = document.querySelector('#main-menu-sign-out');
+    //     const mainMenuSignOutDOMElement = document.querySelector('#main-menu-sign-out');
 
-        mainMenuSignOutDOMElement.addEventListener('click', function() {
-            loadController.displayLoading();
-            const authHelper = new AuthHelper();
-            authHelper.removeToken();
-        });
-    }
+    //     mainMenuSignOutDOMElement.addEventListener('click', function() {
+    //         loadController.displayLoading();
+    //         const authHelper = new AuthHelper();
+    //         authHelper.removeToken();
+    //     });
+    // }
 
     navigateToSignInPage() {
         const signInController = new SignInController();

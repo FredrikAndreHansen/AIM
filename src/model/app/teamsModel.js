@@ -1,20 +1,17 @@
 import { teamsOutputView, noTeams } from "../../view/app/teamsView.js";
-import { LoadController } from "../../controller/handlers/loadController.js";
-import { HandlerController } from "../../controller/handlers/handlerController.js";
-import { TeamsController } from "../../controller/app/teamsController.js";
-import { AuthHelper } from "../../helpers/auth.js";
-import { EncryptHelper } from "../../helpers/encrypt.js";
 import { GET_USER_ID, GET_DB_REFERENCE, GET_DB_USERS_INFO, SALT, IF_EXISTS, GET_VALUE, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO } from "../../helpers/helpers.js";
-
-const handlerController = new HandlerController();
-const encryptHelper = new EncryptHelper();
-const authHelper = new AuthHelper();
-const loadController = new LoadController();
 
 export class TeamsModel {
 
+    constructor(authHelper, loadController, handlerController, encryptHelper) {
+        this.authHelper = authHelper;
+        this.loadController = loadController;
+        this.handlerController = handlerController;
+        this.encryptHelper = encryptHelper;
+    }
+
     async getTeams() {
-        authHelper.validateIfLoggedIn();
+        this.authHelper.validateIfLoggedIn();
 
         const currentUserId = GET_USER_ID();
         const dbRef = GET_DB_REFERENCE();
@@ -22,7 +19,7 @@ export class TeamsModel {
         return await new Promise((resolve, reject) => {
 
             SALT().then((salt) => {
-                const decrypt = encryptHelper.decipher(salt);
+                const decrypt = this.encryptHelper.decipher(salt);
                 const decryptedCurrentUserId = decrypt(currentUserId);
 
                 GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((userTeams) => {
@@ -30,17 +27,17 @@ export class TeamsModel {
                         GET_DB_TEAMS_INFO(dbRef).then((allTeams) => {
                             const HTMLOutput = this.#checkTeams(userTeams, allTeams, salt);
 
-                            loadController.removeLoading();
+                            this.loadController.removeLoading();
 
                             resolve(HTMLOutput);
                         })
                     } else {
-                        loadController.removeLoading();
-                        reject(handlerController.throwError("No data available!"));
+                        this.loadController.removeLoading();
+                        reject(this.handlerController.throwError("No data available!"));
                     }     
                 }).catch((error) => {
-                    loadController.removeLoading();
-                    handlerController.displayMessage({message: error, isError: true});
+                    this.loadController.removeLoading();
+                    this.handlerController.displayMessage({message: error, isError: true});
                 });
             });
         });
@@ -54,7 +51,7 @@ export class TeamsModel {
         const getTeamInfo = Object.values(teams);
         const getAllTeamsById = Object.keys(teams);
 
-        const encrypt = encryptHelper.cipher(salt);
+        const encrypt = this.encryptHelper.cipher(salt);
 
         let HTMLOutput = '';
         let isEmpty = true;
@@ -79,7 +76,7 @@ export class TeamsModel {
     }
 
     async addTeam(teamName) {
-        authHelper.validateIfLoggedIn();
+        this.authHelper.validateIfLoggedIn();
 
         const currentUserId = GET_USER_ID();
         const dbRef = GET_DB_REFERENCE();
@@ -87,26 +84,25 @@ export class TeamsModel {
         return await new Promise((resolve, reject) => {
 
             SALT().then((salt) => {
-                const decrypt = encryptHelper.decipher(salt);
+                const decrypt = this.encryptHelper.decipher(salt);
                 const decryptedCurrentUserId = decrypt(currentUserId);
 
                 GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((snapshot) => {
                     if (IF_EXISTS(snapshot)) {
-                        resolve(this.#pushNewTeamToDB(decryptedCurrentUserId, teamName));
+                        //this.teamsController.generateOutput();
 
-                        handlerController.displayMessage({message: teamName + " was successfully created!", isError: false});
+                        this.loadController.removeLoading();
 
-                        const teamsController = new TeamsController();
-                        teamsController.generateOutput();
+                        this.handlerController.displayMessage({message: teamName + " was successfully created!", isError: false});
 
-                        loadController.removeLoading();
+                        resolve(this.#pushNewTeamToDB(decryptedCurrentUserId, teamName));   
                     } else {
-                        loadController.removeLoading();
-                        reject(handlerController.throwError("No data available!"));
+                        this.loadController.removeLoading();
+                        reject(this.handlerController.throwError("No data available!"));
                     }  
                 }).catch((error) => {
-                    loadController.removeLoading();
-                    handlerController.displayMessage({message: error, isError: true});
+                    this.loadController.removeLoading();
+                    this.handlerController.displayMessage({message: error, isError: true});
                 });
             });
         });
