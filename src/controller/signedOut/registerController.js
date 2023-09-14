@@ -1,34 +1,30 @@
-import { viewDOMElement } from '../../index.js';
-import { registerView } from "../../view/signedOut/registerView.js";
-import { RegisterModel } from "../../model/signedOut/registerModel.js";
-import { NavigateController } from '../handlers/navigateController.js';
-import { LoadController } from '../handlers/loadController.js';
-import { VALIDATE_USER_INPUT, GET_DOM_VALUE, SET_INNER_HTML_VALUE } from '../../helpers/helpers.js';
+import { SignedOutController } from "../signedOutController.js";
 
-export class RegisterController {
+export class RegisterController extends SignedOutController {
+
+    constructor(registerModel) {
+        super(registerModel);
+    }
 
     setView() {
-        const loadController = new LoadController();
-        loadController.displayLoading();
+        this._loadDependencies.displayLoading();
         
         this.#generateOutput();
         
         this.#register();
 
-        const navigateController = new NavigateController();
-        navigateController.navigateToSignInPage();
-        navigateController.navigateToPasswordResetPage();
+        this._navigateToSignInPage();
 
-        loadController.removeLoading();
+        this._navigateToPasswordResetPage();
+
+        this._loadDependencies.removeLoading();
     }
 
     #generateOutput() {
-        return SET_INNER_HTML_VALUE({set: viewDOMElement, to: registerView});
+        return this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.registerView});
     }
 
     #register() {
-        const registerModel = new RegisterModel();
-
         const registerButtonNavigateDOMElement = document.querySelector('#register-button-navigate');
         const nameDOMElement = document.querySelector('#name');
         const emailDOMElement = document.querySelector('#email');
@@ -36,19 +32,19 @@ export class RegisterController {
         const passwordDOMElement = document.querySelector('#password');
         const confirmPasswordDOMElement = document.querySelector('#confirm-password');
 
-        registerButtonNavigateDOMElement.addEventListener('click', function(e) {
+        registerButtonNavigateDOMElement.addEventListener('click', (e) => {
             e.preventDefault();
 
             const userInputValues = {
-                name: GET_DOM_VALUE(nameDOMElement),
-                email: GET_DOM_VALUE(emailDOMElement),
-                company: GET_DOM_VALUE(companyDOMElement),
-                password: GET_DOM_VALUE(passwordDOMElement),
-                confirmPassword: GET_DOM_VALUE(confirmPasswordDOMElement)
+                name: this._helpers.GET_DOM_VALUE(nameDOMElement),
+                email: this._helpers.GET_DOM_VALUE(emailDOMElement),
+                company: this._helpers.GET_DOM_VALUE(companyDOMElement),
+                password: this._helpers.GET_DOM_VALUE(passwordDOMElement),
+                confirmPassword: this._helpers.GET_DOM_VALUE(confirmPasswordDOMElement)
             };
 
-            if (VALIDATE_USER_INPUT(userInputValues)) {
-                registerModel.registerUser(userInputValues);
+            if (this._helpers.VALIDATE_USER_INPUT(userInputValues)) {
+                this.registerModel.registerUser(userInputValues);
             }
         });
     }

@@ -1,19 +1,16 @@
-import { popupDOMElement } from "../../index.js";
-import { individualUserView } from "../../view/app/individualUserView.js";
-import { initApp } from "../../config/init.js";
-import { SET_INNER_HTML_VALUE, CLOSE_MODAL } from "../../helpers/helpers.js";
-
 export class IndividualUserController {
 
-    constructor(handlerController, usersController, authHelper, individualUserModel) {
-        this.handlerController = handlerController; 
+    constructor(authDependencies, handlerDependencies, helpers, views, usersController, individualUserModel) {
+        this.authDependencies = authDependencies;
+        this.handlerDependencies = handlerDependencies; 
+        this.helpers = helpers;
+        this.views = views;
         this.usersController = usersController;
-        this.authHelper = authHelper;
         this.individualUserModel = individualUserModel;
     }
 
     setView(userId, userName, company, isBlocked) {
-        this.authHelper.validateIfLoggedIn();
+        this.authDependencies.validateIfLoggedIn();
 
         this.#generateOutput(userName, company, isBlocked);
 
@@ -21,11 +18,11 @@ export class IndividualUserController {
 
         const errorBoxContainerDomElement = document.querySelector('.error-box-container');
         const exitIconDOMElement = document.querySelector('.exit-icon');
-        CLOSE_MODAL([errorBoxContainerDomElement, exitIconDOMElement], popupDOMElement);
+        this.helpers.CLOSE_MODAL([errorBoxContainerDomElement, exitIconDOMElement], this.views.popupDOMElement);
     }
 
     #generateOutput(userName, company, isBlocked) {
-        SET_INNER_HTML_VALUE({set: popupDOMElement, to: individualUserView({
+        this.helpers.SET_INNER_HTML_VALUE({set: this.views.popupDOMElement, to: this.views.individualUserView({
             userName: userName, 
             company: company, 
             isBlocked: isBlocked
@@ -40,9 +37,9 @@ export class IndividualUserController {
                 userId: userId,
                 blockUser: !isBlocked
             });
-            this.handlerController.displayMessage({message: `${userName} has been ${isBlocked === true ? 'unblocked' : 'blocked'}!`, isError: false});
+            this.handlerDependencies.displayMessage({message: `${userName} has been ${isBlocked === true ? 'unblocked' : 'blocked'}!`, isError: false});
 
-            initApp('users');
+            this.helpers.initApp('users');
         });
     }
 

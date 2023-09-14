@@ -1,46 +1,45 @@
-import { SALT, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS } from "../../helpers/helpers.js";
-
 export class IndividualUserModel {
 
-    constructor(authHelper, loadController, handlerController, encryptHelper) {
-        this.authHelper = authHelper;
-        this.loadController = loadController;
-        this.handlerController = handlerController;
-        this.encryptHelper = encryptHelper;
+    constructor(authDependencies, loadDependencies, handlerDependencies, encryptDependencies, helpers) {
+        this.authDependencies = authDependencies;
+        this.loadDependencies = loadDependencies;
+        this.handlerDependencies = handlerDependencies;
+        this.encryptDependencies = encryptDependencies;
+        this.helpers = helpers;
     }
 
     async getIndividualUser(userId) {
-        this.authHelper.validateIfLoggedIn();
+        this.authDependencies.validateIfLoggedIn();
     
-        const currentUserId = GET_USER_ID();
-        const dbRef = GET_DB_REFERENCE();
+        const currentUserId = this.helpers.GET_USER_ID();
+        const dbRef = this.helpers.GET_DB_REFERENCE();
 
         return await new Promise((resolve, reject) => {
 
-            SALT().then((salt) => {
-                const decrypt = this.encryptHelper.decipher(salt);
+            this.helpers.SALT().then((salt) => {
+                const decrypt = this.encryptDependencies.decipher(salt);
                 const decryptedCurrentUserId = decrypt(currentUserId);
 
-                GET_DB_USERS_INFO(dbRef, userId).then((snapshot) => {
+                this.helpers.GET_DB_USERS_INFO(dbRef, userId).then((snapshot) => {
 
-                    GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((currentUser) => {
-                        const loggedInUser = GET_VALUE(currentUser);
+                    this.helpers.GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((currentUser) => {
+                        const loggedInUser = this.helpers.GET_VALUE(currentUser);
                         const blockedUsers = loggedInUser.blockedUsers;
                         
-                        const isBlocked = !CHECK_IF_BLOCKED_USERS_EXISTS(blockedUsers, userId);
+                        const isBlocked = !this.helpers.CHECK_IF_BLOCKED_USERS_EXISTS(blockedUsers, userId);
                     
-                        if (IF_EXISTS(snapshot)) {
-                            const user = GET_VALUE(snapshot);
-                            this.loadController.removeLoading();
+                        if (this.helpers.IF_EXISTS(snapshot)) {
+                            const user = this.helpers.GET_VALUE(snapshot);
+                            this.loadDependencies.removeLoading();
                             
                             resolve([user.username, user.company, isBlocked]);
                         } else {
-                            this.loadController.removeLoading();
-                            reject(this.handlerController.throwError("No data available!"));
+                            this.loadDependencies.removeLoading();
+                            reject(this.handlerDependencies.throwError("No data available!"));
                         }
                     }).catch((error) => {
-                        this.loadController.removeLoading();
-                        this.handlerController.displayMessage({message: error, isError: true});
+                        this.loadDependencies.removeLoading();
+                        this.handlerDependencies.displayMessage({message: error, isError: true});
                     });
                 });
             });
@@ -50,19 +49,19 @@ export class IndividualUserModel {
     toggleUserBlock(userinfo) {
         const { userId, blockUser } = userinfo;
 
-        const loggedInUser = GET_USER_ID();
+        const loggedInUser = this.helpers.GET_USER_ID();
 
-        SALT().then((salt) => {
-            const decrypt = this.encryptHelper.decipher(salt);
+        this.helpers.SALT().then((salt) => {
+            const decrypt = this.encryptDependencies.decipher(salt);
             const encryptedLoggedInUserId = decrypt(loggedInUser);
             const encryptedUserId = decrypt(userId);
 
-            const dbRef = GET_DB_REFERENCE();
+            const dbRef = this.helpers.GET_DB_REFERENCE();
 
-            GET_DB_USERS_INFO(dbRef, encryptedLoggedInUserId).then((snapshot) => {
+            this.helpers.GET_DB_USERS_INFO(dbRef, encryptedLoggedInUserId).then((snapshot) => {
                 try{
-                    if (IF_EXISTS(snapshot)) {
-                        const user = GET_VALUE(snapshot);
+                    if (this.helpers.IF_EXISTS(snapshot)) {
+                        const user = this.helpers.GET_VALUE(snapshot);
                         let blockedUsers = user.blockedUsers;
                         blockedUsers = this.#checkIfBlockedUsersIsDefined(blockedUsers);
 
@@ -70,20 +69,20 @@ export class IndividualUserModel {
                             toggleBlock: blockUser, 
                             blockedUsers: blockedUsers, 
                             encryptedUserId: encryptedUserId,
-                            checkIfBlockedUserExists: CHECK_IF_BLOCKED_USERS_EXISTS(blockedUsers, encryptedUserId)
+                            checkIfBlockedUserExists: this.helpers.CHECK_IF_BLOCKED_USERS_EXISTS(blockedUsers, encryptedUserId)
                         });
 
-                        SAVE_TO_DB_IN_USERS({
+                        this.helpers.SAVE_TO_DB_IN_USERS({
                             dbReference: dbRef,
                             firstChild: encryptedLoggedInUserId,
                             secondChild: 'blockedUsers',
                             saveValue: blockedUsers
                         });
                     } else {
-                        this.handlerController.throwError("No data available!");
+                        this.handlerDependencies.throwError("No data available!");
                     }
                 } catch(error) {
-                    this.handlerController.displayMessage({message: error, isError: true});
+                    this.handlerDependencies.displayMessage({message: error, isError: true});
                 }
             })
         });

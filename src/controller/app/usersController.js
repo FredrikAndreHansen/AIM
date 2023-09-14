@@ -1,12 +1,9 @@
-import { viewDOMElement } from '../../index.js';
-import { usersView } from '../../view/app/usersView.js';
 import { AppController } from '../appController.js';
-import { SALT, GET_DOM_VALUE, SET_INNER_HTML_VALUE, SET_MENU_HIGHLIGHT, ANIMATE_FADE_IN } from '../../helpers/helpers.js';
 
 export class UsersController extends AppController {
 
-    constructor(individualUserController, handlerController, encryptHelper, usersModel, individualUserModel) {
-        super(individualUserController, handlerController, encryptHelper, usersModel, individualUserModel);
+    constructor(individualUserController, usersModel, individualUserModel) {
+        super(individualUserController, usersModel, individualUserModel);
     }
 
     setView() {
@@ -24,7 +21,7 @@ export class UsersController extends AppController {
     }
 
     #generateOutput(hasBlockedUsers) {
-        return SET_INNER_HTML_VALUE({set: viewDOMElement, to: usersView(hasBlockedUsers)});
+        return this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.usersView(hasBlockedUsers)});
     }
 
     #displayUsers(searchQuery = '', onlyDisplayBlockedUsers = false) {
@@ -37,10 +34,10 @@ export class UsersController extends AppController {
 
     #outputAllUsers(userInfo) {
         const userListDOMElement = document.querySelector('#user-list');
-        SET_INNER_HTML_VALUE({set: userListDOMElement, to: userInfo});
+        this._helpers.SET_INNER_HTML_VALUE({set: userListDOMElement, to: userInfo});
 
         const allUsersDOMElement = document.querySelectorAll("#all-users");
-        ANIMATE_FADE_IN(allUsersDOMElement);
+        this._helpers.ANIMATE_FADE_IN(allUsersDOMElement);
     }
 
     #getIndividualUser() {
@@ -52,8 +49,8 @@ export class UsersController extends AppController {
                 
                 const userId = getIndividualUser.getAttribute('data-id');
                 
-                SALT().then((salt) => {
-                    const decrypt = this.encryptHelper.decipher(salt);
+                this._helpers.SALT().then((salt) => {
+                    const decrypt = this._encryptDependencies.decipher(salt);
                     const decryptedId = decrypt(userId);
                     
                     this.individualUserModel.getIndividualUser(decryptedId).then(res => {
@@ -73,14 +70,14 @@ export class UsersController extends AppController {
         searchUsersBtnDOMElement.addEventListener('click', (e) => {
             try {
                 e.preventDefault();
-                const searchQuery = GET_DOM_VALUE(document.querySelector('#search-user'));
+                const searchQuery = this._helpers.GET_DOM_VALUE(document.querySelector('#search-user'));
 
                 this.#displayUsers({
                     searchQuery: searchQuery, 
                     onlyDisplayBlockedUsers: false
                 });
             } catch(error) {
-                this.handlerController.displayMessage({message: error, isError: true});
+                this._handlerController.displayMessage({message: error, isError: true});
             }
         });
     }
@@ -101,7 +98,7 @@ export class UsersController extends AppController {
 
     #usersMenuHighlight() {
         const mainMenuUsersDOMElement = document.querySelector('#main-menu-users');
-        SET_MENU_HIGHLIGHT(mainMenuUsersDOMElement);
+        this._helpers.SET_MENU_HIGHLIGHT(mainMenuUsersDOMElement);
     }
 
 }

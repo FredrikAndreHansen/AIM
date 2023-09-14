@@ -1,7 +1,4 @@
-import { viewDOMElement } from '../../index.js';
-import { indexView } from '../../view/app/indexView.js';
 import { AppController } from '../appController.js';
-import { SALT, TRIMSTRING, PARSESTRING, GET_TOKEN, SET_INNER_HTML_VALUE, SET_MENU_HIGHLIGHT } from '../../helpers/helpers.js';
 
 export class IndexController extends AppController {
 
@@ -16,29 +13,29 @@ export class IndexController extends AppController {
     }
 
     #generateOutput() {
-        const token = PARSESTRING(GET_TOKEN());
+        const token = this._helpers.PARSESTRING(this._helpers.GET_TOKEN());
         const [userId, _, __] = token.split(',');
         
-        const userIdTrim = TRIMSTRING(userId);
+        const userIdTrim = this._helpers.TRIMSTRING(userId);
 
-        SALT().then((salt) => {
-            const decryptId = this.encryptHelper.decipher(salt);
+        this._helpers.SALT().then((salt) => {
+            const decryptId = this._encryptDependencies.decipher(salt);
             const decryptedUserId = decryptId(userIdTrim);
             
             this.individualUserModel.getIndividualUser(decryptedUserId).then(res => {
-                const setIndexView = indexView({
+                const setIndexView = this._views.indexView({
                     userName: res[0], 
                     company: res[1]
                 });
 
-                SET_INNER_HTML_VALUE({set: viewDOMElement, to: setIndexView});
+                this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: setIndexView});
             });
         });
     }
 
     #indexMenuHighlight() {
         const mainMenuLogoDOMElement = document.querySelector('#main-menu-logo');
-        SET_MENU_HIGHLIGHT(mainMenuLogoDOMElement);
+        this._helpers.SET_MENU_HIGHLIGHT(mainMenuLogoDOMElement);
     }
 
 }

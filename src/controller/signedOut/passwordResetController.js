@@ -1,44 +1,40 @@
-import { viewDOMElement } from '../../index.js';
-import { passwordResetView } from '../../view/signedOut/passwordResetView.js';
-import { PasswordResetModel } from "../../model/signedOut/passwordResetModel.js";
-import { NavigateController } from '../handlers/navigateController.js';
-import { LoadController } from '../handlers/loadController.js';
-import { VALIDATE_USER_INPUT, GET_DOM_VALUE, CLEAR_DOM_VALUE, SET_INNER_HTML_VALUE } from '../../helpers/helpers.js';
+import { SignInController } from "./signInController.js";
 
-export class PasswordResetController {
+export class PasswordResetController extends SignInController {
+
+    constructor(passwordResetModel) {
+        super(passwordResetModel);
+    }
 
     setView() {
-        const loadController = new LoadController();
-        loadController.displayLoading();
+        this._loadDependencies.displayLoading();
 
         this.#generateOutput();
 
         this.#resetPassword();
 
-        const navigateController = new NavigateController();
-        navigateController.navigateToSignInPage();
-        navigateController.navigateToRegisterPage();
+        this._navigateToSignInPage();
 
-        loadController.removeLoading();
+        this._navigateToRegisterPage();
+
+        this._loadDependencies.removeLoading();
     }
 
     #generateOutput() {
-        return SET_INNER_HTML_VALUE({set: viewDOMElement, to: passwordResetView});
+        return this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.passwordResetView});
     }
 
     #resetPassword() {
-        const passwordResetModel = new PasswordResetModel();
-
         const passwordResetButton = document.querySelector('#password-reset-button');
         const emailDOMElement = document.querySelector('#email');
 
         passwordResetButton.addEventListener('click', (e) => {
             e.preventDefault();
-            if (VALIDATE_USER_INPUT({ email: GET_DOM_VALUE(emailDOMElement) })) {
-                passwordResetModel.resetPassword(GET_DOM_VALUE(emailDOMElement));
+            if (this._helpers.VALIDATE_USER_INPUT({ email: this._helpers.GET_DOM_VALUE(emailDOMElement) })) {
+                this.passwordResetModel.resetPassword(this._helpers.GET_DOM_VALUE(emailDOMElement));
             }
             
-            CLEAR_DOM_VALUE(emailDOMElement);
+            this._helpers.CLEAR_DOM_VALUE(emailDOMElement);
         });
     }
 

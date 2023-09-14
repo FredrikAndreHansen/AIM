@@ -1,18 +1,17 @@
-import { HandlerController } from '../../controller/handlers/handlerController.js';
-import { AuthHelper } from '../../helpers/auth.js';
-import { FORMAT_ERROR_MESSAGE, GET_AUTH } from '../../helpers/helpers.js';
-
-const handlerController = new HandlerController();
-
 export class SignInModel {
 
+    constructor(handlerDependencies, authDependencies, helpers) {
+        this.handlerDependencies = handlerDependencies;
+        this.authDependencies = authDependencies;
+        this.helpers = helpers;
+    }
+
     signInUser(email, password) {
-        GET_AUTH.signInWithEmailAndPassword(email, password).then((userCredential) => {
-            const authHelper = new AuthHelper();
-            authHelper.createToken(userCredential.user.uid, email, password);
+        this.helpers.GET_AUTH.signInWithEmailAndPassword(email, password).then((userCredential) => {
+            this.authDependencies.createToken(userCredential.user.uid, email, password);
         }).catch((error) => {
-            const formattedErrorMessage = FORMAT_ERROR_MESSAGE(error);
-            handlerController.displayMessage({message: formattedErrorMessage, isError: true});
+            const formattedErrorMessage = this.helpers.FORMAT_ERROR_MESSAGE(error);
+            this.handlerDependencies.displayMessage({message: formattedErrorMessage, isError: true});
         });
     }
 

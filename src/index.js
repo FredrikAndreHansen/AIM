@@ -1,6 +1,5 @@
 import { GET_TOKEN, HAS_INTERNET_CONNECTION } from './helpers/helpers.js';
-import { SignInController } from './controller/signedOut/signInController.js';
-import { initApp, initOffline } from './config/init.js';
+import { initApp, initSignedOut, initOffline } from './libraries/init.js';
 
 export const viewDOMElement = document.querySelector('#view');
 export const headerDOMElement = document.querySelector('#header');
@@ -17,8 +16,7 @@ if (HAS_INTERNET_CONNECTION()) {
     if (isLoggedIn === true) {
         initApp();
     } else {
-        const signInController = new SignInController();
-        signInController.setView();
+        initSignedOut();
     }
  } 
 else {

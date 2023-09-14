@@ -1,16 +1,13 @@
-import { viewDOMElement, headerDOMElement } from '../../index.js';
-import { signInView } from "../../view/signedOut/signInView.js"
-import { headerView } from '../../view/handlers/headerView.js';
-import { NavigateController } from '../handlers/navigateController.js';
-import { LoadController } from '../handlers/loadController.js';
-import { SignInModel } from '../../model/signedOut/signInModel.js';
-import { VALIDATE_USER_INPUT, SET_INNER_HTML_VALUE, GET_DOM_VALUE } from '../../helpers/helpers.js';
+import { SignedOutController } from "../signedOutController.js";
 
-export class SignInController {
+export class SignInController extends SignedOutController {
+
+    constructor(signInModel) {
+        super(signInModel);
+    }
 
     setView() {
-        const loadController = new LoadController();
-        loadController.displayLoading();
+        this._loadDependencies.displayLoading();
     
         this.#generateOutput();
 
@@ -18,35 +15,33 @@ export class SignInController {
 
         this.#signIn();
 
-        const navigateController = new NavigateController();
-        navigateController.navigateToRegisterPage();
-        navigateController.navigateToPasswordResetPage();
+        this._navigateToRegisterPage();
 
-        loadController.removeLoading();
+        this._navigateToPasswordResetPage();
+
+        this._loadDependencies.removeLoading();
     }
 
     #generateOutput() {
-        return SET_INNER_HTML_VALUE({set: viewDOMElement, to: signInView});
+        return this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.signInView});
     }
 
     #generateHeaderOutput() {
-        return SET_INNER_HTML_VALUE({set: headerDOMElement, to: headerView(false)});
+        return this._helpers.SET_INNER_HTML_VALUE({set: this._views.headerDOMElement, to: this._views.headerView(false)});
     }
 
     #signIn() {
-        const signInModel = new SignInModel();
-
         const signInButtonNavigateDOMElement = document.querySelector('#sign-in-button-navigate');
         const emailDOMElement = document.querySelector('#email');
         const passwordDOMElement = document.querySelector('#password');
 
-        signInButtonNavigateDOMElement.addEventListener('click', function(e) {
+        signInButtonNavigateDOMElement.addEventListener('click', (e) => {
             e.preventDefault();
-            const email = GET_DOM_VALUE(emailDOMElement);
-            const password = GET_DOM_VALUE(passwordDOMElement);
+            const email = this._helpers.GET_DOM_VALUE(emailDOMElement);
+            const password = this._helpers.GET_DOM_VALUE(passwordDOMElement);
 
-            if (VALIDATE_USER_INPUT({ email: email, password: password })) {
-                signInModel.signInUser(email, password);
+            if (this._helpers.VALIDATE_USER_INPUT({ email: email, password: password })) {
+                this.signInModel.signInUser(email, password);
             }
         });
     }

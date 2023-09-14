@@ -1,15 +1,15 @@
-import { HandlerController } from '../../controller/handlers/handlerController.js';
-import { SignInModel } from './signInModel.js';
-import { FORMAT_ERROR_MESSAGE, GET_DB_REFERENCE, GET_AUTH, USERS_REF } from '../../helpers/helpers.js';
-
-const handlerController = new HandlerController();
-
 export class RegisterModel {
+
+    constructor(handlerDependencies, helpers, signInModel) {
+        this.handlerDependencies = handlerDependencies;
+        this.helpers = helpers;
+        this.signInModel = signInModel;
+    }
 
     registerUser(userData) {
         const { name, email, company, password } = userData;
         
-        GET_AUTH.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+        this.helpers.GET_AUTH.createUserWithEmailAndPassword(email, password).then((userCredential) => {
             const user = userCredential.user;
             
             this.#writeUserData({
@@ -20,18 +20,17 @@ export class RegisterModel {
                 blockedUsers: [""]
             });
 
-            const signInModel = new SignInModel();
-            signInModel.signInUser(email, password);
+            this.signInModel.signInUser(email, password);
         }).catch((error) => {
-            const formattedErrorMessage = FORMAT_ERROR_MESSAGE(error);
-            handlerController.displayMessage({message: formattedErrorMessage, isError: true});
+            const formattedErrorMessage = this.helpers.FORMAT_ERROR_MESSAGE(error);
+            this.handlerDependencies.displayMessage({message: formattedErrorMessage, isError: true});
         });
     }
 
     #writeUserData(userData) {
         const { userId, name, company, teams, blockedUsers } = userData;
 
-        const dbRef = GET_DB_REFERENCE(USERS_REF + userId);
+        const dbRef = this.helpers.GET_DB_REFERENCE(this.helpers.USERS_REF + userId);
 
         dbRef.set({
             username: name,

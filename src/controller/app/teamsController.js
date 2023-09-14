@@ -1,8 +1,4 @@
-import { viewDOMElement } from '../../index.js';
-import { teamsView } from "../../view/app/teamsView.js";
 import { AppController } from '../appController.js';
-import { initApp } from '../../config/init.js';
-import { SET_INNER_HTML_VALUE, SET_MENU_HIGHLIGHT, ANIMATE_FADE_IN, GET_DOM_VALUE, VALIDATE_USER_INPUT } from '../../helpers/helpers.js';
 
 export class TeamsController extends AppController {
 
@@ -18,7 +14,7 @@ export class TeamsController extends AppController {
 
     #generateOutput() {
         this.teamsModel.getTeams().then((teams) => {
-            SET_INNER_HTML_VALUE({set: viewDOMElement, to: teamsView});
+            this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.teamsView});
 
             this.#outputAllTeams(teams);
 
@@ -28,15 +24,15 @@ export class TeamsController extends AppController {
 
     #outputAllTeams(teams) {
         const teamsListDOMElement = document.querySelector('#teams-list');
-        SET_INNER_HTML_VALUE({set: teamsListDOMElement, to: teams});
+        this._helpers.SET_INNER_HTML_VALUE({set: teamsListDOMElement, to: teams});
 
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");
-        ANIMATE_FADE_IN(allTeamsDOMElement);
+        this._helpers.ANIMATE_FADE_IN(allTeamsDOMElement);
     }
 
     #indexMenuHighlight() {
         const mainMenuTeamsDOMElement = document.querySelector('#main-menu-teams');
-        SET_MENU_HIGHLIGHT(mainMenuTeamsDOMElement);
+        this._helpers.SET_MENU_HIGHLIGHT(mainMenuTeamsDOMElement);
     }
 
     #createNewTeam() {
@@ -45,9 +41,9 @@ export class TeamsController extends AppController {
             e.preventDefault();
 
             const newTeamDOMElement = document.querySelector('#new-team');
-            const teamName = GET_DOM_VALUE(newTeamDOMElement);
+            const teamName = this._helpers.GET_DOM_VALUE(newTeamDOMElement);
 
-            if (VALIDATE_USER_INPUT({name: teamName})) {
+            if (this._helpers.VALIDATE_USER_INPUT({name: teamName})) {
                 this.teamsModel.addTeam(teamName);
 
                 this.#delayRefresh();
@@ -58,7 +54,7 @@ export class TeamsController extends AppController {
     #delayRefresh() {
         setTimeout(() => {
             this.#generateOutput();
-        }, 100);
+        }, 200);
     }
 
 }

@@ -1,7 +1,5 @@
-import { HandlerController } from "../controller/handlers/handlerController.js";
-import { LoadController } from "../controller/handlers/loadController.js";
-
-const handlerController = new HandlerController();
+import { displayMessage, throwError } from "../libraries/handler.js";
+import { displayLoading } from "../libraries/load.js";
 
 export function SALT() {
     // Get salt from database
@@ -10,10 +8,10 @@ export function SALT() {
             if (IF_EXISTS(snapshot)) {
                 resolve(GET_VALUE(snapshot));
             } else {
-                handlerController.throwError("No data available!");
+                throwError("No data available!");
             }
         }).catch((error) => {
-            handlerController.displayMessage({message: error, isError: true});
+            displayMessage({message: error, isError: true});
         });
     });
 }
@@ -39,8 +37,7 @@ export function VALIDATE_USER_INPUT(userInput) {
     try {
         const { name = false, email = false, company = false, password = false, confirmPassword = false } = userInput;
 
-        const loadController = new LoadController();
-        loadController.displayLoading();
+        displayLoading();
 
         if (name !== false) {
             validateNameOrCompany(name);
@@ -60,32 +57,32 @@ export function VALIDATE_USER_INPUT(userInput) {
 
         return true;
     } catch(error) {
-        handlerController.displayMessage({message: error, isError: true});
+        displayMessage({message: error, isError: true});
     }
 }
 
 function validateNameOrCompany(name, company = '') {
     if (name.length > 64) {
-        handlerController.throwError(`The ${company} name is too long!<br>Maximum length is 64 characters`);
+        throwError(`The ${company} name is too long!<br>Maximum length is 64 characters`);
     }
 
     if (name.length === 0) {
-        handlerController.throwError(`The ${company} name cannot be empty!`);
+        throwError(`The ${company} name cannot be empty!`);
     }
 }
 
 function validateEmail(email) {
     if (email.length === 0) {
-        handlerController.throwError("The email address cannot be empty!");
+        throwError("The email address cannot be empty!");
     }
 
     if (email.length > 66) {
-        handlerController.throwError(`The email address is too long!<br>Maximum length is 66 characters`);
+        throwError(`The email address is too long!<br>Maximum length is 66 characters`);
     }
 
     const regex = regExp;
     if (!regex.test(email)) {
-        handlerController.throwError("The email address is not properly formatted!");
+        throwError("The email address is not properly formatted!");
     }
 }
 
@@ -94,19 +91,19 @@ const regExp = new RegExp('[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}');
 
 function validatePassword(password, confirmPassword = false) {
     if (password.length === 0) {
-        handlerController.throwError("The password cannot be empty!");
+        throwError("The password cannot be empty!");
     }
 
     if (password.length > 140) {
-        handlerController.throwError(`The password is too long!<br>Maximum length is 140 characters`);
+        throwError(`The password is too long!<br>Maximum length is 140 characters`);
     }
 
     if (password.length < 6) {
-        handlerController.throwError(`The password is too short!<br>Minimum length is 6 characters`);
+        throwError(`The password is too short!<br>Minimum length is 6 characters`);
     }
 
     if (confirmPassword !== false && password !== confirmPassword) {
-        handlerController.throwError(`The passwords don't match!<br>Please make sure that the password and the confirmed password are the same`);
+        throwError(`The passwords don't match!<br>Please make sure that the password and the confirmed password are the same`);
     }
 }
 

@@ -1,4 +1,3 @@
-// Display load spinner
 export const loadView = `
     <div class="error-box-container"></div>
         
