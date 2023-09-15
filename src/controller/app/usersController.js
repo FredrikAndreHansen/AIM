@@ -66,21 +66,37 @@ export class UsersController extends AppController {
     }
 
     #searchUsers() {
-        const searchUsersBtnDOMElement = document.querySelector('#search-users-button');
-        searchUsersBtnDOMElement.addEventListener('click', (e) => {
-            try {
-                e.preventDefault();
-                const searchQuery = this._helpers.GET_DOM_VALUE(document.querySelector('#search-user'));
+        const searchUserDomElement = document.querySelector('#search-user');
+        searchUserDomElement.addEventListener('keydown', (e) => {
+            let searchString = String(e.key);
+            if (e.key === "Backspace") { searchString.replace("Backspace", ""); }
 
+            try {
                 this.#displayUsers({
-                    searchQuery: searchQuery, 
+                    searchQuery: searchUserDomElement.value + searchString, 
                     onlyDisplayBlockedUsers: false
                 });
             } catch(error) {
                 this._handlerController.displayMessage({message: error, isError: true});
             }
+            
         });
     }
+    //     const searchUsersBtnDOMElement = document.querySelector('#search-users-button');
+    //     searchUsersBtnDOMElement.addEventListener('click', (e) => {
+    //         try {
+    //             e.preventDefault();
+    //             const searchQuery = this._helpers.GET_DOM_VALUE(document.querySelector('#search-user'));
+
+    //             this.#displayUsers({
+    //                 searchQuery: searchQuery, 
+    //                 onlyDisplayBlockedUsers: false
+    //             });
+    //         } catch(error) {
+    //             this._handlerController.displayMessage({message: error, isError: true});
+    //         }
+    //     });
+    // }
 
     #filterByBlockedUsers(hasBlockedUsers) {
         if (hasBlockedUsers === false) {
