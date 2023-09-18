@@ -67,19 +67,16 @@ export class UsersController extends AppController {
 
     #searchUsers() {
         const searchUserDomElement = document.querySelector('#search-user');
-        searchUserDomElement.addEventListener('keydown', (e) => {
-            let searchString = String(e.key);
-            if (e.key === "Backspace") { searchString.replace("Backspace", ""); }
 
+        searchUserDomElement.addEventListener('input', (e) => {
             try {
                 this.#displayUsers({
-                    searchQuery: searchUserDomElement.value + searchString, 
+                    searchQuery: searchUserDomElement.value, 
                     onlyDisplayBlockedUsers: false
                 });
             } catch(error) {
                 this._handlerController.displayMessage({message: error, isError: true});
             }
-            
         });
     }
     //     const searchUsersBtnDOMElement = document.querySelector('#search-users-button');

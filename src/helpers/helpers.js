@@ -3,12 +3,12 @@ import { displayLoading } from "../libraries/load.js";
 
 export function SALT() {
     // Get salt from database
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         get_db_salt_info().then((snapshot) => {
             if (IF_EXISTS(snapshot)) {
                 resolve(GET_VALUE(snapshot));
             } else {
-                throwError("No data available!");
+                reject(throwError("No data available!"));
             }
         }).catch((error) => {
             displayMessage({message: error, isError: true});
@@ -87,7 +87,7 @@ function validateEmail(email) {
 }
 
 // Email validation, text followed by "@" followed by text, followed by "." followed by text
-const regExp = new RegExp('[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}');
+const regExp = new RegExp('[a-zA-ZŽžÀ-ÿ0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}');
 
 function validatePassword(password, confirmPassword = false) {
     if (password.length === 0) {
