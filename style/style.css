@@ -262,10 +262,11 @@ body::-webkit-scrollbar {
     font-size: var(--medium);
     color: var(--dark-grey);
     position: absolute;
-    top: -32px;
+    top: -40px;
     left: 50%;
     transform: translateX(-50%);
     overflow-wrap: break-word;
+    width: 90%;
 }
 
 .error-icon {
@@ -405,6 +406,73 @@ body::-webkit-scrollbar {
     outline: none;
     font-weight: bold;
     color: var(--black-shade);
+}
+
+.input-cut-right {
+    display: block;
+    position: relative;
+    width: 68%;
+    border: solid 1px var(--light-grey);
+    border-right: none;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+    margin-top: var(--small);
+    margin-bottom: var(--small);
+    padding: var(--x-small);
+    padding-left: 32px;
+    text-align: center;
+    left: 44%;
+    transform: translateX(-50%);
+    box-sizing: border-box;
+    background-color: var(--white);
+    font-size: var(--medium);
+    font-family: var(--font);
+    color: var(--dark-grey);
+}
+.input-cut-right:focus {
+    background-color: var(--white-grey);
+    outline: none;
+    font-weight: bold;
+    color: var(--black-shade);
+}
+.btn-cut-left-blue {
+    border: none;
+    position: absolute;
+    top: 60px;
+    width: 12%;
+    background-color: var(--blue);
+    height: 37px;
+    left: 84%;
+    transform: translateX(-50%);
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+.btn-cut-left-blue:hover {
+    cursor: pointer;
+    background-color: var(--light-blue);
+}
+.btn-cut-left-green {
+    border: none;
+    position: absolute;
+    top: 60px;
+    width: 12%;
+    background-color: var(--green);
+    height: 37px;
+    left: 84%;
+    transform: translateX(-50%);
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+.btn-cut-left-green:hover {
+    cursor: pointer;
+    background-color: var(--light-green);
+}
+.icon-btn-cut {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-left: 12px;
+    margin-top: 8px;
 }
 
 .btn {

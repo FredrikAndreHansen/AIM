@@ -135,6 +135,10 @@ export function GET_DB_TEAMS_INFO(dbReference) {
     return dbReference.child(TEAMS_GET_CHILD_REF).get();
 }
 
+export function GET_DB_INDIVIDUAL_TEAM_INFO(dbReference, child) {
+    return dbReference.child(TEAMS_GET_CHILD_REF).child(child).get();
+}
+
 export function GET_DB_USERS_INFO(dbReference, child) {
     return dbReference.child(USERS_GET_CHILD_REF).child(child).get();
 }

@@ -2,8 +2,8 @@ import { AppController } from '../appController.js';
 
 export class TeamsController extends AppController {
 
-    constructor(teamsModel) {
-        super(teamsModel);
+    constructor(teamsModel, individualTeamController, individualTeamModel) {
+        super(teamsModel, individualTeamController, individualTeamModel);
     }
 
     setView() {
@@ -28,6 +28,8 @@ export class TeamsController extends AppController {
 
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");
         this._helpers.ANIMATE_FADE_IN(allTeamsDOMElement);
+
+        this.#getIndividualTeam();
     }
 
     #indexMenuHighlight() {
@@ -36,10 +38,8 @@ export class TeamsController extends AppController {
     }
 
     #createNewTeam() {
-        const createTeamButtonDOMElement = document.querySelector('#create-team-button');
-        createTeamButtonDOMElement.addEventListener('click', (e) => {
-            e.preventDefault();
-
+        const createTeamButtonDOMElement = document.querySelector('.btn-cut-left-green');
+        createTeamButtonDOMElement.addEventListener('click', () => {
             const newTeamDOMElement = document.querySelector('#new-team');
             const teamName = this._helpers.GET_DOM_VALUE(newTeamDOMElement);
 
@@ -55,6 +55,31 @@ export class TeamsController extends AppController {
         setTimeout(() => {
             this.#generateOutput();
         }, 200);
+    }
+
+    #getIndividualTeam() {
+        const allTeamsDOMElement = document.querySelectorAll("#all-teams");
+
+        allTeamsDOMElement.forEach((getIndividualTeam) => {
+
+            getIndividualTeam.addEventListener('click', () => {
+
+                this._loadDependencies.displayLoading();
+                const teamId = getIndividualTeam.getAttribute('data-id');
+
+                this._helpers.SALT().then((salt) => {
+                    const decrypt = this._encryptDependencies.decipher(salt);
+                    const decryptedId = decrypt(teamId);
+
+                    this.individualTeamModel.getIndividualTeam(decryptedId).then(res => {
+                        const teamName = res[1];
+                        const members = res[2];
+
+                        this.individualTeamController.setView(teamName);
+                    });
+                });
+            });
+        });
     }
 
 }

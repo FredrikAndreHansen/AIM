@@ -1,10 +1,10 @@
 export const teamsView = `
     <div class="content-section">
         <h1 class="header">Manage Teams</h1>
-        <form>
-            <input type="text" id="new-team" placeholder="Give the new team a name!" class="input" maxlength="24" required />
-            <button id="create-team-button" class="btn-green">CREATE TEAM</button>
-        </form>
+        <input type="text" id="new-team" placeholder="Create Team" class="input-cut-right" maxlength="24" required />
+        <div class="btn-cut-left-green">
+            <img class="icon-btn-cut" src="../../graphic/plusIcon.svg" />
+        </div>
         <div class="space-medium"></div>
         <hr class="hr-small">
         <div class="space-x-big"></div>
@@ -13,7 +13,7 @@ export const teamsView = `
 `;
 
 export function teamsOutputView(teamInfo) {
-    const {encryptedKey, team, usersInTeam} = teamInfo;
+    const { encryptedKey, team, usersInTeam } = teamInfo;
     
     return `                        
         <tr id="all-teams" data-id="${encryptedKey}">
@@ -28,7 +28,9 @@ export function teamsOutputView(teamInfo) {
 }
 
 export const noTeams = `
-    <p class="paragraph-center">You have no teams!</p>
-    <p class="paragraph-center-small">You can either create a new team or be invited to one</p>
-    <img class="sad-icon" src="../../graphic/sadIcon.svg" />
+    <div class="index-section-fadein">
+        <p class="paragraph-center">You have no teams!</p>
+        <p class="paragraph-center-small">You can either create a new team or be invited to one</p>
+        <img class="sad-icon" src="../../graphic/sadIcon.svg" />
+    </div>
 `;

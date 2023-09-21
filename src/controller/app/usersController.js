@@ -47,6 +47,7 @@ export class UsersController extends AppController {
             
             getIndividualUser.addEventListener('click', () => {
                 
+                this._loadDependencies.displayLoading();
                 const userId = getIndividualUser.getAttribute('data-id');
                 
                 this._helpers.SALT().then((salt) => {
@@ -57,7 +58,6 @@ export class UsersController extends AppController {
                         const userName = res[0];
                         const company = res[1];
                         const userIsBlocked = res[2];
-                        console.log(this.individualUserController);
                         this.individualUserController.setView(userId, userName, company, userIsBlocked);
                     });
                 })
@@ -67,33 +67,26 @@ export class UsersController extends AppController {
 
     #searchUsers() {
         const searchUserDomElement = document.querySelector('#search-user');
+        searchUserDomElement.addEventListener('input', () => {
+            this.#getUsers(searchUserDomElement);
+        });
 
-        searchUserDomElement.addEventListener('input', (e) => {
-            try {
-                this.#displayUsers({
-                    searchQuery: searchUserDomElement.value, 
-                    onlyDisplayBlockedUsers: false
-                });
-            } catch(error) {
-                this._handlerController.displayMessage({message: error, isError: true});
-            }
+        const btnCutLeftDomElement = document.querySelector('.btn-cut-left-blue');
+        btnCutLeftDomElement.addEventListener('click', () => {
+            this.#getUsers(searchUserDomElement);
         });
     }
-    //     const searchUsersBtnDOMElement = document.querySelector('#search-users-button');
-    //     searchUsersBtnDOMElement.addEventListener('click', (e) => {
-    //         try {
-    //             e.preventDefault();
-    //             const searchQuery = this._helpers.GET_DOM_VALUE(document.querySelector('#search-user'));
 
-    //             this.#displayUsers({
-    //                 searchQuery: searchQuery, 
-    //                 onlyDisplayBlockedUsers: false
-    //             });
-    //         } catch(error) {
-    //             this._handlerController.displayMessage({message: error, isError: true});
-    //         }
-    //     });
-    // }
+    #getUsers(searchUserDomElement) {
+        try {
+            this.#displayUsers({
+                searchQuery: this._helpers.GET_DOM_VALUE(searchUserDomElement), 
+                onlyDisplayBlockedUsers: false
+            });
+        } catch(error) {
+            this._handlerController.displayMessage({message: error, isError: true});
+        }
+    }
 
     #filterByBlockedUsers(hasBlockedUsers) {
         if (hasBlockedUsers === false) {

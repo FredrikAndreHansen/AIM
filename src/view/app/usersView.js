@@ -2,10 +2,10 @@ export function usersView(hasBlockedUsers) {
     return `
         <div class="content-section">
             <h1 class="header">Manage Users</h1>
-            <form>
-                <input type="text" id="search-user" placeholder="Find users by name or company" class="input" maxlength="24" required />
-                <button id="search-users-button" class="btn">SEARCH</button>
-            </form>
+            <input type="text" id="search-user" placeholder="Search" class="input-cut-right" maxlength="24" required />
+            <div class="btn-cut-left-blue">
+                <img class="icon-btn-cut" src="../../graphic/MagnifyingGlassIcon.svg" />
+            </div>
             ${hasBlockedUsers === true ? '<button id="has-blocked-users-button" class="btn-red">BLOCKED USERS</button>' : ''}
             <div class="space-medium"></div>
             <hr class="hr-small">
