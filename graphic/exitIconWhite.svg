@@ -15,7 +15,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
-   sodipodi:docname="exitIcon.svg">
+   sodipodi:docname="exit.svg">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -32,9 +32,9 @@
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1017"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata5">
@@ -44,7 +44,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -54,7 +54,7 @@
      id="layer1"
      transform="translate(115.12021,-24.737697)">
     <path
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 213.17188,0 0,213.16992 470.54883,683.7168 v 0.002 L 0.00195313,1154.2656 213.17188,1367.4355 683.71875,896.88867 1154.2656,1367.4355 1367.4375,1154.2656 896.88867,683.71875 v -0.002 L 1367.4355,213.16992 1154.2656,0 683.71875,470.54688 Z"
        transform="matrix(0.26458333,0,0,0.26458333,-115.12021,24.737697)"
        id="rect849"

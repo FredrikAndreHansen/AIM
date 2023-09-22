@@ -75,7 +75,7 @@ export class TeamsController extends AppController {
                         const teamName = res[1];
                         const members = res[2];
 
-                        this.individualTeamController.setView(teamName);
+                        this.individualTeamController.setView(teamName, members);
                     });
                 });
             });

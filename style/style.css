@@ -18,6 +18,7 @@
     --x-small: 8px;
     --small: 12px;
     --medium: 16px;
+    --medium-big: 20px;
     --big: 24px;
     --x-big: 32px;
     --xx-big: 64px;
@@ -280,17 +281,32 @@ body::-webkit-scrollbar {
 }
 .exit-icon {
     position: absolute;
-    width: var(--big);
-    height: var(--big);
-    right: -12px;
-    top: -12px;
-    background-color: var(--red);
-    padding: var(--x-small);
-    border-radius: 50%;
+    width: var(--x-big);
+    height: var(--x-big);
+    right: 0px;
+    top: 0px;
+    background-color: var(--light-grey);
+    border-top-right-radius: 25px;
+    display:block;
+    z-index: 1;
 }
 .exit-icon:hover{
     cursor: pointer;
-    background-color: var(--light-red);
+    opacity: 0.75;
+}
+.exit-icon-image {
+    position: absolute;
+    width: var(--medium);
+    height: var(--medium);
+    right: 9px;
+    top: 9px;
+}
+.inside-btn-icon-image {
+    position: absolute;
+    width: var(--medium-big);
+    height: var(--medium-big);
+    left: 14px;
+    top: 8px;
 }
 .tea-icon {
     position: relative;
@@ -497,6 +513,28 @@ body::-webkit-scrollbar {
     cursor: pointer;
     background-color: var(--light-blue);
 }
+.btn-grey {
+    background-color: var(--light-grey);
+    color: var(--black-shade);
+    display: block;
+    position: relative;
+    width: 80%;
+    border: none;
+    border-radius: 25px;
+    margin-top: var(--small);
+    margin-bottom: var(--small);
+    padding: var(--x-small);
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: var(--medium);
+    font-family: var(--font);
+    font-weight: bold;
+}
+.btn-grey:hover {
+    cursor: pointer;
+    opacity: 0.75;
+}
 .btn-red {
     background-color: var(--red);
     color: var(--white);
@@ -608,7 +646,7 @@ td {
     padding: 8px;
 }
 
-tr {
+.tr {
     animation: 0.25s;
 	animation-name: users-fade-in;
 	animation-iteration-count: 1;
@@ -627,19 +665,25 @@ tr {
         transform: translateX(0);
 	}
 }
-.team-td{
+.team-td {
     padding: 32px;
     background-color: rgba(34,139,34, 0.75);
     width: 28px;
 }
-.user-td{
+.user-td {
     padding: 32px;
     background-color: rgba(65,105,225, 0.75);
     width: 28px;
 }
-.user-td-blocked{
+.user-td-blocked {
     padding: 32px;
     background-color: rgba(139, 0, 0, 0.75);
+    width: 28px;
+}
+
+.user-td-self {
+    padding: 32px;
+    background-color: rgba(136, 136, 136, 0.75);
     width: 28px;
 }
 
@@ -660,9 +704,9 @@ tr {
 	animation-duration: 0.025s;
 }
 
-tr:nth-child(even){background-color:  rgba(0, 0, 0, 0.05);}
-tr:nth-child(odd){background-color:  rgba(0, 0, 0, 0.1);}
-tr:hover{
+.tr:nth-child(even){background-color:  rgba(0, 0, 0, 0.05);}
+.tr:nth-child(odd){background-color:  rgba(0, 0, 0, 0.1);}
+.tr-not-self:hover{
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.2);
 }

@@ -143,6 +143,10 @@ export function GET_DB_USERS_INFO(dbReference, child) {
     return dbReference.child(USERS_GET_CHILD_REF).child(child).get();
 }
 
+export function GET_DB_ALL_USERS() {
+    return GET_DB_REFERENCE(USERS_REF);
+}
+
 export function SAVE_TO_DB_IN_USERS(databaseRows) {
     const { dbReference, firstChild, secondChild, saveValue } = databaseRows;
 

@@ -5,7 +5,7 @@ export function handlerView(message, isError) {
             
             <div class="error-box">
                 <h1 class="header">Error</h1>
-                <img class="error-icon" src="../../graphic/exitIcon.svg" />
+                <img class="error-icon" src="../../graphic/exitIconWhite.svg" />
                 <p class="paragraph-center">${message}</p>
                 <button class="btn" id="error-button">OK</button>
             </div>

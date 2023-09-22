@@ -16,12 +16,12 @@ export function teamsOutputView(teamInfo) {
     const { encryptedKey, team, usersInTeam } = teamInfo;
     
     return `                        
-        <tr id="all-teams" data-id="${encryptedKey}">
+        <tr class="tr tr-not-self" id="all-teams" data-id="${encryptedKey}">
             <td class="team-td"><img class="user-icon" src="../../graphic/teamsIcon.svg" /></td>
             <td>
                 <p class="paragraph-center">${team}</p>
                 <hr class="hr-x-small" style="margin-top: -8px;" />
-                <p class="paragraph-center-small" style="margin-top: -6px;">${usersInTeam} ${usersInTeam === 1 ? ' User' : ' Users'}</p>
+                <p class="paragraph-center-small" style="margin-top: -6px;">${usersInTeam} ${usersInTeam === 1 ? ' Member' : ' Members'}</p>
             </td>
         </tr>
     `;

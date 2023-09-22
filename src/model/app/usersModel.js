@@ -14,12 +14,12 @@ export class UsersModel {
         
         this.authDependencies.validateIfLoggedIn();
 
-        const starCountRef = this.helpers.GET_DB_REFERENCE(this.helpers.USERS_REF);
+        const getAllUsers = this.helpers.GET_DB_ALL_USERS();
 
         const userId = this.helpers.GET_USER_ID();
         
         return await new Promise((resolve, reject) => {
-            starCountRef.on('value', (snapshot) => {
+            getAllUsers.on('value', (snapshot) => {
                 const users = this.helpers.GET_VALUE(snapshot);
                 
                 this.helpers.SALT().then((salt) => {
@@ -35,7 +35,7 @@ export class UsersModel {
                                 const encrypt = this.encryptDependencies.cipher(salt);
 
                                 const HTMLInput = this.#outputUsers(users, decryptedUserId, searchQuery, blockedUsers, encrypt, onlyDisplayBlockedUsers);
-                                
+        
                                 this.loadDependencies.removeLoading();
 
                                 resolve(HTMLInput);
@@ -113,12 +113,12 @@ export class UsersModel {
     }
 
     #outputUserInfo(userData) {
-
         const { outputUserId, outputUsers, key, blockedUsers, currentUserId, blockedCurrentUser, onlyDisplayBlockedUsers } = userData;
 
         if (!this.helpers.CHECK_IF_BLOCKED_USERS_EXISTS(blockedCurrentUser, currentUserId)) {
             return '';
         }
+        
         if (this.helpers.CHECK_IF_BLOCKED_USERS_EXISTS(blockedUsers, key)) {   
             if (onlyDisplayBlockedUsers == true){
                 return '';

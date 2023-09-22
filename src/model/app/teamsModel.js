@@ -47,9 +47,9 @@ export class TeamsModel {
         const userTeams = Object.values(user.teams);
 
         const teams = this.helpers.GET_VALUE(allTeams);
+        
         const getTeamInfo = Object.values(teams);
         const getAllTeamsById = Object.keys(teams);
-
         const encrypt = this.encryptDependencies.cipher(salt);
 
         let HTMLOutput = '';
@@ -107,7 +107,7 @@ export class TeamsModel {
 
     #pushNewTeamToDB(userId, teamName) {
         const dbRef = this.helpers.GET_DB_REFERENCE();
-        const addTeam = dbRef.child(this.helpers.TEAMS_GET_CHILD_REF).push([userId, teamName, [userId]]);
+        const addTeam = dbRef.child(this.helpers.TEAMS_GET_CHILD_REF).push([userId, teamName, [userId], [""]]);
         const getKey = addTeam.getKey();
         const addTeamToUser = dbRef.child(this.helpers.USERS_GET_CHILD_REF).child(userId).child(this.helpers.TEAMS_GET_CHILD_REF).push(getKey);
 

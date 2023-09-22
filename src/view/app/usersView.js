@@ -6,7 +6,7 @@ export function usersView(hasBlockedUsers) {
             <div class="btn-cut-left-blue">
                 <img class="icon-btn-cut" src="../../graphic/MagnifyingGlassIcon.svg" />
             </div>
-            ${hasBlockedUsers === true ? '<button id="has-blocked-users-button" class="btn-red">BLOCKED USERS</button>' : ''}
+            ${hasBlockedUsers === true ? '<button id="has-blocked-users-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userBlockIcon.svg" />BLOCKED USERS</button>' : ''}
             <div class="space-medium"></div>
             <hr class="hr-small">
             <div class="space-x-big"></div>
@@ -15,12 +15,12 @@ export function usersView(hasBlockedUsers) {
     `;
 }
 
-export function userOutputView(encryptedKey, users, key, isBlocked) {
+export function userOutputView(encryptedKey, users, key, isBlocked, isSelf = false) {
     return `                        
-        <tr id="all-users" data-id="${encryptedKey}">
-            <td class="${isBlocked === true ? 'user-td-blocked' : 'user-td'}"><img class="user-icon" src="../../graphic/userIcon.svg" /></td>
+        <tr ${isSelf === false ? 'class="tr tr-not-self"' : 'class="tr"'} id="all-users" data-id="${encryptedKey}">
+            <td class="${isBlocked === true ? 'user-td-blocked' : isSelf === false ? 'user-td' : 'user-td-self'}"><img class="user-icon" src="../../graphic/userIcon.svg" /></td>
             <td>
-                <p class="paragraph-center">${users[key].username}</p>
+                <p ${isSelf === false ? '' : 'style="font-weight: bold;"'} class="paragraph-center">${users[key].username}</p>
                 <hr class="hr-x-small" style="margin-top: -8px;" />
                 <p class="paragraph-center-small" style="margin-top: -6px;">${users[key].company}</p>
             </td>
