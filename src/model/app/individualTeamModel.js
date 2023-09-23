@@ -14,23 +14,32 @@ export class IndividualTeamModel {
         this.authDependencies.validateIfLoggedIn();
 
         const dbRef = this.helpers.GET_DB_REFERENCE();
+        const userId = this.helpers.GET_USER_ID();
   
         return await new Promise((resolve, reject) => {
 
             this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((snapshot) => {
 
-                if (this.helpers.IF_EXISTS(snapshot)) {
-                    const team = this.helpers.GET_VALUE(snapshot);
-                    this.loadDependencies.removeLoading();
+                this.helpers.SALT().then((salt) => {
+                    const decrypt = this.encryptDependencies.decipher(salt);
+                    const loggedInUserId = decrypt(userId);
 
-                    resolve(team);
-                } else {
+                    if (this.helpers.IF_EXISTS(snapshot)) {
+                        const team = this.helpers.GET_VALUE(snapshot);
+
+                        let isAdmin = false;
+                        if (team[0] === loggedInUserId) {isAdmin = true;}
+
+                        resolve({team, isAdmin});
+                    } else {
+                        this.loadDependencies.removeLoading();
+                        reject(this.handlerDependencies.throwError("No data available!"));
+                    }
+                }).catch((error) => {
                     this.loadDependencies.removeLoading();
-                    reject(this.handlerDependencies.throwError("No data available!"));
-                }
-            }).catch((error) => {
-                this.loadDependencies.removeLoading();
-                this.handlerDependencies.displayMessage({message: error, isError: true});
+                    this.handlerDependencies.displayMessage({message: error, isError: true});
+                });
+
             });
         });
     }
@@ -46,7 +55,6 @@ export class IndividualTeamModel {
             getAllUsers.on('value', (snapshot) => {
 
                 this.helpers.SALT().then((salt) => {
-
                     const dbRef = this.helpers.GET_DB_REFERENCE();
                     const decrypt = this.encryptDependencies.decipher(salt);
                     const loggedInUserId = decrypt(userId);

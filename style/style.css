@@ -301,6 +301,28 @@ body::-webkit-scrollbar {
     right: 9px;
     top: 9px;
 }
+.cogwheel-icon {
+    position: absolute;
+    right: 16px;
+    top: -16px;
+    height: var(--x-big);
+    width: var(--x-big);
+}
+.cogwheel-icon:hover{
+    cursor: pointer;
+    opacity: 0.75;
+}
+.backarrow-icon {
+    position: absolute;
+    left: 16px;
+    top: -16px;
+    height: var(--x-big);
+    width: var(--x-big);
+}
+.backarrow-icon:hover{
+    cursor: pointer;
+    opacity: 0.75;
+}
 .inside-btn-icon-image {
     position: absolute;
     width: var(--medium-big);

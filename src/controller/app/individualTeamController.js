@@ -7,18 +7,18 @@ export class IndividualTeamController {
         this.individualTeamModel = individualTeamModel;
     }
 
-    setView(teamName, members) {
+    setView(teamName, members, isAdmin) {
         this.authDependencies.validateIfLoggedIn();
 
-        this.#generateOutput(teamName, members);
+        this.#generateOutput(teamName, members, isAdmin);
     }
 
-    #generateOutput(teamName, members) {
+    #generateOutput(teamName, members, isAdmin) {
         this.individualTeamModel.generateTeamUsers(members).then((res) => {
             const memberQuantity = members.length;
             const membersOutput = res[0];
 
-            this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.individualTeamView(teamName, memberQuantity)});
+            this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.individualTeamView(teamName, memberQuantity, isAdmin)});
 
             const userListDOMElement = document.querySelector('#user-list');
             this.helpers.SET_INNER_HTML_VALUE({set: userListDOMElement, to: membersOutput});
