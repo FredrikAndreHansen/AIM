@@ -32,7 +32,7 @@ export class AppController {
         usersController,
         teamsController,
         individualUserModel = new IndividualUserModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers),
-        individualUserController = new IndividualUserController(this._authDependencies, this._handlerDependencies, this._helpers, this._views, usersController, individualUserModel),
+        individualUserController = new IndividualUserController(this._authDependencies, this._handlerDependencies, this._helpers, this._views, individualUserModel),
         usersModel = new UsersModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         individualTeamModel = new IndividualTeamModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         individualTeamController = new IndividualTeamController(this._authDependencies, this._helpers, this._views, individualTeamModel),

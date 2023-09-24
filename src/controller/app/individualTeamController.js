@@ -7,13 +7,13 @@ export class IndividualTeamController {
         this.individualTeamModel = individualTeamModel;
     }
 
-    setView(teamName, members, isAdmin) {
+    setView(teamName, members, isAdmin, teamId) {
         this.authDependencies.validateIfLoggedIn();
 
-        this.#generateOutput(teamName, members, isAdmin);
+        this.#generateOutput(teamName, members, isAdmin, teamId);
     }
 
-    #generateOutput(teamName, members, isAdmin) {
+    #generateOutput(teamName, members, isAdmin, teamId) {
         this.individualTeamModel.generateTeamUsers(members).then((res) => {
             const memberQuantity = members.length;
             const membersOutput = res[0];
@@ -25,8 +25,27 @@ export class IndividualTeamController {
 
             const allUsersDOMElement = document.querySelectorAll("#all-users");
             this.helpers.ANIMATE_FADE_IN(allUsersDOMElement);
+
+            this.#goBackToTeamsPage();
+
+            this.#inviteUsers(teamName, teamId);
         });
-        
+    }
+
+    #goBackToTeamsPage() {
+         const backArrowIconDOMElement = document.querySelector('.backarrow-icon');
+
+         backArrowIconDOMElement.addEventListener('click', () => {
+            this.helpers.initApp('teams');
+         });
+    }
+
+    #inviteUsers(teamName, teamId) {
+        const inviteMembersBtnDOMElement = document.querySelector('#invite-members-button');
+
+        inviteMembersBtnDOMElement.addEventListener('click', () => {
+            alert(teamId + " " + teamName);
+        });
     }
 
 }

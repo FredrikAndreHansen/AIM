@@ -46,7 +46,10 @@ export class TeamsModel {
         const user = this.helpers.GET_VALUE(getUserTeams);
         const userTeams = Object.values(user.teams);
 
-        const teams = this.helpers.GET_VALUE(allTeams);
+        let teams = this.helpers.GET_VALUE(allTeams);
+        if (teams === null) {
+            teams = {};
+        }
         
         const getTeamInfo = Object.values(teams);
         const getAllTeamsById = Object.keys(teams);
@@ -60,8 +63,8 @@ export class TeamsModel {
                 if (userTeams[i] === getAllTeamsById[ii]) {
                     HTMLOutput += this.views.teamsOutputView({
                         encryptedKey: encrypt(getAllTeamsById[ii]), 
-                        team: getTeamInfo[ii][1],
-                        usersInTeam: getTeamInfo[ii][2].length
+                        team: getTeamInfo[ii].teamName,
+                        usersInTeam: getTeamInfo[ii].members.length
                     });
                     isEmpty = false;
                 }
@@ -107,7 +110,14 @@ export class TeamsModel {
 
     #pushNewTeamToDB(userId, teamName) {
         const dbRef = this.helpers.GET_DB_REFERENCE();
-        const addTeam = dbRef.child(this.helpers.TEAMS_GET_CHILD_REF).push([userId, teamName, [userId], [""]]);
+        const addTeam = dbRef.child(this.helpers.TEAMS_GET_CHILD_REF).push({
+            teamCreatorId: userId,
+            teamName: teamName, 
+            members: [userId],
+            configuration: {
+                allAllowedToAddUsers: true,
+                allAllowedToRemoveUsers: false
+            }});
         const getKey = addTeam.getKey();
         const addTeamToUser = dbRef.child(this.helpers.USERS_GET_CHILD_REF).child(userId).child(this.helpers.TEAMS_GET_CHILD_REF).push(getKey);
 

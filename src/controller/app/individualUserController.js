@@ -1,11 +1,10 @@
 export class IndividualUserController {
 
-    constructor(authDependencies, handlerDependencies, helpers, views, usersController, individualUserModel) {
+    constructor(authDependencies, handlerDependencies, helpers, views, individualUserModel) {
         this.authDependencies = authDependencies;
         this.handlerDependencies = handlerDependencies; 
         this.helpers = helpers;
         this.views = views;
-        this.usersController = usersController;
         this.individualUserModel = individualUserModel;
     }
 

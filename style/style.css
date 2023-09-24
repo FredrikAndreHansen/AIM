@@ -281,8 +281,8 @@ body::-webkit-scrollbar {
 }
 .exit-icon {
     position: absolute;
-    width: var(--x-big);
-    height: var(--x-big);
+    width: 38px;
+    height: 38px;
     right: 0px;
     top: 0px;
     background-color: var(--light-grey);
@@ -296,10 +296,10 @@ body::-webkit-scrollbar {
 }
 .exit-icon-image {
     position: absolute;
-    width: var(--medium);
-    height: var(--medium);
-    right: 9px;
-    top: 9px;
+    width: var(--medium-big);
+    height: var(--medium-big);
+    right: 10px;
+    top: 10px;
 }
 .cogwheel-icon {
     position: absolute;

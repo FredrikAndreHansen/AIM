@@ -73,10 +73,10 @@ export class TeamsController extends AppController {
 
                     this.individualTeamModel.getIndividualTeam(decryptedId).then(res => {
                         const { team, isAdmin } = res;
-                        const teamName = team[1];
-                        const members = team[2];
+                        const teamName = team.teamName;
+                        const members = team.members;
 
-                        this.individualTeamController.setView(teamName, members, isAdmin);
+                        this.individualTeamController.setView(teamName, members, isAdmin, decryptedId);
                     });
                 });
             });
