@@ -8,10 +8,10 @@ export class IndividualUserController {
         this.individualUserModel = individualUserModel;
     }
 
-    setView(userId, userName, company, isBlocked) {
+    setView(userId, userName, company, isBlocked, displayInTeam) {
         this.authDependencies.validateIfLoggedIn();
 
-        this.#generateOutput(userName, company, isBlocked);
+        this.#generateOutput(userName, company, isBlocked, displayInTeam);
 
         this.#toggleUserBlock(userId, userName, isBlocked);
 
@@ -20,11 +20,12 @@ export class IndividualUserController {
         this.helpers.CLOSE_MODAL([errorBoxContainerDomElement, exitIconDOMElement], this.views.popupDOMElement);
     }
 
-    #generateOutput(userName, company, isBlocked) {
+    #generateOutput(userName, company, isBlocked, displayInTeam) {
         this.helpers.SET_INNER_HTML_VALUE({set: this.views.popupDOMElement, to: this.views.individualUserView({
             userName: userName, 
             company: company, 
-            isBlocked: isBlocked
+            isBlocked: isBlocked,
+            displayInTeam: displayInTeam
         })});
     }
 

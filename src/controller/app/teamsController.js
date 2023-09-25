@@ -6,30 +6,34 @@ export class TeamsController extends AppController {
         super(teamsModel, individualTeamController, individualTeamModel);
     }
 
-    setView() {
+    setView(displayUsers = false) {
         this.#indexMenuHighlight();
 
-        this.#generateOutput();
+        if (displayUsers !== false) {
+            //this.individualTeamController.setView(teamName, members, isAdmin, decryptedId, displayUsers);
+        } else {
+            this.#generateOutput(displayUsers);
+        }
     }
 
-    #generateOutput() {
+    #generateOutput(displayUsers) {
         this.teamsModel.getTeams().then((teams) => {
             this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.teamsView});
 
-            this.#outputAllTeams(teams);
+            this.#outputAllTeams(teams, displayUsers);
 
             this.#createNewTeam();
         });
     }
 
-    #outputAllTeams(teams) {
+    #outputAllTeams(teams, displayUsers) {
         const teamsListDOMElement = document.querySelector('#teams-list');
         this._helpers.SET_INNER_HTML_VALUE({set: teamsListDOMElement, to: teams});
 
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");
         this._helpers.ANIMATE_FADE_IN(allTeamsDOMElement);
 
-        this.#getIndividualTeam();
+        this.#getIndividualTeam(displayUsers);
     }
 
     #indexMenuHighlight() {
@@ -57,7 +61,7 @@ export class TeamsController extends AppController {
         }, 200);
     }
 
-    #getIndividualTeam() {
+    #getIndividualTeam(displayUsers) {
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");
 
         allTeamsDOMElement.forEach((getIndividualTeam) => {
@@ -76,7 +80,7 @@ export class TeamsController extends AppController {
                         const teamName = team.teamName;
                         const members = team.members;
 
-                        this.individualTeamController.setView(teamName, members, isAdmin, decryptedId);
+                        this.individualTeamController.setView(teamName, members, isAdmin, decryptedId, displayUsers);
                     });
                 });
             });

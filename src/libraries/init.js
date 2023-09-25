@@ -10,10 +10,10 @@ import { SignedOutController } from "../controller/signedOutController.js";
 import { HAS_INTERNET_CONNECTION } from "../helpers/helpers.js";
 import { displayLoading } from "./load.js";
 
-export function initApp(navigate) {
+export function initApp(navigate, teamsInfo = false) {
     const appController = createAppController();
 
-    appController.init(navigate);
+    appController.init(navigate, teamsInfo);
  }
 
  function createAppController() {

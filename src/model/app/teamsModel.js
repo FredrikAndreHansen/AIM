@@ -116,7 +116,8 @@ export class TeamsModel {
             members: [userId],
             configuration: {
                 allAllowedToAddUsers: true,
-                allAllowedToRemoveUsers: false
+                allAllowedToRemoveUsers: false,
+                allAllowedToScheduleMeeting: true
             }});
         const getKey = addTeam.getKey();
         const addTeamToUser = dbRef.child(this.helpers.USERS_GET_CHILD_REF).child(userId).child(this.helpers.TEAMS_GET_CHILD_REF).push(getKey);

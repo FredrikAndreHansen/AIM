@@ -11,7 +11,7 @@ export class UsersModel {
    
     async getUsers(displayArguments) {
         const { searchQuery = '', onlyDisplayBlockedUsers = false } = displayArguments;
-        
+
         this.authDependencies.validateIfLoggedIn();
 
         const getAllUsers = this.helpers.GET_DB_ALL_USERS();

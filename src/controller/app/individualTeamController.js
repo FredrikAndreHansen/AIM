@@ -1,16 +1,23 @@
 export class IndividualTeamController {
 
-    constructor(authDependencies, helpers, views, individualTeamModel) {
+    constructor(authDependencies, helpers, views, individualTeamModel, allUsersController) {
         this.authDependencies = authDependencies;
         this.helpers = helpers;
         this.views = views;
         this.individualTeamModel = individualTeamModel;
+        this.allUsersController = allUsersController;
     }
 
-    setView(teamName, members, isAdmin, teamId) {
+    setView(teamNameSet, membersSet, isAdminSet, teamIdSet, displayUsers) {
         this.authDependencies.validateIfLoggedIn();
 
-        this.#generateOutput(teamName, members, isAdmin, teamId);
+        if (displayUsers !== false) {
+            //const {teamName, members, isAdmin, teamId} = displayUsers;
+            //this.#generateOutput(teamName, members, isAdmin, teamId);
+            alert(displayUsers)
+        } else {
+        this.#generateOutput(teamNameSet, membersSet, isAdminSet, teamIdSet);
+        }
     }
 
     #generateOutput(teamName, members, isAdmin, teamId) {
@@ -28,7 +35,7 @@ export class IndividualTeamController {
 
             this.#goBackToTeamsPage();
 
-            this.#inviteUsers(teamName, teamId);
+            this.#inviteUsers(teamName, members, isAdmin, teamId);
         });
     }
 
@@ -40,12 +47,22 @@ export class IndividualTeamController {
          });
     }
 
-    #inviteUsers(teamName, teamId) {
+    #inviteUsers(teamName, members, isAdmin, teamId) {
         const inviteMembersBtnDOMElement = document.querySelector('#invite-members-button');
 
         inviteMembersBtnDOMElement.addEventListener('click', () => {
-            alert(teamId + " " + teamName);
+            this.#generateInviteUsersOutput(teamName, members, isAdmin, teamId);
         });
+    }
+
+    #generateInviteUsersOutput(teamName, members, isAdmin, teamId) {
+        const teamInfo = {
+            teamName: teamName,
+            members: members,
+            isAdmin: isAdmin,
+            teamId: teamId
+        };
+        this.allUsersController.setView(true, teamInfo);
     }
 
 }

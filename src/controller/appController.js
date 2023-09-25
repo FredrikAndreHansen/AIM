@@ -7,6 +7,7 @@ import { teamsView, teamsOutputView, noTeams } from "../view/app/teamsView.js";
 import { individualTeamView } from "../view/app/individualTeamView.js";
 import { IndividualUserController } from "./app/individualUserController.js";
 import { IndividualTeamController } from "./app/individualTeamController.js";
+import { AllUsersController } from "./app/allUsersController.js";
 import { UsersModel } from "../model/app/usersModel.js";
 import { IndividualUserModel } from "../model/app/individualUserModel.js";
 import { TeamsModel } from "../model/app/teamsModel.js";
@@ -34,8 +35,9 @@ export class AppController {
         individualUserModel = new IndividualUserModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers),
         individualUserController = new IndividualUserController(this._authDependencies, this._handlerDependencies, this._helpers, this._views, individualUserModel),
         usersModel = new UsersModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
+        allUsersController = new AllUsersController(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views, individualUserController, usersModel, individualUserModel),
         individualTeamModel = new IndividualTeamModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
-        individualTeamController = new IndividualTeamController(this._authDependencies, this._helpers, this._views, individualTeamModel),
+        individualTeamController = new IndividualTeamController(this._authDependencies, this._helpers, this._views, individualTeamModel, allUsersController),
         teamsModel = new TeamsModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views)) { 
             this.indexController = indexController;
             this.usersController = usersController;
@@ -43,17 +45,18 @@ export class AppController {
             this.usersModel = usersModel;
             this.individualUserModel = individualUserModel;
             this.individualUserController = individualUserController;
+            this.allUsersController = allUsersController;
             this.teamsModel = teamsModel;
-            this.individualTeamModel = individualTeamModel;
             this.individualTeamController = individualTeamController;
+            this.individualTeamModel = individualTeamModel;
     }
 
-    init(navigate = false) {
+    init(navigate = false, teamsInfo) {
         this.#outputNavigation();
 
         if (navigate === false) {this.indexController.setView();}
         if (navigate === 'users') {this.usersController.setView();}
-        if (navigate === 'teams') {this.teamsController.setView();}
+        if (navigate === 'teams') {this.teamsController.setView(teamsInfo);}
     }
 
     #outputNavigation() { 
