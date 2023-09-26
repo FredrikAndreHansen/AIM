@@ -17,9 +17,9 @@ export class AllUsersController {
 
             this.#displayUsers({searchQuery: '', onlyDisplayBlockedUsers: false, displayInTeam: displayInTeam, teamInfo: teamInfo});
 
-            this.#searchUsers(displayInTeam);
+            this.#searchUsers(displayInTeam, teamInfo);
 
-            this.#filterByBlockedUsers(hasBlockedUsers, displayInTeam);
+            this.#filterByBlockedUsers(hasBlockedUsers, displayInTeam, teamInfo);
 
             this.#goBackToIndividualTeamPage(displayInTeam, teamInfo);
         });
@@ -32,7 +32,7 @@ export class AllUsersController {
     #displayUsers(input) {
         const { searchQuery, onlyDisplayBlockedUsers, displayInTeam, teamInfo } = input;
 
-        this.usersModel.getUsers({searchQuery: searchQuery, onlyDisplayBlockedUsers: onlyDisplayBlockedUsers, displayInTeam: displayInTeam, teamId: teamInfo.teamId}).then(res => {
+        this.usersModel.getUsers({searchQuery: searchQuery, onlyDisplayBlockedUsers: onlyDisplayBlockedUsers, displayInTeam: displayInTeam, teamId: teamInfo?.teamId}).then(res => {
             this.#outputAllUsers(res);
             
             this.#getIndividualUser(displayInTeam, teamInfo);
@@ -73,31 +73,32 @@ export class AllUsersController {
         });
     }
 
-    #searchUsers(displayInTeam) {
+    #searchUsers(displayInTeam, teamInfo) {
         const searchUserDomElement = document.querySelector('#search-user');
         searchUserDomElement.addEventListener('input', () => {
-            this.#getUsers(searchUserDomElement, displayInTeam);
+            this.#getUsers(searchUserDomElement, displayInTeam, teamInfo);
         });
 
         const btnCutLeftDomElement = document.querySelector('.btn-cut-left-blue');
         btnCutLeftDomElement.addEventListener('click', () => {
-            this.#getUsers(searchUserDomElement, displayInTeam);
+            this.#getUsers(searchUserDomElement, displayInTeam, teamInfo);
         });
     }
 
-    #getUsers(searchUserDomElement, displayInTeam) {
+    #getUsers(searchUserDomElement, displayInTeam, teamInfo) {
         try {
             this.#displayUsers({
                 searchQuery: this.helpers.GET_DOM_VALUE(searchUserDomElement), 
                 onlyDisplayBlockedUsers: false,
-                displayInTeam: displayInTeam
+                displayInTeam: displayInTeam,
+                teamInfo: teamInfo
             });
         } catch(error) {
             this.handlerController.displayMessage({message: error, isError: true});
         }
     }
 
-    #filterByBlockedUsers(hasBlockedUsers, displayInTeam) {
+    #filterByBlockedUsers(hasBlockedUsers, displayInTeam, teamInfo) {
         if (hasBlockedUsers === false) {
             return;
         }
@@ -107,7 +108,8 @@ export class AllUsersController {
             this.#displayUsers({
                 searchQuery: '', 
                 onlyDisplayBlockedUsers: true,
-                displayInTeam: displayInTeam
+                displayInTeam: displayInTeam,
+                teamInfo: teamInfo
             });
         });
     }

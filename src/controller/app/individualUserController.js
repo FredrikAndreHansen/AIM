@@ -1,7 +1,8 @@
 export class IndividualUserController {
 
-    constructor(authDependencies, helpers, views, individualUserModel) {
+    constructor(authDependencies, encryptDependencies, helpers, views, individualUserModel) {
         this.authDependencies = authDependencies;
+        this.encryptDependencies = encryptDependencies;
         this.helpers = helpers;
         this.views = views;
         this.individualUserModel = individualUserModel;
@@ -14,7 +15,7 @@ export class IndividualUserController {
 
         this.#toggleUserBlock(userId, userName, isBlocked, displayInTeam);
 
-        this.#inviteUserToTeam(userId, userName, displayInTeam, teamInfo);
+        this.#inviteUserToTeam(userId, userName, displayInTeam, teamInfo, isBlocked);
 
         const errorBoxContainerDomElement = document.querySelector('.error-box-container');
         const exitIconDOMElement = document.querySelector('.exit-icon');
@@ -46,14 +47,27 @@ export class IndividualUserController {
         }
     }
 
-    #inviteUserToTeam(userId, userName, displayInTeam, teamInfo) {
-        const userInviteToTeamBtnDOMElement = document.querySelector('#user-invite-to-team-button');
+    #inviteUserToTeam(userId, userName, displayInTeam, teamInfo, isBlocked) {
+        if (isBlocked === false) {
+            const userInviteToTeamBtnDOMElement = document.querySelector('#user-invite-to-team-button');
 
-        userInviteToTeamBtnDOMElement.addEventListener('click', () => {
-            this.individualUserModel.inviteUserToTeam(userId, userName, teamInfo);
+            userInviteToTeamBtnDOMElement.addEventListener('click', () => {
+                if (displayInTeam === true) {
+                    this.individualUserModel.inviteUserToTeam(userId, userName, teamInfo).then(() => {
 
-            this.helpers.initApp('teams', teamInfo);
-        });
+                        this.helpers.SALT().then((salt) => {
+                            const decrypt = this.encryptDependencies.decipher(salt);
+                            const encryptedUserId = decrypt(userId);
+                            teamInfo.invitedUsers.push(encryptedUserId);
+
+                            this.helpers.initApp('teams', teamInfo);
+                        });
+                    });
+                } else {
+
+                }
+            });
+        }
     }
 
 }
