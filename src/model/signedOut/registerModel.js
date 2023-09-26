@@ -16,7 +16,8 @@ export class RegisterModel {
                 userId: user.uid, 
                 name: name, 
                 company: company, 
-                teams: [""], 
+                teams: [""],
+                invitedTeams: [""],
                 blockedUsers: [""]
             });
 
@@ -28,7 +29,7 @@ export class RegisterModel {
     }
 
     #writeUserData(userData) {
-        const { userId, name, company, teams, blockedUsers } = userData;
+        const { userId, name, company, teams, invitedTeams, blockedUsers } = userData;
 
         const dbRef = this.helpers.GET_DB_REFERENCE(this.helpers.USERS_REF + userId);
 
@@ -36,6 +37,7 @@ export class RegisterModel {
             username: name,
             company: company,
             teams: teams,
+            invitedTeams: invitedTeams,
             blockedUsers: blockedUsers
         });
     }

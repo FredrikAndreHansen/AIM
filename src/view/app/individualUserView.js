@@ -13,8 +13,8 @@ export function individualUserView(userInfo) {
     `;
     if (isBlocked === false) {
         build += `
-            <button id="user-add-to-team-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userInviteIcon.svg" /> ${displayInTeam === false ? 'INVITE TO TEAM' : 'INVITE'}</button>
-            <button id="user-block-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userBlockIcon.svg" /> BLOCK USER</button>
+            <button id="user-invite-to-team-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userInviteIcon.svg" /> ${displayInTeam === false ? 'INVITE TO TEAM' : 'INVITE'}</button>
+            ${displayInTeam === false ? '<button id="user-block-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userBlockIcon.svg" /> BLOCK USER</button>' : ''}
             </div>
         `;
     } else {

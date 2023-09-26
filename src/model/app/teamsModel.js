@@ -114,6 +114,7 @@ export class TeamsModel {
             teamCreatorId: userId,
             teamName: teamName, 
             members: [userId],
+            invitedUsers: [""],
             configuration: {
                 allAllowedToAddUsers: true,
                 allAllowedToRemoveUsers: false,

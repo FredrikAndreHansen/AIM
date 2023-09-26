@@ -10,7 +10,7 @@ export class UsersModel {
     }
    
     async getUsers(displayArguments) {
-        const { searchQuery = '', onlyDisplayBlockedUsers = false } = displayArguments;
+        const { searchQuery = '', onlyDisplayBlockedUsers = false, displayInTeam = false, teamId = '' } = displayArguments;
 
         this.authDependencies.validateIfLoggedIn();
 
@@ -34,7 +34,7 @@ export class UsersModel {
                                 const blockedUsers = user.blockedUsers;
                                 const encrypt = this.encryptDependencies.cipher(salt);
 
-                                const HTMLInput = this.#outputUsers(users, decryptedUserId, searchQuery, blockedUsers, encrypt, onlyDisplayBlockedUsers);
+                                const HTMLInput = this.#outputUsers(users, decryptedUserId, searchQuery, blockedUsers, encrypt, onlyDisplayBlockedUsers, displayInTeam, teamId);
         
                                 this.loadDependencies.removeLoading();
 
@@ -51,7 +51,7 @@ export class UsersModel {
         })
     }
 
-    #outputUsers(users, userId, searchQuery, blockedUsers, encrypt, onlyDisplayBlockedUsers) {
+    #outputUsers(users, userId, searchQuery, blockedUsers, encrypt, onlyDisplayBlockedUsers, displayInTeam, teamId) {
         let i = 0;
         let HTMLOutput = '';
         
@@ -59,7 +59,19 @@ export class UsersModel {
         
         for (const key in users) {
             if (key === userId) { continue; }
-                
+
+            let userIsInvitedOrMember = false;
+            if (displayInTeam === true) {
+                const invitedTeams = Object.values(users[key].invitedTeams);
+
+                for (let i = 0; i < invitedTeams.length; i++) {
+                    if (invitedTeams[i].teamId === teamId) {
+                        userIsInvitedOrMember = true;
+                    }
+                }
+            }
+            if (userIsInvitedOrMember === true) { continue; }
+
             const blockedCurrentUser = users[key].blockedUsers;
             const userName = users[key].username;
             const company = users[key].company;

@@ -47,7 +47,7 @@ export class IndividualUserModel {
     }
 
     toggleUserBlock(userinfo) {
-        const { userId, blockUser } = userinfo;
+        const { userId, userName, blockUser } = userinfo;
 
         const loggedInUser = this.helpers.GET_USER_ID();
 
@@ -78,6 +78,8 @@ export class IndividualUserModel {
                             secondChild: 'blockedUsers',
                             saveValue: blockedUsers
                         });
+
+                        this.handlerDependencies.displayMessage({message: `${userName} has been ${blockUser === false ? 'unblocked' : 'blocked'}!`, isError: false});
                     } else {
                         this.handlerDependencies.throwError("No data available!");
                     }
@@ -107,6 +109,46 @@ export class IndividualUserModel {
         } else {
             return blockedUsers;
         }
+    }
+
+    async inviteUserToTeam(userId, userName, teamInfo) {
+        const loggedInUser = this.helpers.GET_USER_ID();
+
+        return await new Promise((resolve, reject) => {
+
+            this.helpers.SALT().then((salt) => {
+                const decrypt = this.encryptDependencies.decipher(salt);
+                const encryptedUserId = decrypt(userId);
+                const encryptedLoggedInUserId = decrypt(loggedInUser);
+
+                const dbRef = this.helpers.GET_DB_REFERENCE();
+
+                this.helpers.GET_DB_USERS_INFO(dbRef, encryptedUserId).then((snapshot) => {
+                    try{
+                        if (this.helpers.IF_EXISTS(snapshot)) {
+
+                            this.handlerDependencies.displayMessage({message: `You have invited <span style="font-weight: bold">${userName}</span> to join <span style="font-weight: bold">${teamInfo.teamName}</span>!`, isError: false});
+
+                            resolve(this.#pushNewUserInviteToDB(dbRef, encryptedUserId, encryptedLoggedInUserId, teamInfo));
+                        } else {
+                            reject(this.handlerDependencies.throwError("No data available!"));
+                        }
+                    } catch(error) {
+                        this.handlerDependencies.displayMessage({message: error, isError: true});
+                    }
+                });
+            });
+        });
+    }
+
+    #pushNewUserInviteToDB(dbRef, encryptedUserId, encryptedLoggedInUserId, teamInfo) {
+        dbRef.child(this.helpers.USERS_GET_CHILD_REF).child(encryptedUserId).child('invitedTeams').push({
+            teamId: teamInfo.teamId,
+            teamName: teamInfo.teamName,
+            userWhoInvited: encryptedLoggedInUserId
+        });
+
+        dbRef.child(this.helpers.TEAMS_GET_CHILD_REF).child(teamInfo.teamId).child('invitedUsers').push(encryptedUserId);
     }
 
 }

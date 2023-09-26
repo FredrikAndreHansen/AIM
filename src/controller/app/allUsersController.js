@@ -11,11 +11,11 @@ export class AllUsersController {
         this.individualUserModel = individualUserModel;
     }
 
-    setView(displayInTeam = false, teamInfo = {}) {
+    setView(displayInTeam = false, teamInfo = false) {
         this.usersModel.checkIfAnyUsersAreBlocked().then((hasBlockedUsers) => {
             this.#generateOutput(hasBlockedUsers, displayInTeam);
 
-            this.#displayUsers({searchQuery: '', onlyDisplayBlockedUsers: false, displayInTeam: displayInTeam});
+            this.#displayUsers({searchQuery: '', onlyDisplayBlockedUsers: false, displayInTeam: displayInTeam, teamInfo: teamInfo});
 
             this.#searchUsers(displayInTeam);
 
@@ -30,12 +30,12 @@ export class AllUsersController {
     }
 
     #displayUsers(input) {
-        const { searchQuery, onlyDisplayBlockedUsers, displayInTeam } = input;
+        const { searchQuery, onlyDisplayBlockedUsers, displayInTeam, teamInfo } = input;
 
-        this.usersModel.getUsers({searchQuery: searchQuery, onlyDisplayBlockedUsers: onlyDisplayBlockedUsers}).then(res => {
+        this.usersModel.getUsers({searchQuery: searchQuery, onlyDisplayBlockedUsers: onlyDisplayBlockedUsers, displayInTeam: displayInTeam, teamId: teamInfo.teamId}).then(res => {
             this.#outputAllUsers(res);
             
-            this.#getIndividualUser(displayInTeam);
+            this.#getIndividualUser(displayInTeam, teamInfo);
         });
     }
 
@@ -47,7 +47,7 @@ export class AllUsersController {
         this.helpers.ANIMATE_FADE_IN(allUsersDOMElement);
     }
 
-    #getIndividualUser(displayInTeam) {
+    #getIndividualUser(displayInTeam, teamInfo) {
         const allUsersDOMElement = document.querySelectorAll("#all-users");
         
         allUsersDOMElement.forEach((getIndividualUser) => {
@@ -66,7 +66,7 @@ export class AllUsersController {
                         const company = res[1];
                         const userIsBlocked = res[2];
                         
-                        this.individualUserController.setView(userId, userName, company, userIsBlocked, displayInTeam);
+                        this.individualUserController.setView(userId, userName, company, userIsBlocked, displayInTeam, teamInfo);
                     });
                 })
             })
@@ -114,7 +114,6 @@ export class AllUsersController {
 
     #goBackToIndividualTeamPage(displayInTeam, teamInfo) {
         if(displayInTeam === true) {
-            //const { teamName, members, isAdmin, teamId } = teamInfo;
             const backArrowIconDOMElement = document.querySelector('.backarrow-icon');
             
             backArrowIconDOMElement.addEventListener('click', () => {

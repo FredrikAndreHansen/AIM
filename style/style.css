@@ -655,6 +655,12 @@ body::-webkit-scrollbar {
     border-collapse: collapse;
     word-break: break-all;
 }
+#invited-user-list {
+    position: relative;
+    max-width: 100%;
+    border-collapse: collapse;
+    word-break: break-all;
+}
 #teams-list {
     position: relative;
     width: 100%;

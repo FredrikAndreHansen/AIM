@@ -9,11 +9,7 @@ export class TeamsController extends AppController {
     setView(displayUsers = false) {
         this.#indexMenuHighlight();
 
-        if (displayUsers !== false) {
-            //this.individualTeamController.setView(teamName, members, isAdmin, decryptedId, displayUsers);
-        } else {
-            this.#generateOutput(displayUsers);
-        }
+        this.#generateOutput(displayUsers);
     }
 
     #generateOutput(displayUsers) {
@@ -22,7 +18,7 @@ export class TeamsController extends AppController {
 
             this.#outputAllTeams(teams, displayUsers);
 
-            this.#createNewTeam();
+            this.#createNewTeam(displayUsers);
         });
     }
 
@@ -41,7 +37,7 @@ export class TeamsController extends AppController {
         this._helpers.SET_MENU_HIGHLIGHT(mainMenuTeamsDOMElement);
     }
 
-    #createNewTeam() {
+    #createNewTeam(displayUsers) {
         const createTeamButtonDOMElement = document.querySelector('.btn-cut-left-green');
         createTeamButtonDOMElement.addEventListener('click', () => {
             const newTeamDOMElement = document.querySelector('#new-team');
@@ -50,18 +46,24 @@ export class TeamsController extends AppController {
             if (this._helpers.VALIDATE_USER_INPUT({name: teamName})) {
                 this.teamsModel.addTeam(teamName);
 
-                this.#delayRefresh();
+                this.#delayRefresh(displayUsers);
             }
         })
     }
 
-    #delayRefresh() {
+    #delayRefresh(displayUsers) {
         setTimeout(() => {
-            this.#generateOutput();
+            this.#generateOutput(displayUsers);
         }, 200);
     }
 
     #getIndividualTeam(displayUsers) {
+        if (displayUsers !== false) {
+            const { teamName, members, invitedUsers, isAdmin, teamId } = displayUsers;
+
+            this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, teamId);
+        }
+
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");
 
         allTeamsDOMElement.forEach((getIndividualTeam) => {
@@ -79,8 +81,9 @@ export class TeamsController extends AppController {
                         const { team, isAdmin } = res;
                         const teamName = team.teamName;
                         const members = team.members;
-
-                        this.individualTeamController.setView(teamName, members, isAdmin, decryptedId, displayUsers);
+                        const invitedUsers = Object.values(team.invitedUsers);
+  
+                        this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, decryptedId);
                     });
                 });
             });

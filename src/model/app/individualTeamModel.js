@@ -44,7 +44,7 @@ export class IndividualTeamModel {
         });
     }
 
-    async generateTeamUsers(members) {
+    async generateTeamUsers(members, invitedUsers) {
         this.loadDependencies.displayLoading();
         this.authDependencies.validateIfLoggedIn();
 
@@ -69,9 +69,11 @@ export class IndividualTeamModel {
 
                             const HTMLMembersOutput = this.#generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId);
 
+                            const HTMLInvitedUsersOutput = this.#generateTeamUsersOutput(invitedUsers, users, encrypt, blockedUsers, loggedInUserId);
+
                             this.loadDependencies.removeLoading();
 
-                            resolve([HTMLMembersOutput]);
+                            resolve([HTMLMembersOutput, HTMLInvitedUsersOutput]);
                         } catch(error) {
                             this.loadDependencies.removeLoading();
                             reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
