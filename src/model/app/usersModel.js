@@ -35,7 +35,7 @@ export class UsersModel {
                                 const encrypt = this.encryptDependencies.cipher(salt);
 
                                 const HTMLInput = this.#outputUsers(users, decryptedUserId, searchQuery, blockedUsers, encrypt, onlyDisplayBlockedUsers, displayInTeam, teamId);
-        
+   
                                 this.loadDependencies.removeLoading();
 
                                 resolve(HTMLInput);
@@ -141,7 +141,8 @@ export class UsersModel {
         }
     }
   
-    async checkIfAnyUsersAreBlocked() {
+    async checkIfAnyUsersAreBlocked(teamInfo) {
+
         const userId = this.helpers.GET_USER_ID();
 
         return await new Promise((resolve, reject) => {
@@ -155,9 +156,20 @@ export class UsersModel {
                     try {
                         if (this.helpers.IF_EXISTS(snapshot)) {
                             const user = this.helpers.GET_VALUE(snapshot);
-                            const blockedUsers = user.blockedUsers;
 
-                            resolve(this.helpers.IF_ANY_BLOCKED_USERS(blockedUsers));
+                            const blockedUsers = user.blockedUsers;
+                            if (teamInfo === false) {
+                                resolve(this.helpers.IF_ANY_BLOCKED_USERS(blockedUsers));
+                            } else {
+                                this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamInfo.teamId).then((snapshot) => {
+                                    const teams = this.helpers.GET_VALUE(snapshot);
+                                    const getTeams = Object.values(teams);
+                                    const getInvitedUsers = Object.values(getTeams[1]);
+                                    const getMembers = getTeams[2];
+
+                                    resolve(this.#checkIfAnyBlockedUsersInTeam(getInvitedUsers, getMembers, blockedUsers));
+                                });
+                            }
                         } else {
                             reject(this.handlerDependencies.throwError("No data available!"));
                         }
@@ -167,6 +179,30 @@ export class UsersModel {
                 })
             })
         })
+    }
+
+    #checkIfAnyBlockedUsersInTeam(getInvitedUsers, getMembers, blockedUsers) {
+        let remainingBlockedUsers = blockedUsers.length;
+
+        for (let i = 0; i < blockedUsers.length; i++) {
+
+            for (let ii = 0; ii < getInvitedUsers.length; ii++) {
+                if (blockedUsers[i] === getInvitedUsers[ii] && blockedUsers[i] !== '') {
+                    remainingBlockedUsers -= 1;
+                }
+            }
+
+            for (let ii = 0; ii < getMembers.length; ii++) {
+                if (blockedUsers[i] === getMembers[ii] && blockedUsers[i] !== '') {
+                    remainingBlockedUsers -= 1;
+                }
+            }
+        }
+        if (remainingBlockedUsers === 1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

@@ -12,7 +12,7 @@ export class AllUsersController {
     }
 
     setView(displayInTeam = false, teamInfo = false) {
-        this.usersModel.checkIfAnyUsersAreBlocked().then((hasBlockedUsers) => {
+        this.usersModel.checkIfAnyUsersAreBlocked(teamInfo).then((hasBlockedUsers) => {
             this.#generateOutput(hasBlockedUsers, displayInTeam);
 
             this.#displayUsers({searchQuery: '', onlyDisplayBlockedUsers: false, displayInTeam: displayInTeam, teamInfo: teamInfo});
