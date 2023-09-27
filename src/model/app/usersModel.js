@@ -174,7 +174,7 @@ export class UsersModel {
                             reject(this.handlerDependencies.throwError("No data available!"));
                         }
                     } catch (error) {
-                        this.handlerDependencies.displayMessage({message: error, isError: true});
+                        reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
                     }
                 })
             })

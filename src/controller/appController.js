@@ -1,6 +1,6 @@
 import { headerDOMElement, viewDOMElement, popupDOMElement } from "../index.js";
 import { headerView } from "../view/handlers/headerView.js";
-import { indexView } from "../view/app/indexView.js";
+import { indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView } from "../view/app/indexView.js";
 import { usersView, userOutputView, userSearchOutput } from "../view/app/usersView.js";
 import { individualUserView } from "../view/app/individualUserView.js";
 import { teamsView, teamsOutputView, noTeams } from "../view/app/teamsView.js";
@@ -8,6 +8,7 @@ import { individualTeamView } from "../view/app/individualTeamView.js";
 import { IndividualUserController } from "./app/individualUserController.js";
 import { IndividualTeamController } from "./app/individualTeamController.js";
 import { AllUsersController } from "./app/allUsersController.js";
+import { IndexModel } from "../model/app/indexModel.js";
 import { UsersModel } from "../model/app/usersModel.js";
 import { IndividualUserModel } from "../model/app/individualUserModel.js";
 import { TeamsModel } from "../model/app/teamsModel.js";
@@ -21,7 +22,7 @@ import { IndividualTeamModel } from "../model/app/individualTeamModel.js";
 
 export class AppController {
 
-    _views = { viewDOMElement, indexView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, popupDOMElement, individualTeamView };
+    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, popupDOMElement, individualTeamView };
     _loadDependencies = { displayLoading, removeLoading };
     _handlerDependencies = { displayMessage, throwError };
     _authDependencies = { validateIfLoggedIn, removeToken };
@@ -32,6 +33,7 @@ export class AppController {
         indexController, 
         usersController,
         teamsController,
+        indexModel = new IndexModel(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         individualUserModel = new IndividualUserModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers),
         individualUserController = new IndividualUserController(this._authDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel),
         usersModel = new UsersModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
@@ -42,6 +44,7 @@ export class AppController {
             this.indexController = indexController;
             this.usersController = usersController;
             this.teamsController = teamsController;
+            this.indexModel = indexModel;
             this.usersModel = usersModel;
             this.individualUserModel = individualUserModel;
             this.individualUserController = individualUserController;
@@ -65,6 +68,8 @@ export class AppController {
         this._loadDependencies.displayLoading();
 
         this.#generateOutput();
+
+        this.#setMenuAlerts();
         
         this.#navigateToIndexPage();
 
@@ -76,7 +81,7 @@ export class AppController {
     }
 
     #generateOutput() {
-        return this._helpers.SET_INNER_HTML_VALUE({set: headerDOMElement, to: headerView(true)});
+        this._helpers.SET_INNER_HTML_VALUE({set: headerDOMElement, to: headerView(true)});
     }
 
     #navigateToIndexPage() {
@@ -109,6 +114,24 @@ export class AppController {
         mainMenuSignOutDOMElement.addEventListener('click', () => {
             this._loadDependencies.displayLoading();
             this._authDependencies.removeToken();
+        });
+    }
+
+    #setMenuAlerts() {
+        this.indexModel.checkForTeamInvites().then(res => {
+            const contentQuantity = res[1];
+
+            const totalQuantity = contentQuantity;
+
+            if (totalQuantity > 0) {
+                const menuAlertsDOMElement = document.querySelector('#menu-alerts');
+                this._helpers.SET_INNER_HTML_VALUE({set: menuAlertsDOMElement, to: this._views.menuAlertsView(totalQuantity)});
+
+                
+                chrome.action.setBadgeBackgroundColor({ color: '#9F0000' }, () => {
+                    chrome.action.setBadgeText({text: String(totalQuantity)});
+                });
+            }
         });
     }
 

@@ -124,28 +124,33 @@ export class IndividualUserModel {
                 const dbRef = this.helpers.GET_DB_REFERENCE();
 
                 this.helpers.GET_DB_USERS_INFO(dbRef, encryptedUserId).then((snapshot) => {
-                    try{
-                        if (this.helpers.IF_EXISTS(snapshot)) {
+                    this.helpers.GET_DB_USERS_INFO(dbRef, encryptedLoggedInUserId).then((getUserLoggedIn) => {
+                        try{
+                            if (this.helpers.IF_EXISTS(snapshot) && this.helpers.IF_EXISTS(getUserLoggedIn)) {
+                                const getUserLoggedInValue = this.helpers.GET_VALUE(getUserLoggedIn);
+                                const getUserLoggedInObject = Object.values(getUserLoggedInValue);
+                                const getUserLoggedInName = getUserLoggedInObject[4];
+    
+                                this.handlerDependencies.displayMessage({message: `You have invited <span style="font-weight: bold">${userName}</span> to join <span style="font-weight: bold">${teamInfo.teamName}</span>!`, isError: false});
 
-                            this.handlerDependencies.displayMessage({message: `You have invited <span style="font-weight: bold">${userName}</span> to join <span style="font-weight: bold">${teamInfo.teamName}</span>!`, isError: false});
-
-                            resolve(this.#pushNewUserInviteToDB(dbRef, encryptedUserId, encryptedLoggedInUserId, teamInfo));
-                        } else {
-                            reject(this.handlerDependencies.throwError("No data available!"));
+                                resolve(this.#pushNewUserInviteToDB(dbRef, encryptedUserId, getUserLoggedInName, teamInfo));
+                            } else {
+                                reject(this.handlerDependencies.throwError("No data available!"));
+                            }
+                        } catch(error) {
+                            this.handlerDependencies.displayMessage({message: error, isError: true});
                         }
-                    } catch(error) {
-                        this.handlerDependencies.displayMessage({message: error, isError: true});
-                    }
+                    });
                 });
             });
         });
     }
 
-    #pushNewUserInviteToDB(dbRef, encryptedUserId, encryptedLoggedInUserId, teamInfo) {
+    #pushNewUserInviteToDB(dbRef, encryptedUserId, getUserLoggedInName, teamInfo) {
         dbRef.child(this.helpers.USERS_GET_CHILD_REF).child(encryptedUserId).child('invitedTeams').push({
             teamId: teamInfo.teamId,
             teamName: teamInfo.teamName,
-            userWhoInvited: encryptedLoggedInUserId
+            userWhoInvited: getUserLoggedInName
         });
 
         dbRef.child(this.helpers.TEAMS_GET_CHILD_REF).child(teamInfo.teamId).child('invitedUsers').push(encryptedUserId);

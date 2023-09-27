@@ -2,8 +2,8 @@ import { AppController } from '../appController.js';
 
 export class IndexController extends AppController {
 
-    constructor(individualUserModel) {
-        super(individualUserModel);
+    constructor(indexModel, individualUserModel) {
+        super(indexModel, individualUserModel);
     }
 
     setView() {
@@ -29,8 +29,38 @@ export class IndexController extends AppController {
                 });
 
                 this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: setIndexView});
+
+                this.#getInvitedUsers();
             });
         });
+    }
+
+    #getInvitedUsers() {
+        this.indexModel.checkForTeamInvites().then(res => {
+            const content = res[0];
+            const contentQuantity = res[1];
+
+            if (contentQuantity > 0) {
+                this.#setAlerts(true);
+
+                const invitedUsersDOMElement = document.querySelector('#invited-users');
+                this._helpers.SET_INNER_HTML_VALUE({set: invitedUsersDOMElement, to: content});
+
+                const allInvitedTeamsDOMElement = document.querySelectorAll('#all-invited-teams');
+                this._helpers.ANIMATE_FADE_IN(allInvitedTeamsDOMElement);
+            } else {
+                this.#setAlerts(false);
+            }
+        });
+    }
+
+    #setAlerts(isAlert) {
+        const alertsDOMElement = document.querySelector('#alerts');
+        if (isAlert === true) {
+            this._helpers.SET_INNER_HTML_VALUE({set: alertsDOMElement, to: ''});
+        } else {
+            this._helpers.SET_INNER_HTML_VALUE({set: alertsDOMElement, to: this._views.noAlertsView()});
+        }
     }
 
     #indexMenuHighlight() {

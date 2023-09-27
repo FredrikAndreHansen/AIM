@@ -12,13 +12,13 @@
     "action": {
         "default_title": "Plan Meetings",
         "default_popup": "index.html"
-      },
-      "icons": {
-        "16": "./graphic/favIcon.png",
-        "32": "./graphic/favIcon.png",
-        "48": "./graphic/favIcon.png",
-        "128": "./graphic/favIcon.png"
-      },
+    },
+    "icons": {
+      "16": "./graphic/favIcon.png",
+      "32": "./graphic/favIcon.png",
+      "48": "./graphic/favIcon.png",
+      "128": "./graphic/favIcon.png"
+    },
     "content_scripts":[
       {
           "matches":["<all_urls>"],

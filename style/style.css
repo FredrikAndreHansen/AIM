@@ -240,6 +240,7 @@ body::-webkit-scrollbar {
     color: var(--dark-grey);
     overflow-wrap: break-word;
 }
+
 .paragraph-center-small {
     text-align: center;
     font-family: var(--font);
@@ -334,6 +335,13 @@ body::-webkit-scrollbar {
     position: relative;
     width: var(--xxx-big);
     height: var(--xxx-big);
+    left: 50%;
+    transform: translateX(-50%);
+}
+.alert-icon {
+    position: relative;
+    width: var(--x-big);
+    height: var(--x-big);
     left: 50%;
     transform: translateX(-50%);
 }
@@ -557,6 +565,31 @@ body::-webkit-scrollbar {
     cursor: pointer;
     opacity: 0.75;
 }
+.center-align {
+    text-align: center;
+}
+.btn-alert {
+    background-color: var(--light-grey);
+    color: var(--black-shade);
+    display: inline-block;
+    position: relative;
+    width: 45%;
+    border: none;
+    border-radius: 25px;
+    margin-top: var(--small);
+    margin-bottom: var(--small);
+    margin-left: 6px;
+    margin-right: 6px;
+    padding: var(--x-small);
+    text-align: center;
+    font-size: var(--medium);
+    font-family: var(--font);
+    font-weight: bold;
+}
+.btn-alert:hover {
+    cursor: pointer;
+    opacity: 0.75;
+}
 .btn-red {
     background-color: var(--red);
     color: var(--white);
@@ -661,6 +694,7 @@ body::-webkit-scrollbar {
     border-collapse: collapse;
     word-break: break-all;
 }
+
 #teams-list {
     position: relative;
     width: 100%;
@@ -731,6 +765,42 @@ td {
 	animation-timing-function: ease-in;
 	animation-duration: 0.025s;
 }
+
+.alert-box {
+    padding: var(--small);
+    background-color: var(--white);
+    border: solid 1px var(--light-grey);
+    border-radius: 25px;
+}
+#invited-users {
+    border-collapse:separate; 
+    border-spacing: 0 24px;
+}
+
+.menu-alerts {
+    position: absolute;
+    bottom: -24px;
+    display: inline-block;
+    line-height: 0px;
+    border-radius: 50%;
+    font-size: var(--medium);
+    font-family: var(--font);
+    background-color: var(--red);
+    color: var(--white);
+    z-index: 5;
+    animation-name: fadeInOpacity;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: 0.1s;
+  }
+
+  .menu-alerts span {
+    display: inline-block;
+    padding-top: 50%;
+    padding-bottom: 50%;
+    margin-left: 8px;
+    margin-right: 8px;
+  }
 
 .tr:nth-child(even){background-color:  rgba(0, 0, 0, 0.05);}
 .tr:nth-child(odd){background-color:  rgba(0, 0, 0, 0.1);}
