@@ -11,7 +11,7 @@
     ],
     "action": {
         "default_title": "Plan Meetings",
-        "default_popup": "index.html"
+        "default_popup": "./index.html"
     },
     "icons": {
       "16": "./graphic/favIcon.png",
@@ -22,11 +22,10 @@
     "content_scripts":[
       {
           "matches":["<all_urls>"],
-          "js":["./src/index.js"],
-          "run_at":"document_end"
+          "js":["./src/index.js"]
       }
     ],
     "background":{
-      "service-worker":"./src/config/config.js"
+      "service_worker": "./src/config/config.js"
   }
 }

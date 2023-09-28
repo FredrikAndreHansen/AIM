@@ -14,7 +14,7 @@ import { IndividualUserModel } from "../model/app/individualUserModel.js";
 import { TeamsModel } from "../model/app/teamsModel.js";
 import { displayLoading, removeLoading } from "../libraries/load.js";
 import { displayMessage, throwError } from "../libraries/handler.js";
-import { validateIfLoggedIn, removeToken } from "../helpers/auth.js";
+import { validateIfLoggedIn, removeToken, listenForUpdates } from "../helpers/auth.js";
 import { cipher, decipher } from "../helpers/encrypt.js";
 import { initApp } from "../libraries/init.js";
 import { SET_INNER_HTML_VALUE, SALT, TRIMSTRING, PARSESTRING, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS } from "../helpers/helpers.js";
@@ -25,7 +25,7 @@ export class AppController {
     _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, popupDOMElement, individualTeamView };
     _loadDependencies = { displayLoading, removeLoading };
     _handlerDependencies = { displayMessage, throwError };
-    _authDependencies = { validateIfLoggedIn, removeToken };
+    _authDependencies = { validateIfLoggedIn, removeToken, listenForUpdates };
     _encryptDependencies = { cipher, decipher };
     _helpers = { SET_INNER_HTML_VALUE, SALT, TRIMSTRING, PARSESTRING, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, initApp };
 
@@ -118,21 +118,34 @@ export class AppController {
     }
 
     #setMenuAlerts() {
-        this.indexModel.checkForTeamInvites().then(res => {
-            const contentQuantity = res[1];
+        const token = this._helpers.PARSESTRING(this._helpers.GET_TOKEN());
+        const [userId, _, __] = token.split(',');
+        
+        const userIdTrim = this._helpers.TRIMSTRING(userId);
 
-            const totalQuantity = contentQuantity;
+        this._helpers.SALT().then((salt) => {
+            const decryptId = this._encryptDependencies.decipher(salt);
+            const decryptedUserId = decryptId(userIdTrim);
 
-            if (totalQuantity > 0) {
-                const menuAlertsDOMElement = document.querySelector('#menu-alerts');
-                this._helpers.SET_INNER_HTML_VALUE({set: menuAlertsDOMElement, to: this._views.menuAlertsView(totalQuantity)});
-
+            const listenForUpdates = this._authDependencies.listenForUpdates(decryptedUserId);
+            listenForUpdates.on('value', () => {
+                this.indexModel.checkForTeamInvites().then(res => {
                 
-                chrome.action.setBadgeBackgroundColor({ color: '#9F0000' }, () => {
-                    chrome.action.setBadgeText({text: String(totalQuantity)});
+                    const contentQuantity = res[1];
+
+                    const totalQuantity = contentQuantity;
+
+                    if (totalQuantity > 0) {
+                        const menuAlertsDOMElement = document.querySelector('#menu-alerts');
+                        this._helpers.SET_INNER_HTML_VALUE({set: menuAlertsDOMElement, to: this._views.menuAlertsView(totalQuantity)});
+
+                        chrome.action.setBadgeBackgroundColor({ color: '#9F0000' }, () => {
+                            chrome.action.setBadgeText({text: String(totalQuantity)});
+                        });
+                    }
                 });
-            }
-        });
+            });
+        })
     }
 
 }

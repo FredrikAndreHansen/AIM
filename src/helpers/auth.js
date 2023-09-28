@@ -1,8 +1,7 @@
 import { cipher, decipher } from "./encrypt.js";
 import { initApp, initSignedOut } from "../libraries/init.js";
 import { displayMessage } from "../libraries/handler.js";
-import { IndexModel } from "../model/app/indexModel.js";
-import { SALT, TRIMSTRING, PARSESTRING, GET_AUTH, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_TOKEN, ADD_TOKEN, REMOVE_TOKEN } from "./helpers.js";
+import { SALT, TRIMSTRING, PARSESTRING, GET_AUTH, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_TOKEN, ADD_TOKEN, REMOVE_TOKEN, USERS_REF } from "./helpers.js";
 
 export function createToken(userId, email, password) {
     SALT().then((salt) => {
@@ -66,4 +65,8 @@ export function validateIfLoggedIn() {
     } else {
         removeToken();
     }
+}
+
+export function listenForUpdates(userId) {
+    return firebase.database().ref(USERS_REF + userId);
 }

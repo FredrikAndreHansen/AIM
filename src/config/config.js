@@ -10,6 +10,7 @@ try {
   };
 
   firebase.initializeApp(firebaseConfig);
+
 } catch(error) {
     alert(error);
 }

@@ -30,7 +30,10 @@ export class IndexController extends AppController {
 
                 this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: setIndexView});
 
-                this.#getInvitedUsers();
+                const listenForUpdates = this._authDependencies.listenForUpdates(decryptedUserId);
+                listenForUpdates.on('value', () => {
+                    this.#getInvitedUsers();
+                });
             });
         });
     }
