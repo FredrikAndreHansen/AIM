@@ -4,28 +4,29 @@
     "version": "1.0.1",
     "permissions":[
       "activeTab",
-      "tabs"
+      "tabs",
+      "storage", "notifications", "contextMenus", "alarms"
     ],
     "host_permissions": [
       "<all_urls>"
     ],
     "action": {
         "default_title": "Plan Meetings",
-        "default_popup": "./index.html"
+        "default_popup": "index.html"
     },
     "icons": {
-      "16": "./graphic/favIcon.png",
-      "32": "./graphic/favIcon.png",
-      "48": "./graphic/favIcon.png",
-      "128": "./graphic/favIcon.png"
+      "16": "graphic/favIcon.png",
+      "32": "graphic/favIcon.png",
+      "48": "graphic/favIcon.png",
+      "128": "graphic/favIcon.png"
     },
     "content_scripts":[
       {
           "matches":["<all_urls>"],
-          "js":["./src/index.js"]
+          "js":["src/index.js"]
       }
     ],
     "background":{
-      "service_worker": "./src/config/config.js"
+      "service_worker": "src/helpers/background.js"
   }
 }

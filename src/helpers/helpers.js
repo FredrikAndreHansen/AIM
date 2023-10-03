@@ -33,6 +33,12 @@ export function PARSESTRING(string) {
     return JSON.stringify(a);
 }
 
+export function CONVERT_STRING_TO_ARRAY(string) {
+    let [a, b] = string.split(",");
+
+    return [a, b];
+}
+
 export function VALIDATE_USER_INPUT(userInput) {
     try {
         const { name = false, email = false, company = false, password = false, confirmPassword = false } = userInput;
@@ -141,6 +147,10 @@ export function GET_DB_INDIVIDUAL_TEAM_INFO(dbReference, child) {
 
 export function GET_DB_USERS_INFO(dbReference, child) {
     return dbReference.child(USERS_GET_CHILD_REF).child(child).get();
+}
+
+export function GET_DB_USERS_INVITEDTEAMS(dbReference, child, invitedTeams) {
+    return dbReference.child(USERS_GET_CHILD_REF).child(child).child(invitedTeams).get();
 }
 
 export function GET_DB_ALL_USERS() {

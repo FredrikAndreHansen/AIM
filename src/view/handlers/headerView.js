@@ -19,7 +19,7 @@ export function headerView(isLoggedIn) {
         `;
     } else {
         return `
-            <img class="header-icon" src="./graphic/logo.png" />
+            <img class="header-icon" src="./graphic/logo.png" alt="Header Icon" />
         `;
     }
 }

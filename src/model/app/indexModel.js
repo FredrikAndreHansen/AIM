@@ -27,9 +27,11 @@ export class IndexModel {
 
                             const invitedTeams = this.helpers.GET_VALUE(snapshot);
                             const invitedTeamsValues = Object.values(invitedTeams.invitedTeams);
+                            const invitedTeamsId = Object.keys(invitedTeams.invitedTeams);
                             const invitedTeamsLength = invitedTeamsValues.length - 1;
+                            
                             const HTMLInvitedTeamsHeading = this.views.invitedUsersHeadingView(invitedTeamsLength);
-                            const HTMLOutput = this.#generateInvitedTeamsOutput(invitedTeamsValues);
+                            const HTMLOutput = this.#generateInvitedTeamsOutput(invitedTeamsValues, invitedTeamsId);
 
                             if (invitedTeamsLength > 0) {
                                 resolve([HTMLInvitedTeamsHeading + HTMLOutput, invitedTeamsLength]);
@@ -49,16 +51,100 @@ export class IndexModel {
         });
     }
 
-    #generateInvitedTeamsOutput(invitedTeams) {
+    #generateInvitedTeamsOutput(invitedTeams, invitedTeamsId) {
         let HTMLOutput = '';
 
         for (let i = 0; i < invitedTeams.length; i++) {
             if (invitedTeams[i].userWhoInvited === undefined || invitedTeams[i].userWhoInvited === null) { continue; }
-    
-            HTMLOutput += this.views.invitedUsersView(invitedTeams[i].userWhoInvited, invitedTeams[i].teamName);
+
+            HTMLOutput += this.views.invitedUsersView({
+                userName: invitedTeams[i].userWhoInvited, 
+                teamName: invitedTeams[i].teamName, 
+                teamId: invitedTeams[i].teamId, 
+                inviteId: invitedTeamsId[i]});
         }
 
         return HTMLOutput;
+    }
+
+    removeTeamInvitation(ids) {
+        const { teamId, invitedId } = ids;
+
+        this.#removeInviteFromUser(invitedId);
+
+        this.#removeUserFromTeam(teamId);
+    }
+
+    async #removeInviteFromUser(invitedId) {
+        const loggedInUser = this.helpers.GET_USER_ID();
+
+        this.loadDependencies.displayLoading();
+
+        return await new Promise((resolve, reject) => {
+
+            this.helpers.SALT().then((salt) => {
+                try {
+                    const decrypt = this.encryptDependencies.decipher(salt); 
+                    const decryptedUserId = decrypt(loggedInUser);
+                    const invitedTeam = this.helpers.GET_DB_REFERENCE(this.helpers.USERS_REF + decryptedUserId + "/invitedTeams/" + invitedId);
+
+                    this.loadDependencies.removeLoading();
+
+                    resolve(invitedTeam.remove());
+                } catch(error) {
+                    this.loadDependencies.removeLoading();
+                    reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                }
+            });
+        });
+    }
+
+    async #removeUserFromTeam(teamId) {
+        const loggedInUser = this.helpers.GET_USER_ID();
+
+        this.loadDependencies.displayLoading();
+
+        return await new Promise((resolve, reject) => {
+
+            this.helpers.SALT().then((salt) => {
+
+                const decrypt = this.encryptDependencies.decipher(salt); 
+                const decryptedUserId = decrypt(loggedInUser);
+
+                const dbRef = this.helpers.GET_DB_REFERENCE();
+
+                this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((snapshot) => {
+                    try {
+                        if (this.helpers.IF_EXISTS(snapshot)) {
+                            const invitedUser = this.helpers.GET_VALUE(snapshot);
+                            console.log(invitedUser.invitedUsers)
+                            
+                            let getValue = false;
+                            for (const [key, value] of Object.entries(invitedUser.invitedUsers)) {
+                                if (decryptedUserId === value) {
+                                    this.loadDependencies.removeLoading();
+
+                                    getValue = true;
+
+                                    const invitedTeam = this.helpers.GET_DB_REFERENCE(this.helpers.TEAMS_REF + teamId + "/invitedUsers/" + key);
+                                    resolve(invitedTeam.remove());
+                                }
+                            }
+                            if (getValue === false) {
+                                this.loadDependencies.removeLoading();
+                                reject(this.handlerDependencies.throwError("No data available!"));
+                            }
+                        } else {
+                            this.loadDependencies.removeLoading();
+                            reject(this.handlerDependencies.throwError("No data available!"));
+                        }
+                    } catch(error) {
+                        this.loadDependencies.removeLoading();
+                        reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                    }
+                });    
+            });
+        });
     }
 
 }

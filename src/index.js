@@ -18,7 +18,7 @@ if (HAS_INTERNET_CONNECTION()) {
     } else {
         initSignedOut();
     }
- } 
+} 
 else {
     initOffline();
- }
+}
