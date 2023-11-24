@@ -140,6 +140,8 @@ export class AppController {
                         this._helpers.SET_INNER_HTML_VALUE({set: menuAlertsDOMElement, to: this._views.menuAlertsView(totalQuantity)});
 
                         chrome.storage.sync.set({ alerts: totalQuantity });
+                    } else {
+                        chrome.storage.sync.set({ alerts: "" });
                     }
                 });
             });

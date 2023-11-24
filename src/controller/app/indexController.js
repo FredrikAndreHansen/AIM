@@ -52,6 +52,7 @@ export class IndexController extends AppController {
                 const allInvitedTeamsDOMElement = document.querySelectorAll('#all-invited-teams');
                 this._helpers.ANIMATE_FADE_IN(allInvitedTeamsDOMElement);
 
+                this.#acceptTeamInvitation();
                 this.#declineTeamInvitation();
             } else {
                 this.#setAlerts(false);
@@ -66,6 +67,22 @@ export class IndexController extends AppController {
         } else {
             this._helpers.SET_INNER_HTML_VALUE({set: alertsDOMElement, to: this._views.noAlertsView()});
         }
+    }
+
+    #acceptTeamInvitation() {
+        const acceptBtnDOMElement = document.querySelectorAll('#accept-button');
+
+        acceptBtnDOMElement.forEach((element) => {
+            const idsArray = this._helpers.CONVERT_STRING_TO_ARRAY(element.getAttribute('data-id'));
+
+            element.addEventListener('click', () => {
+                this.indexModel.acceptTeamInvitation({
+                    teamId: idsArray[0],
+                    invitedId: idsArray[1]
+                });
+                this._helpers.initApp();
+            });
+        });
     }
 
     #declineTeamInvitation() {

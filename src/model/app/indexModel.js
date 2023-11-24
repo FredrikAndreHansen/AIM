@@ -67,6 +67,12 @@ export class IndexModel {
         return HTMLOutput;
     }
 
+    acceptTeamInvitation(ids) {
+        const { teamId, invitedId } = ids;
+
+        //this.removeTeamInvitation(ids);
+    }
+
     removeTeamInvitation(ids) {
         const { teamId, invitedId } = ids;
 
