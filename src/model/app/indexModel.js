@@ -68,9 +68,69 @@ export class IndexModel {
     }
 
     acceptTeamInvitation(ids) {
-        const { teamId, invitedId } = ids;
+        const { teamId, _ } = ids;
 
-        //this.removeTeamInvitation(ids);
+        this.#addUserToTeam(teamId);
+
+        this.removeTeamInvitation(ids);
+    }
+
+    async #addUserToTeam(teamId) {
+        const loggedInUser = this.helpers.GET_USER_ID();
+
+        this.loadDependencies.displayLoading();
+
+        return await new Promise((resolve, reject) => {
+
+            this.helpers.SALT().then((salt) => {
+                const decrypt = this.encryptDependencies.decipher(salt);
+                const decryptedUserId = decrypt(loggedInUser);
+
+                const dbRef = this.helpers.GET_DB_REFERENCE();
+
+                this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((snapshot) => {
+                    try {
+                        if (this.helpers.IF_EXISTS(snapshot)) {
+                            const team = this.helpers.GET_VALUE(snapshot);
+                            const teamName = team.teamName;
+  
+                            resolve(
+                                this.#saveToDB({
+                                    dbRef: dbRef, 
+                                    teamId: teamId, 
+                                    members: team.members, 
+                                    userId: decryptedUserId
+                                })
+                            );
+
+                            this.loadDependencies.removeLoading();
+
+                            this.handlerDependencies.displayMessage({message: `You have joined <span style="font-weight: bold">${teamName}</span>!`, isError: false})
+                        } else {
+                            this.handlerDependencies.throwError("No data available!");
+                        }
+                    } catch(error) {
+                        this.loadDependencies.removeLoading();
+                        reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                    }
+                });       
+            });
+        });
+    }
+
+    #saveToDB(userInfo) {
+        const { dbRef, teamId, members, userId } = userInfo;
+
+        members.push(userId);
+
+        this.helpers.SAVE_TO_DB_IN_TEAMS({
+            dbReference: dbRef,
+            firstChild: teamId,
+            secondChild: 'members',
+            saveValue: members
+        });
+
+        dbRef.child(this.helpers.USERS_GET_CHILD_REF).child(userId).child('teams').push(teamId);
     }
 
     removeTeamInvitation(ids) {
@@ -123,7 +183,6 @@ export class IndexModel {
                     try {
                         if (this.helpers.IF_EXISTS(snapshot)) {
                             const invitedUser = this.helpers.GET_VALUE(snapshot);
-                            console.log(invitedUser.invitedUsers)
                             
                             let getValue = false;
                             for (const [key, value] of Object.entries(invitedUser.invitedUsers)) {

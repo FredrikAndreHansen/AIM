@@ -62,10 +62,17 @@ export class UsersModel {
 
             let userIsInvitedOrMember = false;
             if (displayInTeam === true) {
-                const invitedTeams = Object.values(users[key].invitedTeams);
 
+                const invitedTeams = Object.values(users[key].invitedTeams);
                 for (let i = 0; i < invitedTeams.length; i++) {
                     if (invitedTeams[i].teamId === teamId) {
+                        userIsInvitedOrMember = true;
+                    }
+                }
+
+                const teams = Object.values(users[key].teams);
+                for (let i = 0; i < teams.length; i++) {
+                    if (teams[i] === teamId) {
                         userIsInvitedOrMember = true;
                     }
                 }

@@ -15,7 +15,7 @@ export function usersView(hasBlockedUsers, displayInTeam) {
     `;
 }
 
-export function userOutputView(encryptedKey, users, key, isBlocked, isSelf = false) {
+export function userOutputView(encryptedKey, users, key, isBlocked, isSelf = false, isAdmin = false) {
     return `                        
         <tr ${isSelf === false ? 'class="tr tr-not-self"' : 'class="tr"'} id="all-users" data-id="${encryptedKey}">
             <td class="${isBlocked === true ? 'user-td-blocked' : isSelf === false ? 'user-td' : 'user-td-self'}"><img class="user-icon" src="../../graphic/userIcon.svg" /></td>
@@ -23,6 +23,7 @@ export function userOutputView(encryptedKey, users, key, isBlocked, isSelf = fal
                 <p ${isSelf === false ? '' : 'style="font-weight: bold;"'} class="paragraph-center">${users[key].username}</p>
                 <hr class="hr-x-small" style="margin-top: -8px;" />
                 <p class="paragraph-center-small" style="margin-top: -6px;">${users[key].company}</p>
+                ${isAdmin === false ? '' : '<p style="font-weight: bold;margin-top: -12px;" class="paragraph-center-small">&#x2022;</p><p style="margin-top: -12px;font-weight: bold;" class="paragraph-center-small">Admin</p>'}
             </td>
         </tr>
     `;

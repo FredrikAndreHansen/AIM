@@ -15,7 +15,7 @@ export class IndividualTeamController {
     }
 
     #generateOutput(teamName, members, invitedUsers, isAdmin, teamId) {
-        this.individualTeamModel.generateTeamUsers(members, invitedUsers).then((res) => {
+        this.individualTeamModel.generateTeamUsers(members, invitedUsers, teamId).then((res) => {
             const memberQuantity = members.length;
             const membersOutput = res[0];
 

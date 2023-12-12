@@ -44,7 +44,7 @@ export class IndividualTeamModel {
         });
     }
 
-    async generateTeamUsers(members, invitedUsers) {
+    async generateTeamUsers(members, invitedUsers, teamId) {
         this.loadDependencies.displayLoading();
         this.authDependencies.validateIfLoggedIn();
 
@@ -60,31 +60,40 @@ export class IndividualTeamModel {
                     const loggedInUserId = decrypt(userId);
 
                     this.helpers.GET_DB_USERS_INFO(dbRef, loggedInUserId).then((getLoggedInUser) => {
-                        try {
-                            const loggedInUser = this.helpers.GET_VALUE(getLoggedInUser);
-                            const blockedUsers = loggedInUser.blockedUsers;
+                        this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((getTeam) => {
+                            try {
+                                if (this.helpers.IF_EXISTS(getLoggedInUser) && this.helpers.IF_EXISTS(getTeam)) {
+                                    const loggedInUser = this.helpers.GET_VALUE(getLoggedInUser);
+                                    const blockedUsers = loggedInUser.blockedUsers;
 
-                            const encrypt = this.encryptDependencies.cipher(salt);
-                            const users = this.helpers.GET_VALUE(snapshot);
+                                    const team = this.helpers.GET_VALUE(getTeam);
+                                    const teamAdmin = team.teamCreatorId;
 
-                            const HTMLMembersOutput = this.#generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId);
+                                    const encrypt = this.encryptDependencies.cipher(salt);
+                                    const users = this.helpers.GET_VALUE(snapshot);
 
-                            const HTMLInvitedUsersOutput = this.#generateTeamUsersOutput(invitedUsers, users, encrypt, blockedUsers, loggedInUserId);
+                                    const HTMLMembersOutput = this.#generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, teamAdmin);
 
-                            this.loadDependencies.removeLoading();
+                                    const HTMLInvitedUsersOutput = this.#generateTeamUsersOutput(invitedUsers, users, encrypt, blockedUsers, loggedInUserId);
 
-                            resolve([HTMLMembersOutput, HTMLInvitedUsersOutput]);
-                        } catch(error) {
-                            this.loadDependencies.removeLoading();
-                            reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
-                        }
+                                    this.loadDependencies.removeLoading();
+
+                                    resolve([HTMLMembersOutput, HTMLInvitedUsersOutput]);
+                                } else {
+                                    reject(this.handlerDependencies.throwError("No data available!"));
+                                }
+                            } catch(error) {
+                                this.loadDependencies.removeLoading();
+                                reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                            }
+                        });
                     });
                 });
             });
         });
     }
 
-    #generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId) {
+    #generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, teamAdmin) {
         let HTMLOutput = "";
 
         for (let i = 0; i < members.length; i++) {
@@ -92,12 +101,15 @@ export class IndividualTeamModel {
 
                 let isSelf = false;
                 if (key === loggedInUserId) {isSelf = true;}
+
+                let isAdmin = false;
+                if (key === teamAdmin) {isAdmin = true;}
     
                 if (key === members[i]) {
                     const encryptedKey = encrypt(key);
                     const isBlocked = !this.helpers.CHECK_IF_BLOCKED_USERS_EXISTS(blockedUsers, key);
 
-                    HTMLOutput += this.views.userOutputView(encryptedKey, users, key, isBlocked, isSelf);
+                    HTMLOutput += this.views.userOutputView(encryptedKey, users, key, isBlocked, isSelf, isAdmin);
                 }
             }    
         }
