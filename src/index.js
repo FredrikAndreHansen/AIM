@@ -41,10 +41,9 @@ else {
     // Date, start and end time of meeting
     // Select team
     // Get a list of all users (so that you can discard users for the meeting(in case someone is sick!))
-    // Pending meeting result page, it will also appear in the notification menu (for all affected users!)
+    // Pending meeting result page, it will also appear in the notification menu (for all affected users!) Meetings will appear first in the notification menu!
 
 // ## Main menu
-// Have a notification when declining a meeting
 // Settings in main menu
     // Change username
     // Change company name

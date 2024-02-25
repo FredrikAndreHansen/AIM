@@ -9,4 +9,6 @@ export const signInView = `
         <hr class="hr">
         <div class="center"><a class="link-text" id="register-navigate">Register</a> <span class="span-text">-</span> <a class="link-text" id="password-reset-navigate">Forgot Password?</a></div>
     </div>
+
+    <div class="center"><a href="https://www.nomadis.co.uk/" target="_blank" class="nomad-text">© 2024 Nomad</a></div>
 `;

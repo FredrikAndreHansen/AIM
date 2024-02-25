@@ -1,12 +1,14 @@
 import { popupDOMElement, errorDOMElement } from "../index.js";
 import { handlerView } from "../view/handlers/handlerView.js";
 import { removeLoading } from "./load.js";
-import { SET_INNER_HTML_VALUE, CLOSE_MODAL } from "../helpers/helpers.js";
+import { SET_INNER_HTML_VALUE, CLOSE_MODAL, DISABLE_SCROLL } from "../helpers/helpers.js";
 
 export function displayMessage(handlerOutputValues) {
     const { message, isError } = handlerOutputValues;
 
     generateOutput(message, isError);
+
+    DISABLE_SCROLL();
 
     const errorBtnDOMElement = document.querySelector('#error-button');
     const errorBoxContainerDomElement = document.querySelector('#error-box-container');

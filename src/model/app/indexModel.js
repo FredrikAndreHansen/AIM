@@ -105,7 +105,7 @@ export class IndexModel {
 
                             this.loadDependencies.removeLoading();
 
-                            this.handlerDependencies.displayMessage({message: `You have joined <span style="font-weight: bold">${teamName}</span>!`, isError: false})
+                            this.handlerDependencies.displayMessage({message: `You have joined <span style="font-weight: bold">${teamName}</span>!`, isError: false});
                         } else {
                             this.handlerDependencies.throwError("No data available!");
                         }

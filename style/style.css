@@ -39,6 +39,12 @@ body{
 body::-webkit-scrollbar {
     display: none;
   }
+
+.remove-scrolling { 
+    position: fixed;
+    width: 100%;
+} 
+
 .main-menu {
     z-index: 2;
     position: fixed;
@@ -646,6 +652,19 @@ body::-webkit-scrollbar {
 .link-text:hover {
     cursor: pointer;
     color: var(--less-dark-grey);
+}
+
+.nomad-text {
+    color: var(--black);
+    text-align: center;
+    font-size: var(--medium);
+    font-family: var(--font);
+    text-decoration: none;
+}
+
+.nomad-text:hover {
+    cursor: pointer;
+    color: var(--black-shade);
 }
 
 .span-text {

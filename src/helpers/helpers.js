@@ -1,5 +1,6 @@
 import { displayMessage, throwError } from "../libraries/handler.js";
 import { displayLoading } from "../libraries/load.js";
+import { viewDOMElement } from "../index.js";
 
 export function SALT() {
     // Get salt from database
@@ -255,10 +256,19 @@ export function IF_ANY_BLOCKED_USERS(blockedUsers) {
     }
 }
 
+export function DISABLE_SCROLL() {
+    viewDOMElement.classList.add("remove-scrolling");
+}
+
+function enable_scroll() {
+    viewDOMElement.classList.remove("remove-scrolling");
+}
+
 export function CLOSE_MODAL(clickListeners, element) {
     for(let i = 0; i < clickListeners.length; i++) {
         clickListeners[i].addEventListener('click', function() {
             SET_INNER_HTML_VALUE({set: element, to: 'clear'});
+            enable_scroll();
         });
     }
 }
