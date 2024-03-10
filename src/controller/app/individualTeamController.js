@@ -8,21 +8,21 @@ export class IndividualTeamController {
         this.allUsersController = allUsersController;
     }
 
-    setView(teamName, members, invitedUsers, isAdmin, teamId) {
+    setView(teamName, members, invitedUsers, isAdmin, config, teamId) {
         this.authDependencies.validateIfLoggedIn();
 
-        this.#generateOutput(teamName, members, invitedUsers, isAdmin, teamId);
+        this.#generateOutput(teamName, members, invitedUsers, isAdmin, config, teamId);
     }
 
-    #generateOutput(teamName, members, invitedUsers, isAdmin, teamId) {
-        this.individualTeamModel.generateTeamUsers(members, invitedUsers, teamId).then((res) => {
+    #generateOutput(teamName, members, invitedUsers, isAdmin, config, teamId) {
+        this.individualTeamModel.generateTeamUsers(members, invitedUsers, config, teamId).then((res) => {
             const memberQuantity = members.length;
             const membersOutput = res[0];
 
             const invitedUsersQuantity = invitedUsers.length - 1;
             const invitedUsersOutput = res[1];
 
-            this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.individualTeamView(teamName, memberQuantity, invitedUsersQuantity, isAdmin)});
+            this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.individualTeamView(teamName, memberQuantity, invitedUsersQuantity, isAdmin, config)});
 
             const userListDOMElement = document.querySelector('#user-list');
             this.helpers.SET_INNER_HTML_VALUE({set: userListDOMElement, to: membersOutput});
@@ -35,7 +35,7 @@ export class IndividualTeamController {
 
             this.#goBackToTeamsPage();
 
-            this.#inviteUsers(teamName, members, invitedUsers, isAdmin, teamId);
+            this.#inviteUsers(teamName, members, invitedUsers, isAdmin, config, teamId);
         });
     }
 
@@ -47,20 +47,23 @@ export class IndividualTeamController {
          });
     }
 
-    #inviteUsers(teamName, members, invitedUsers, isAdmin, teamId) {
-        const inviteMembersBtnDOMElement = document.querySelector('#invite-members-button');
+    #inviteUsers(teamName, members, invitedUsers, isAdmin, config, teamId) {
+        if (isAdmin === true || config.allAllowedToAddUsers === true) {
+            const inviteMembersBtnDOMElement = document.querySelector('#invite-members-button');
 
-        inviteMembersBtnDOMElement.addEventListener('click', () => {
-            this.#generateInviteUsersOutput(teamName, members, invitedUsers, isAdmin, teamId);
-        });
+            inviteMembersBtnDOMElement.addEventListener('click', () => {
+                this.#generateInviteUsersOutput(teamName, members, invitedUsers, isAdmin, config, teamId);
+            });
+        }
     }
 
-    #generateInviteUsersOutput(teamName, members, invitedUsers, isAdmin, teamId) {
+    #generateInviteUsersOutput(teamName, members, invitedUsers, isAdmin, config, teamId) {
         const teamInfo = {
             teamName: teamName,
             members: members,
             invitedUsers: invitedUsers,
             isAdmin: isAdmin,
+            config: config,
             teamId: teamId
         };
         this.allUsersController.setView(true, teamInfo);

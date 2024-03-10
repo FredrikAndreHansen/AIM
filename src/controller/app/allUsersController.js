@@ -117,7 +117,7 @@ export class AllUsersController {
     #goBackToIndividualTeamPage(displayInTeam, teamInfo) {
         if(displayInTeam === true) {
             const backArrowIconDOMElement = document.querySelector('.backarrow-icon');
-            
+
             backArrowIconDOMElement.addEventListener('click', () => {
                 this.helpers.initApp('teams', teamInfo);
             });

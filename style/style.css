@@ -660,6 +660,7 @@ body::-webkit-scrollbar {
     font-size: var(--medium);
     font-family: var(--font);
     text-decoration: none;
+    padding-bottom: var(--big);
 }
 
 .nomad-text:hover {

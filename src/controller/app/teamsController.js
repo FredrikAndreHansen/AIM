@@ -59,9 +59,9 @@ export class TeamsController extends AppController {
 
     #getIndividualTeam(displayUsers) {
         if (displayUsers !== false) {
-            const { teamName, members, invitedUsers, isAdmin, teamId } = displayUsers;
+            const { teamName, members, invitedUsers, isAdmin, config, teamId } = displayUsers;
 
-            this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, teamId);
+            this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, config, teamId);
         }
 
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");
@@ -81,9 +81,10 @@ export class TeamsController extends AppController {
                         const { team, isAdmin } = res;
                         const teamName = team.teamName;
                         const members = team.members;
+                        const config = team.configuration;
                         const invitedUsers = Object.values(team.invitedUsers);
-  
-                        this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, decryptedId);
+
+                        this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, config, decryptedId);
                     });
                 });
             });

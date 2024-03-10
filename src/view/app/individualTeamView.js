@@ -1,10 +1,10 @@
-export function individualTeamView(teamName, memberQuantity, invitedUsersQuantity = 0, isAdmin) {
+export function individualTeamView(teamName, memberQuantity, invitedUsersQuantity = 0, isAdmin, config) {
     return `
         <div class="content-section">
             <h1 class="header">${teamName}</h1>
             <img class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
             ${isAdmin === true ? '<img class="cogwheel-icon" src="../../../graphic/cogwheelIcon.svg" />' : ''}
-            <button id="invite-members-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userInviteIcon.svg" />INVITE USERS</button>
+            ${isAdmin === true || config.allAllowedToAddUsers === true ? '<button id="invite-members-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userInviteIcon.svg" />INVITE USERS</button>' : ''}
             <div class="space-medium"></div>
             <hr class="hr-small">
             ${invitedUsersQuantity > 0 ? '<div class="space-x-big"></div><h1 class="header-small">Pending Invites (' + invitedUsersQuantity + ')</h1>' : ''}

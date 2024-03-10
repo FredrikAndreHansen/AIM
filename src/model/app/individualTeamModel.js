@@ -44,7 +44,7 @@ export class IndividualTeamModel {
         });
     }
 
-    async generateTeamUsers(members, invitedUsers, teamId) {
+    async generateTeamUsers(members, invitedUsers, config, teamId) {
         this.loadDependencies.displayLoading();
         this.authDependencies.validateIfLoggedIn();
 
@@ -72,7 +72,7 @@ export class IndividualTeamModel {
                                     const encrypt = this.encryptDependencies.cipher(salt);
                                     const users = this.helpers.GET_VALUE(snapshot);
 
-                                    const HTMLMembersOutput = this.#generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, teamAdmin);
+                                    const HTMLMembersOutput = this.#generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, teamAdmin, config);
 
                                     const HTMLInvitedUsersOutput = this.#generateTeamUsersOutput(invitedUsers, users, encrypt, blockedUsers, loggedInUserId);
 
@@ -93,7 +93,7 @@ export class IndividualTeamModel {
         });
     }
 
-    #generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, teamAdmin) {
+    #generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, teamAdmin, config) {
         let HTMLOutput = "";
 
         for (let i = 0; i < members.length; i++) {

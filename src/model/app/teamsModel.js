@@ -118,6 +118,7 @@ export class TeamsModel {
             configuration: {
                 allAllowedToAddUsers: true,
                 allAllowedToRemoveUsers: false,
+                allAllowedToRemovePendingInvites: false,
                 allAllowedToScheduleMeeting: true
             }});
         const getKey = addTeam.getKey();
