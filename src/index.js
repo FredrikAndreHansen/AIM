@@ -26,13 +26,12 @@ else {
 // Todo
 
 // ## Teams menu
-// Add when "allAllowedToRemoveUsers" and "allAllowedToRemovePendingInvites" the memebers are grayed out! (Check individualTeamModel.js in the generateTeamUsersOutput() function with the config object!)
 // Settings (only for admin): 
     // Rename team
     // Set team rules (allow to add users, allow to remove users, allow to remove pending invites, allowed to schedule meetings)
     // Delete team
 // Cant kick admin users! (Have admins grayed out)
-// Kick members and pending invites (Remove the eventlistener for clicking on the members/pending invites if "allAllowedToRemoveUsers" and "allAllowedToRemovePendingInvites" are set to false!)
+// Kick members and pending invites (Remove the eventlistener for clicking on the members/pending invites if "allAllowedToRemoveUsers" and "allAllowedToRemovePendingInvites" are set to false! Check individualTeamController.js for the config object!)
 
 // ## Users menu
 // Invite users to teams via the User menu (Can only see teams that you are allowed to invite) - If no teams available then the invite button will dissapear!
@@ -45,6 +44,9 @@ else {
     // Get a list of all users (so that you can discard users for the meeting(in case someone is sick!))
     // Pending meeting result page, it will also appear in the notification menu (for all affected users!) Meetings will appear first in the notification menu!
 
+// After when everyone has accepted
+    // Get the option to add a link - link to join the meeting (you can also add the link if the meeting is still pending)
+
 // ## Main menu
 // Settings in main menu
     // Change username
@@ -53,3 +55,5 @@ else {
     // Change email
     // Always signed in or sign out when removing the app
     // Delete account, inform that all user data will be removed from the server
+
+// Check to integrate with Google calendar and perhaps Microsoft calendar, to automatically add it in!

@@ -72,9 +72,12 @@ export class IndividualTeamModel {
                                     const encrypt = this.encryptDependencies.cipher(salt);
                                     const users = this.helpers.GET_VALUE(snapshot);
 
-                                    const HTMLMembersOutput = this.#generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, teamAdmin, config);
+                                    const allowedToRemovePending = config.allAllowedToRemovePendingInvites;
+                                    const allowedToRemoveUsers = config.allAllowedToRemoveUsers
 
-                                    const HTMLInvitedUsersOutput = this.#generateTeamUsersOutput(invitedUsers, users, encrypt, blockedUsers, loggedInUserId);
+                                    const HTMLMembersOutput = this.#generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, teamAdmin, allowedToRemoveUsers);
+
+                                    const HTMLInvitedUsersOutput = this.#generateTeamUsersOutput(invitedUsers, users, encrypt, blockedUsers, loggedInUserId, teamAdmin,allowedToRemovePending);
 
                                     this.loadDependencies.removeLoading();
 
@@ -93,14 +96,14 @@ export class IndividualTeamModel {
         });
     }
 
-    #generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, teamAdmin, config) {
+    #generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, teamAdmin, allowedToRemove) {
         let HTMLOutput = "";
 
         for (let i = 0; i < members.length; i++) {
             for (const key in users) {
 
                 let isSelf = false;
-                if (key === loggedInUserId) {isSelf = true;}
+                if (key === loggedInUserId || allowedToRemove === false) {isSelf = true;}
 
                 let isAdmin = false;
                 if (key === teamAdmin) {isAdmin = true;}
