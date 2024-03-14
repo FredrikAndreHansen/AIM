@@ -3,7 +3,7 @@ export function individualTeamView(teamName, memberQuantity, invitedUsersQuantit
         <div class="content-section">
             <h1 class="header">${teamName}</h1>
             <img class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
-            ${isAdmin === true ? '<img class="cogwheel-icon" src="../../../graphic/cogwheelIcon.svg" />' : ''}
+            <img class="cogwheel-icon" src="../../../graphic/cogwheelIcon.svg" />'
             ${isAdmin === true || config.allAllowedToAddUsers === true ? '<button id="invite-members-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userInviteIcon.svg" />INVITE USERS</button>' : ''}
             <div class="space-medium"></div>
             <hr class="hr-small">

@@ -75,9 +75,9 @@ export class IndividualTeamModel {
                                     const allowedToRemovePending = config.allAllowedToRemovePendingInvites;
                                     const allowedToRemoveUsers = config.allAllowedToRemoveUsers
 
-                                    const HTMLMembersOutput = this.#generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, teamAdmin, allowedToRemoveUsers);
+                                    const HTMLMembersOutput = this.#generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, allowedToRemoveUsers, teamAdmin);
 
-                                    const HTMLInvitedUsersOutput = this.#generateTeamUsersOutput(invitedUsers, users, encrypt, blockedUsers, loggedInUserId, teamAdmin,allowedToRemovePending);
+                                    const HTMLInvitedUsersOutput = this.#generateTeamUsersOutput(invitedUsers, users, encrypt, blockedUsers, loggedInUserId, allowedToRemovePending);
 
                                     this.loadDependencies.removeLoading();
 
@@ -96,23 +96,30 @@ export class IndividualTeamModel {
         });
     }
 
-    #generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, teamAdmin, allowedToRemove) {
+    #generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, allowedToRemove, teamAdmin = false) {
         let HTMLOutput = "";
 
         for (let i = 0; i < members.length; i++) {
             for (const key in users) {
 
+                let block = !allowedToRemove;
+
+                let checkIfUserBlockedYou = users[key].blockedUsers;
+                for (const key in checkIfUserBlockedYou) {
+                    if (loggedInUserId === checkIfUserBlockedYou[key] && loggedInUserId !== teamAdmin) {block = true;}
+                }
+
                 let isSelf = false;
-                if (key === loggedInUserId || allowedToRemove === false) {isSelf = true;}
+                if (key === loggedInUserId) {isSelf = true;block = true;}
 
                 let isAdmin = false;
-                if (key === teamAdmin) {isAdmin = true;}
+                if (key === teamAdmin) {isAdmin = true;block = true;}
     
                 if (key === members[i]) {
                     const encryptedKey = encrypt(key);
                     const isBlocked = !this.helpers.CHECK_IF_BLOCKED_USERS_EXISTS(blockedUsers, key);
 
-                    HTMLOutput += this.views.userOutputView(encryptedKey, users, key, isBlocked, isSelf, isAdmin);
+                    HTMLOutput += this.views.userOutputView(encryptedKey, users, key, isBlocked, isSelf, isAdmin, block);
                 }
             }    
         }
