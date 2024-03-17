@@ -127,4 +127,70 @@ export class IndividualTeamModel {
         return HTMLOutput;
     }
 
+    kickUsers(members, invitedUsers, isAdmin, config, teamId, individualUserId) {
+        const userId = this.helpers.GET_USER_ID();
+        return new Promise((resolve, reject) => {
+            this.helpers.SALT().then((salt) => {
+                const decrypt = this.encryptDependencies.decipher(salt);
+                const decryptedSelfId = decrypt(userId);
+                const decryptedId = decrypt(individualUserId);
+                const dbRef = this.helpers.GET_DB_REFERENCE();
+
+                this.helpers.GET_DB_USERS_INFO(dbRef, decryptedId).then((getLoggedInUser) => {
+                    this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((getTeam) => {
+                        try {
+                            if (this.helpers.IF_EXISTS(getTeam) && this.helpers.IF_EXISTS(getLoggedInUser)) {
+                                const team = this.helpers.GET_VALUE(getTeam);
+                                const loggedInUser = this.helpers.GET_VALUE(getLoggedInUser);
+
+                                const canKick = this.#checkIfUserCanBeKicked(decryptedId, members, invitedUsers, isAdmin, decryptedSelfId, config, team, loggedInUser);
+                                if (canKick === true) {
+                                    resolve(alert('yes'));
+                                }
+                            } else {
+                                reject(this.handlerDependencies.throwError("No data available!"));
+                            }
+                        } catch(error) {
+                            reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                        }
+                    });
+                });
+            });
+        });
+    }
+
+    #checkIfUserCanBeKicked(userId, members, invitedUsers, isAdmin, selfId, config, team, loggedInUser) {    
+        const teamAdmin = team.teamCreatorId;
+        if (userId === teamAdmin){
+            return false;
+        }
+        if (userId === selfId) {
+            return false;
+        }
+        if (isAdmin === true) {
+            return true;
+        }
+        const blockedUsers = loggedInUser.blockedUsers;
+        for (const key in blockedUsers) { 
+            if (selfId === blockedUsers[key]) {
+                return false;
+            }
+        }
+        if (config.allAllowedToRemoveUsers === true) {
+            for(let i = 0; i < members.length; i++) {
+                if (members[i] === userId) {
+                    return true;
+                }
+            }
+        }
+        if (config.allAllowedToRemovePendingInvites === true) {
+            for(let i = 0; i < invitedUsers.length; i++) {
+                if (invitedUsers[i] === userId) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }

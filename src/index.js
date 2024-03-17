@@ -26,7 +26,8 @@ else {
 // Todo
 
 // ## Teams menu
-// Kick members and pending invites (Remove the eventlistener for clicking on the members/pending invites if "allAllowedToRemoveUsers" and "allAllowedToRemovePendingInvites" are set to false! Check individualTeamController.js for the config object! (also remove eventlistener for kicking admins or users who have blocked you, you are not able to kick these users!))
+// Kick members and pending invites (Remove the eventlistener for clicking on the members/pending invites if "allAllowedToRemoveUsers" and "allAllowedToRemovePendingInvites" are set to false! Check individualTeamController/Model.js for the config object! (also remove eventlistener for kicking admins or users who have blocked you, you are not able to kick these users!))
+// When logged in as admin, be able to kick all users, also the users should not be grayed out!
 // Settings (for admin): 
     // Rename team
     // Set team rules (allow to add users, allow to remove users, allow to remove pending invites, allowed to schedule meetings)
@@ -57,4 +58,6 @@ else {
     // Always signed in or sign out when removing the app
     // Delete account, inform that all user data will be removed from the server
 
-// Check to integrate with Google calendar and perhaps Microsoft calendar, to automatically add it in!
+// Check to integrate with Google calendar and perhaps Microsoft/Outlook calendar, to automatically add it in!
+
+// Check to get badge notifications without opening, if possible then also automatically open app when getting a meeting notification(have a setting to also disable it also)

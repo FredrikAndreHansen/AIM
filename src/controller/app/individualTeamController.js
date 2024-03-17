@@ -1,7 +1,9 @@
 export class IndividualTeamController {
 
-    constructor(authDependencies, helpers, views, individualTeamModel, allUsersController) {
+    constructor(handlerDependencies, authDependencies, encryptDependencies, helpers, views, individualTeamModel, allUsersController) {
+        this.handlerDependencies = handlerDependencies;
         this.authDependencies = authDependencies;
+        this.encryptDependencies = encryptDependencies;
         this.helpers = helpers;
         this.views = views;
         this.individualTeamModel = individualTeamModel;
@@ -36,6 +38,8 @@ export class IndividualTeamController {
             this.#goBackToTeamsPage();
 
             this.#inviteUsers(teamName, members, invitedUsers, isAdmin, config, teamId);
+
+            this.#kickUsers(members, invitedUsers, isAdmin, config, teamId);
         });
     }
 
@@ -67,6 +71,17 @@ export class IndividualTeamController {
             teamId: teamId
         };
         this.allUsersController.setView(true, teamInfo);
+    }
+
+    #kickUsers(members, invitedUsers, isAdmin, config, teamId) {
+        const allUsersDOMEElement = document.querySelectorAll('#all-users');
+        allUsersDOMEElement.forEach(getIndividualUser => {
+
+            getIndividualUser.addEventListener('click', () => {
+                const individualUserId = getIndividualUser.getAttribute('data-id');
+                this.individualTeamModel.kickUsers(members, invitedUsers, isAdmin, config, teamId, individualUserId);
+            })
+        });
     }
 
 }
