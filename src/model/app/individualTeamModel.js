@@ -77,7 +77,7 @@ export class IndividualTeamModel {
 
                                     const HTMLMembersOutput = this.#generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, allowedToRemoveUsers, teamAdmin);
 
-                                    const HTMLInvitedUsersOutput = this.#generateTeamUsersOutput(invitedUsers, users, encrypt, blockedUsers, loggedInUserId, allowedToRemovePending);
+                                    const HTMLInvitedUsersOutput = this.#generateTeamUsersOutput(invitedUsers, users, encrypt, blockedUsers, loggedInUserId, allowedToRemovePending, teamAdmin);
 
                                     this.loadDependencies.removeLoading();
 
@@ -96,7 +96,7 @@ export class IndividualTeamModel {
         });
     }
 
-    #generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, allowedToRemove, teamAdmin = false) {
+    #generateTeamUsersOutput(members, users, encrypt, blockedUsers, loggedInUserId, allowedToRemove, teamAdmin) {
         let HTMLOutput = "";
 
         for (let i = 0; i < members.length; i++) {
@@ -114,7 +114,9 @@ export class IndividualTeamModel {
 
                 let isAdmin = false;
                 if (key === teamAdmin) {isAdmin = true;block = true;}
-    
+
+                if (teamAdmin === loggedInUserId && key !== loggedInUserId) {block = false;}
+
                 if (key === members[i]) {
                     const encryptedKey = encrypt(key);
                     const isBlocked = !this.helpers.CHECK_IF_BLOCKED_USERS_EXISTS(blockedUsers, key);
@@ -146,6 +148,8 @@ export class IndividualTeamModel {
                                 const canKick = this.#checkIfUserCanBeKicked(decryptedId, members, invitedUsers, isAdmin, decryptedSelfId, config, team, loggedInUser);
                                 if (canKick === true) {
                                     resolve(alert('yes'));
+                                } else {
+                                    reject(false);
                                 }
                             } else {
                                 reject(this.handlerDependencies.throwError("No data available!"));
