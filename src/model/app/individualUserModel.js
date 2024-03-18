@@ -48,7 +48,6 @@ export class IndividualUserModel {
 
     toggleUserBlock(userinfo) {
         const { userId, userName, blockUser } = userinfo;
-
         const loggedInUser = this.helpers.GET_USER_ID();
 
         this.helpers.SALT().then((salt) => {

@@ -62,10 +62,13 @@ export class IndexController extends AppController {
 
     #setAlerts(isAlert) {
         const alertsDOMElement = document.querySelector('#alerts');
-        if (isAlert === true) {
-            this._helpers.SET_INNER_HTML_VALUE({set: alertsDOMElement, to: ''});
-        } else {
-            this._helpers.SET_INNER_HTML_VALUE({set: alertsDOMElement, to: this._views.noAlertsView()});
+
+        if (alertsDOMElement !== null) {
+            if (isAlert === true) {
+                this._helpers.SET_INNER_HTML_VALUE({set: alertsDOMElement, to: ''});
+            } else {
+                this._helpers.SET_INNER_HTML_VALUE({set: alertsDOMElement, to: this._views.noAlertsView()});    
+            }
         }
     }
 

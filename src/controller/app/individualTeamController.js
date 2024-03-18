@@ -1,13 +1,15 @@
 export class IndividualTeamController {
 
-    constructor(handlerDependencies, authDependencies, encryptDependencies, helpers, views, individualTeamModel, allUsersController) {
+    constructor(handlerDependencies, authDependencies, encryptDependencies, helpers, views, individualTeamModel, individualUserModel, allUsersController, individualUserController) {
         this.handlerDependencies = handlerDependencies;
         this.authDependencies = authDependencies;
         this.encryptDependencies = encryptDependencies;
         this.helpers = helpers;
         this.views = views;
         this.individualTeamModel = individualTeamModel;
+        this.individualUserModel = individualUserModel;
         this.allUsersController = allUsersController;
+        this.individualUserController = individualUserController;
     }
 
     setView(teamName, members, invitedUsers, isAdmin, config, teamId) {
@@ -75,11 +77,28 @@ export class IndividualTeamController {
 
     #kickUsers(members, invitedUsers, isAdmin, config, teamId) {
         const allUsersDOMEElement = document.querySelectorAll('#all-users');
-        allUsersDOMEElement.forEach(getIndividualUser => {
 
+        allUsersDOMEElement.forEach(getIndividualUser => {
             getIndividualUser.addEventListener('click', () => {
                 const individualUserId = getIndividualUser.getAttribute('data-id');
-                this.individualTeamModel.kickUsers(members, invitedUsers, isAdmin, config, teamId, individualUserId);
+
+                this.individualTeamModel.checkPermissionToKickUsers(members, invitedUsers, isAdmin, config, teamId, individualUserId).then((kanKick) => {
+
+                    if (kanKick === true) {
+                        this.helpers.SALT().then((salt) => {
+                            const decrypt = this.encryptDependencies.decipher(salt);
+                            const decryptedId = decrypt(individualUserId);
+
+                            this.individualUserModel.getIndividualUser(decryptedId).then(res => {
+                                const userName = res[0];
+                                const company = res[1];
+                                const userIsBlocked = res[2];
+    
+                                this.individualUserController.setView(decryptedId, userName, company, userIsBlocked, true, teamId, kanKick);
+                            });
+                        });
+                    }
+                });
             })
         });
     }

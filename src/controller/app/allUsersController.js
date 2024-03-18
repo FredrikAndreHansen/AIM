@@ -49,7 +49,7 @@ export class AllUsersController {
 
     #getIndividualUser(displayInTeam, teamInfo) {
         const allUsersDOMElement = document.querySelectorAll("#all-users");
-        
+
         allUsersDOMElement.forEach((getIndividualUser) => {
             
             getIndividualUser.addEventListener('click', () => {

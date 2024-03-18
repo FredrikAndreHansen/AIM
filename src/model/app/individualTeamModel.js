@@ -129,7 +129,7 @@ export class IndividualTeamModel {
         return HTMLOutput;
     }
 
-    kickUsers(members, invitedUsers, isAdmin, config, teamId, individualUserId) {
+    checkPermissionToKickUsers(members, invitedUsers, isAdmin, config, teamId, individualUserId) {
         const userId = this.helpers.GET_USER_ID();
         return new Promise((resolve, reject) => {
             this.helpers.SALT().then((salt) => {
@@ -146,11 +146,8 @@ export class IndividualTeamModel {
                                 const loggedInUser = this.helpers.GET_VALUE(getLoggedInUser);
 
                                 const canKick = this.#checkIfUserCanBeKicked(decryptedId, members, invitedUsers, isAdmin, decryptedSelfId, config, team, loggedInUser);
-                                if (canKick === true) {
-                                    resolve(alert('yes'));
-                                } else {
-                                    reject(false);
-                                }
+                                
+                                resolve(canKick);
                             } else {
                                 reject(this.handlerDependencies.throwError("No data available!"));
                             }

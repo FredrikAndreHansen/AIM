@@ -8,27 +8,32 @@ export class IndividualUserController {
         this.individualUserModel = individualUserModel;
     }
 
-    setView(userId, userName, company, isBlocked, displayInTeam, teamInfo) {
+    setView(userId, userName, company, isBlocked, displayInTeam, teamInfo, kickUserFromTeam = false) {
         this.authDependencies.validateIfLoggedIn();
 
-        this.#generateOutput(userName, company, isBlocked, displayInTeam);
+        this.#generateOutput(userName, company, isBlocked, displayInTeam, kickUserFromTeam);
 
-        this.#toggleUserBlock(userId, userName, isBlocked, displayInTeam);
-
-        this.#inviteUserToTeam(userId, userName, displayInTeam, teamInfo, isBlocked);
+        if (kickUserFromTeam === false) {
+            this.#toggleUserBlock(userId, userName, isBlocked, displayInTeam);
+            this.#inviteUserToTeam(userId, userName, displayInTeam, teamInfo, isBlocked);
+        } else {
+            this.#kickUserFromTeam(userId, teamInfo);
+        }
 
         const errorBoxContainerDomElement = document.querySelector('.error-box-container');
         const exitIconDOMElement = document.querySelector('.exit-icon');
         this.helpers.CLOSE_MODAL([errorBoxContainerDomElement, exitIconDOMElement], this.views.popupDOMElement);
     }
 
-    #generateOutput(userName, company, isBlocked, displayInTeam) {
+    #generateOutput(userName, company, isBlocked, displayInTeam, kickUserFromTeam) {
         this.helpers.SET_INNER_HTML_VALUE({set: this.views.popupDOMElement, to: this.views.individualUserView({
             userName: userName, 
             company: company, 
             isBlocked: isBlocked,
-            displayInTeam: displayInTeam
+            displayInTeam: displayInTeam,
+            kickUserFromTeam: kickUserFromTeam
         })});
+        this.helpers.DISABLE_SCROLL();
     }
 
     #toggleUserBlock(userId, userName, isBlocked, displayInTeam) {
@@ -64,10 +69,18 @@ export class IndividualUserController {
                         });
                     });
                 } else {
-
+                    // Code for inviting users through the user menu!
                 }
             });
         }
+    }
+
+    #kickUserFromTeam(userId, teamInfo) {
+        const userKickBtnDOMElement = document.querySelector('#user-kick-button');
+
+        userKickBtnDOMElement.addEventListener('click', () => {
+            alert(teamInfo)
+        });
     }
 
 }
