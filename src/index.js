@@ -34,6 +34,7 @@ else {
 // Settings (for non-admins) - leave group
 
 // ## Users menu
+// When sorting for bloecked users, have it toggle to sort back to all users when sorting by blocked users
 // Invite users to teams via the User menu (Can only see teams that you are allowed to invite) - If no teams available then the invite button will dissapear!
 
 // ## Schedule metting
