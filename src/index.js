@@ -26,15 +26,14 @@ else {
 // Todo
 
 // ## Teams menu
-// Kick members and pending invites (Remove the eventlistener for clicking on the members/pending invites if "allAllowedToRemoveUsers" and "allAllowedToRemovePendingInvites" are set to false! Check individualTeamController/Model.js for the config object! (also remove eventlistener for kicking admins or users who have blocked you, you are not able to kick these users!))
 // Settings (for admin): 
     // Rename team
     // Set team rules (allow to add users, allow to remove users, allow to remove pending invites, allowed to schedule meetings)
     // Delete team
-// Settings (for non-admins) - leave group
+// Settings (for non-admins) - leave group, use the individualUserModel.removeUserFromTeam() function
 
 // ## Users menu
-// When sorting for bloecked users, have it toggle to sort back to all users when sorting by blocked users
+// When sorting for blocked users, have it toggle to sort back to all users when sorting by blocked users
 // Invite users to teams via the User menu (Can only see teams that you are allowed to invite) - If no teams available then the invite button will dissapear!
 
 // ## Schedule metting

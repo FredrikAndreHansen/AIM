@@ -15,18 +15,18 @@ export function individualUserView(userInfo) {
         if (isBlocked === false) {
             build += `
                 <button id="user-invite-to-team-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userInviteIcon.svg" /> ${displayInTeam === false ? 'INVITE TO TEAM' : 'INVITE'}</button>
-                ${displayInTeam === false ? '<button id="user-block-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userBlockIcon.svg" /> BLOCK USER</button>' : ''}
+                ${displayInTeam === false ? '<button id="user-block-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userBlockIcon.svg" /> BLOCK</button>' : ''}
                 </div>
             `;
         } else {
             build += `
-                <button id="user-unblock-button" class="btn-green"><img class="inside-btn-icon-image" src="../../../graphic/teamsIcon.svg" /> UNBLOCK USER</button>
+                <button id="user-unblock-button" class="btn-green"><img class="inside-btn-icon-image" src="../../../graphic/teamsIcon.svg" /> UNBLOCK</button>
                 </div>
             `;
         }
     } else {
         build += `
-            <button id="user-kick-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userInviteIcon.svg" /> KICK USER</button>
+            <button id="user-kick-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userBlockIcon.svg" /> REMOVE</button>
             </div>
         `;
     }

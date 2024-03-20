@@ -155,4 +155,86 @@ export class IndividualUserModel {
         dbRef.child(this.helpers.TEAMS_GET_CHILD_REF).child(teamInfo.teamId).child('invitedUsers').push(encryptedUserId);
     }
 
+    removeUserFromTeam(userId, teamId, message) {
+        this.loadDependencies.displayLoading();
+
+        return new Promise((resolve, reject) => {
+            const dbRef = this.helpers.GET_DB_REFERENCE();
+
+            this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((snapshotTeam) => {
+                this.helpers.GET_DB_USERS_INFO(dbRef, userId).then((snapshotUser) => {
+                    try {
+                        if (this.helpers.IF_EXISTS(snapshotTeam) && this.helpers.IF_EXISTS(snapshotUser)) {
+                            const getUser = this.helpers.GET_VALUE(snapshotTeam);
+                            const getTeam = this.helpers.GET_VALUE(snapshotUser);
+
+                            if (message === 'KICK') {message = `You have kicked <span style="font-weight: bold">${getTeam.username}</span> from <span style="font-weight: bold">${getUser.teamName}</span>!`} else {message = 'You have left <span style="font-weight: bold">${getUser.teamName}</span>!';}
+                            
+                            const removeUser = this.#removeUserFromTeamDB(getUser, userId, teamId);
+                            const removeTeam = this.#removeTeamFromUserDB(getTeam, userId, teamId);
+
+                            if (removeUser === true && removeTeam === true) {
+                                this.loadDependencies.removeLoading();
+                                resolve(this.handlerDependencies.displayMessage({message: message, isError: false}));
+                            } else {
+                                this.loadDependencies.removeLoading();
+                                reject(this.handlerDependencies.throwError("No data available!"));
+                            }
+                        } else {
+                            this.loadDependencies.removeLoading();
+                            reject(this.handlerDependencies.throwError("No data available!"));
+                        }
+                    } catch(error) {
+                        this.loadDependencies.removeLoading();
+                        reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                    }
+                });
+            });
+        });
+    }
+
+    #removeUserFromTeamDB(getUser, userId, teamId) {
+        let foundUser = false;
+
+        for (const [key, value] of Object.entries(getUser.invitedUsers)) {
+            if (userId === value) {
+                const invitedUser = this.helpers.GET_DB_REFERENCE(this.helpers.TEAMS_REF + teamId + '/invitedUsers/' + key);
+                invitedUser.remove();
+                foundUser = true;
+            }
+        }
+
+        for (const [key, value] of Object.entries(getUser.members)) {
+            if (userId === value) {
+                const invitedUser = this.helpers.GET_DB_REFERENCE(this.helpers.TEAMS_REF + teamId + '/members/' + key);
+                invitedUser.remove();
+                foundUser = true;
+            }
+        }
+
+        return foundUser;
+    }
+
+    #removeTeamFromUserDB(getTeam, userId, teamId) {
+        let foundTeam = false;
+
+        for (const [key, value] of Object.entries(getTeam.invitedTeams)) {
+            if (teamId === value.teamId) {
+                const invitedTeam = this.helpers.GET_DB_REFERENCE(this.helpers.USERS_REF + userId + '/invitedTeams/' + key);
+                invitedTeam.remove();
+                foundTeam = true;
+            }
+        }
+
+        for (const [key, value] of Object.entries(getTeam.teams)) {
+            if (teamId === value) {
+                const invitedTeam = this.helpers.GET_DB_REFERENCE(this.helpers.USERS_REF + userId + '/teams/' + key);
+                invitedTeam.remove();
+                foundTeam = true;
+            }
+        }
+
+        return foundTeam;
+    }
+
 }

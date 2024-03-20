@@ -1,11 +1,12 @@
 export class IndividualUserController {
 
-    constructor(authDependencies, encryptDependencies, helpers, views, individualUserModel) {
+    constructor(authDependencies, encryptDependencies, helpers, views, individualUserModel, individualTeamModel) {
         this.authDependencies = authDependencies;
         this.encryptDependencies = encryptDependencies;
         this.helpers = helpers;
         this.views = views;
         this.individualUserModel = individualUserModel;
+        this.individualTeamModel = individualTeamModel;
     }
 
     setView(userId, userName, company, isBlocked, displayInTeam, teamInfo, kickUserFromTeam = false) {
@@ -64,7 +65,7 @@ export class IndividualUserController {
                             const decrypt = this.encryptDependencies.decipher(salt);
                             const encryptedUserId = decrypt(userId);
                             teamInfo.invitedUsers.push(encryptedUserId);
-
+  
                             this.helpers.initApp('teams', teamInfo);
                         });
                     });
@@ -79,7 +80,25 @@ export class IndividualUserController {
         const userKickBtnDOMElement = document.querySelector('#user-kick-button');
 
         userKickBtnDOMElement.addEventListener('click', () => {
-            alert(teamInfo)
+            this.individualUserModel.removeUserFromTeam(userId, teamInfo, 'KICK').then(() => {
+
+                this.individualTeamModel.getIndividualTeam(teamInfo).then(res => {
+                    const { team, isAdmin } = res;
+                    const teamName = team.teamName;
+                    const members = team.members;
+                    const config = team.configuration;
+                    const invitedUsers = Object.values(team.invitedUsers);
+    
+                    this.helpers.initApp('teams', {
+                        teamName: teamName, 
+                        members: members, 
+                        invitedUsers: invitedUsers, 
+                        isAdmin: isAdmin,
+                        config: config, 
+                        teamId: teamInfo
+                    });
+                });
+            });
         });
     }
 

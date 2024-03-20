@@ -20,10 +20,10 @@ export class IndividualTeamController {
 
     #generateOutput(teamName, members, invitedUsers, isAdmin, config, teamId) {
         this.individualTeamModel.generateTeamUsers(members, invitedUsers, config, teamId).then((res) => {
-            const memberQuantity = members.length;
+            const memberQuantity = res[2];
             const membersOutput = res[0];
 
-            const invitedUsersQuantity = invitedUsers.length - 1;
+            const invitedUsersQuantity = res[3];
             const invitedUsersOutput = res[1];
 
             this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.individualTeamView(teamName, memberQuantity, invitedUsersQuantity, isAdmin, config)});

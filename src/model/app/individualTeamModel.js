@@ -26,7 +26,7 @@ export class IndividualTeamModel {
 
                     if (this.helpers.IF_EXISTS(snapshot)) {
                         const team = this.helpers.GET_VALUE(snapshot);
-
+     
                         let isAdmin = false;
                         if (team.teamCreatorId === loggedInUserId) {isAdmin = true;}
 
@@ -79,9 +79,12 @@ export class IndividualTeamModel {
 
                                     const HTMLInvitedUsersOutput = this.#generateTeamUsersOutput(invitedUsers, users, encrypt, blockedUsers, loggedInUserId, allowedToRemovePending, teamAdmin);
 
+                                    const countMembers = this.#countUsers(members, users);
+                                    const countIvitedUsers = this.#countUsers(invitedUsers, users);
+
                                     this.loadDependencies.removeLoading();
 
-                                    resolve([HTMLMembersOutput, HTMLInvitedUsersOutput]);
+                                    resolve([HTMLMembersOutput, HTMLInvitedUsersOutput, countMembers, countIvitedUsers]);
                                 } else {
                                     reject(this.handlerDependencies.throwError("No data available!"));
                                 }
@@ -127,6 +130,18 @@ export class IndividualTeamModel {
         }
 
         return HTMLOutput;
+    }
+
+    #countUsers(members, users) {
+        let count = 0;
+
+        for (let i = 0; i < members.length; i++) {
+            for (const key in users) {
+                if (key === members[i]) {count ++;}
+            }
+        }
+
+        return count;
     }
 
     checkPermissionToKickUsers(members, invitedUsers, isAdmin, config, teamId, individualUserId) {

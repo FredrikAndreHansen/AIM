@@ -35,10 +35,10 @@ export class AppController {
         teamsController,
         indexModel = new IndexModel(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         individualUserModel = new IndividualUserModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers),
-        individualUserController = new IndividualUserController(this._authDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel),
+        individualTeamModel = new IndividualTeamModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
+        individualUserController = new IndividualUserController(this._authDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel, individualTeamModel),
         usersModel = new UsersModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         allUsersController = new AllUsersController(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views, individualUserController, usersModel, individualUserModel),
-        individualTeamModel = new IndividualTeamModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         individualTeamController = new IndividualTeamController(this._handlerDependencies, this._authDependencies, this._encryptDependencies, this._helpers, this._views, individualTeamModel, individualUserModel, allUsersController, individualUserController),
         teamsModel = new TeamsModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views)) { 
             this.indexController = indexController;
@@ -46,8 +46,8 @@ export class AppController {
             this.teamsController = teamsController;
             this.indexModel = indexModel;
             this.usersModel = usersModel;
-            this.individualUserModel = individualUserModel;
             this.individualUserController = individualUserController;
+            this.individualUserModel = individualUserModel;
             this.allUsersController = allUsersController;
             this.teamsModel = teamsModel;
             this.individualTeamController = individualTeamController;
