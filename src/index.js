@@ -24,6 +24,7 @@ else {
 }
 
 // Todo
+// Have made it so that you can toggle the config options in settings, but the page needs to refresh to see the changes! Check individualTeamController > toggleConfigurationItem(), have to make the this.helpers.initApp('teams', individualTeamObject); function to refresh for the settings page! Should create a third argument for the initApp function!
 
 // ## Teams menu
 // Settings (for admin): 
@@ -36,7 +37,8 @@ else {
 // When sorting for blocked users, have it toggle to sort back to all users when sorting by blocked users
 // Invite users to teams via the User menu (Can only see teams that you are allowed to invite) - If no teams available then the invite button will dissapear!
 
-// ## Schedule metting
+// ## Schedule meeting
+// If the user is not allowed to schedule a meeting, then remove the team from the schedule meeting menu!
 // After scheduling a meeting you can select to keep the meeting or discard it (If kept it will then show as a upcoming meeting in the notification menu, it will automatically dissapear when the date past the meeting end time!)
 // When scheduling:
     // 1. Date (max 3 dates)

@@ -231,6 +231,53 @@ body::-webkit-scrollbar {
     overflow-wrap: break-word;
 }
 
+.header-x-small {
+    text-align: center;
+    font-family: var(--font);
+    font-size: var(--medium);
+    color: var(--black-shade);
+    overflow-wrap: break-word;
+}
+
+.header-x-small-left {
+    text-align: left;
+    font-family: var(--font);
+    font-size: var(--medium);
+    color: var(--black-shade);
+    overflow-wrap: break-word;
+    float: left;
+    margin: 0;
+}
+.settings-circle-grey {
+    width: var(--big);
+    height: var(--big);
+    background-color: var(--dark-grey);
+    border: solid 3px var(--grey);
+    border-radius: 50%;
+    margin: -3px 4px 11px 4px;
+    float: right;
+}
+.settings-circle-grey:hover {
+    cursor: pointer;
+    opacity: 0.75;
+}
+.settings-circle-green {
+    width: var(--big);
+    height: var(--big);
+    background-color: var(--light-green);
+    border: solid 3px var(--grey);
+    border-radius: 50%;
+    margin: -3px 4px 11px 4px;
+    float: right;
+}
+.settings-circle-green:hover {
+    cursor: pointer;
+    opacity: 0.75;
+}
+.clear {
+    clear: both;
+}
+
 .paragraph-center-big {
     text-align: center;
     font-family: var(--font);
@@ -337,6 +384,13 @@ body::-webkit-scrollbar {
     left: 14px;
     top: 8px;
 }
+.inside-btn-icon-image-right {
+    position: absolute;
+    width: var(--medium-big);
+    height: var(--medium-big);
+    right: 14px;
+    top: 7px;
+}
 .tea-icon {
     position: relative;
     width: var(--xxx-big);
@@ -428,6 +482,14 @@ body::-webkit-scrollbar {
 	}
 }
 
+.settings-members-wrapper {
+    width: 62%;
+    margin: auto;
+    padding: var(--x-small) var(--x-big) var(--x-small) var(--x-big);
+    background-color: var(--white-grey);
+    border-radius: 25px;
+}
+
 .offline-section {
     position: relative;
     padding-left: 32px;
@@ -516,6 +578,22 @@ body::-webkit-scrollbar {
     border-bottom-right-radius: 25px;
 }
 .btn-cut-left-green:hover {
+    cursor: pointer;
+    background-color: var(--light-green);
+}
+.btn-cut-left-green-bottom {
+    border: none;
+    position: absolute;
+    top: 74px;
+    width: 12%;
+    background-color: var(--green);
+    height: 37px;
+    left: 84%;
+    transform: translateX(-50%);
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+.btn-cut-left-green-bottom:hover {
     cursor: pointer;
     background-color: var(--light-green);
 }

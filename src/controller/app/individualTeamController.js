@@ -1,8 +1,9 @@
 export class IndividualTeamController {
 
-    constructor(handlerDependencies, authDependencies, encryptDependencies, helpers, views, individualTeamModel, individualUserModel, allUsersController, individualUserController) {
+    constructor(handlerDependencies, authDependencies, loadDependencies, encryptDependencies, helpers, views, individualTeamModel, individualUserModel, allUsersController, individualUserController) {
         this.handlerDependencies = handlerDependencies;
         this.authDependencies = authDependencies;
+        this.loadDependencies = loadDependencies;
         this.encryptDependencies = encryptDependencies;
         this.helpers = helpers;
         this.views = views;
@@ -42,6 +43,8 @@ export class IndividualTeamController {
             this.#inviteUsers(teamName, members, invitedUsers, isAdmin, config, teamId);
 
             this.#kickUsers(members, invitedUsers, isAdmin, config, teamId);
+            
+            this.#goToSettings(teamName, members, invitedUsers, isAdmin, config, teamId);
         });
     }
 
@@ -64,6 +67,8 @@ export class IndividualTeamController {
     }
 
     #generateInviteUsersOutput(teamName, members, invitedUsers, isAdmin, config, teamId) {
+        this.loadDependencies.displayLoading();
+
         const teamInfo = {
             teamName: teamName,
             members: members,
@@ -100,6 +105,60 @@ export class IndividualTeamController {
                     }
                 });
             })
+        });
+    }
+
+    #goToSettings(teamName, members, invitedUsers, isAdmin, config, teamId) {
+        const cogWeelIconDomElement = document.querySelector('.cogwheel-icon');
+
+        cogWeelIconDomElement.addEventListener('click', () => {
+            this.loadDependencies.displayLoading();
+
+            if(isAdmin === true) {
+                this.#adminSettings(teamName, config, teamId);
+            }
+
+            this.#goBackToIndividualTeam(teamName, members, invitedUsers, isAdmin, config, teamId);
+
+            this.loadDependencies.removeLoading();
+        });
+    }
+
+    #adminSettings(teamName, config, teamId) {
+        this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.adminSettingsView(teamName, config)});
+
+        this.#toggleConfigurationItem(teamName, config, teamId);
+    }
+
+    #toggleConfigurationItem(teamName, config, teamId) {
+        const allowAddUsersDOMElement = document.querySelector('#allowAddUsers');
+        const allowKickUsersDOMElement = document.querySelector('#allowKickUsers');
+        const allowRemoveInvitedUsersDOMElement = document.querySelector('#allowRemoveInvitedUsers');
+        const allowScheduleMeetingDOMElement = document.querySelector('#allowScheduleMeeting');
+        const allConfigElements = [allowAddUsersDOMElement, allowKickUsersDOMElement, allowRemoveInvitedUsersDOMElement, allowScheduleMeetingDOMElement];
+
+        for(let i = 0; i < allConfigElements.length; i++) {
+            allConfigElements[i].addEventListener('click', () => {
+                this.individualTeamModel.toggleTeamConfiguration(teamId, allConfigElements[i].id);
+                //this.#adminSettings(teamName, config, teamId);
+            });
+        }
+    }
+
+    #goBackToIndividualTeam(teamName, members, invitedUsers, isAdmin, config, teamId) {
+        const backArrowIconDOMElement = document.querySelector('.backarrow-icon');
+
+        const individualTeamObject = {
+            teamName: teamName,
+            members: members,
+            invitedUsers: invitedUsers,
+            isAdmin: isAdmin,
+            config: config,
+            teamId: teamId
+        }
+
+        backArrowIconDOMElement.addEventListener('click', () => {
+            this.helpers.initApp('teams', individualTeamObject);
         });
     }
 

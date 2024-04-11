@@ -209,4 +209,54 @@ export class IndividualTeamModel {
         return false;
     }
 
+    toggleTeamConfiguration(teamId, configOption) {
+        const dbRef = this.helpers.GET_DB_REFERENCE();
+
+        return new Promise((resolve, reject) => {
+            this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((getTeam) => {
+                try {
+                    if (this.helpers.IF_EXISTS(getTeam)) {
+                        const team = this.helpers.GET_VALUE(getTeam);
+                        const configElementToggle = this.#toggleConfigurationElement(configOption, team.configuration);
+
+                        resolve(this.helpers.SAVE_TO_DB_IN_TEAMS_CONFIGURATION({
+                            dbReference: dbRef,
+                            firstChild: teamId,
+                            secondChild: 'configuration',
+                            thirdChild: configElementToggle.configOption,
+                            saveValue: configElementToggle.value
+                        }));
+                    } else {
+                        reject(this.handlerDependencies.throwError("No data available!"));
+                    }
+                } catch(error) {
+                    this.loadDependencies.removeLoading();
+                    reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                }
+            });
+        }
+    )}
+
+    #toggleConfigurationElement(configOption, config) {
+        if (configOption === 'allowAddUsers') {
+            const addUsersValue = config.allAllowedToAddUsers;
+            return {configOption: 'allAllowedToAddUsers', value: !addUsersValue};
+        }
+
+        if (configOption === 'allowKickUsers') {
+            const removeUsersValue = config.allAllowedToRemoveUsers;
+            return {configOption: 'allAllowedToRemoveUsers', value: !removeUsersValue};
+        }
+
+        if (configOption === 'allowRemoveInvitedUsers') {
+            const removePendingUsersValue = config.allAllowedToRemovePendingInvites;
+            return {configOption: 'allAllowedToRemovePendingInvites', value: !removePendingUsersValue};
+        }
+
+        if (configOption === 'allowScheduleMeeting') {
+            const scheduleMeetingValue = config.allAllowedToScheduleMeeting;
+            return {configOption: 'allAllowedToScheduleMeeting', value: !scheduleMeetingValue};
+        }
+    }
+
 }

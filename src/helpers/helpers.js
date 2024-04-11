@@ -170,6 +170,12 @@ export function SAVE_TO_DB_IN_TEAMS(databaseRows) {
     dbReference.child(TEAMS_GET_CHILD_REF).child(firstChild).child(secondChild).set(saveValue);
 }
 
+export function SAVE_TO_DB_IN_TEAMS_CONFIGURATION(databaseRows) {
+    const { dbReference, firstChild, secondChild, thirdChild, saveValue } = databaseRows;
+
+    dbReference.child(TEAMS_GET_CHILD_REF).child(firstChild).child(secondChild).child(thirdChild).set(saveValue);
+}
+
 export const GET_AUTH = firebase.auth();
 
 export function IF_EXISTS(argumentToCheck) {
