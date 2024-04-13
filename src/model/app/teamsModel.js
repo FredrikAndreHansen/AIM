@@ -61,20 +61,34 @@ export class TeamsModel {
         for(let i = 0; i < userTeams.length; i++) {
             for(let ii = 0; ii < getAllTeamsById.length; ii++) {
                 if (userTeams[i] === getAllTeamsById[ii]) {
+                    const membersQuantity = getTeamInfo[ii].members;
+                    const memberCount = this.#countMembers(membersQuantity)
+
                     HTMLOutput += this.views.teamsOutputView({
                         encryptedKey: encrypt(getAllTeamsById[ii]), 
                         team: getTeamInfo[ii].teamName,
-                        usersInTeam: getTeamInfo[ii].members.length
+                        usersInTeam: memberCount
                     });
                     isEmpty = false;
                 }
             }
         }
+
         if (isEmpty === true) {
             HTMLOutput = this.views.noTeams;
         }
 
         return HTMLOutput;
+    }
+
+    #countMembers(members) {
+        let count = 0;
+
+        for (let i = 0; i < members.length; i++) {
+            if (members[i]) {count ++;}
+        }
+
+        return count;
     }
 
     async addTeam(teamName) {

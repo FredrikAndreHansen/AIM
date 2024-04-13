@@ -151,7 +151,7 @@ export class IndividualTeamController {
                     const updatedObject = res;
                     const updatedIndividualTeamObject = this.#createIndividualTeamObject(
                         updatedObject.teamName, 
-                        individualTeamObject.members, 
+                        updatedObject.members, 
                         individualTeamObject.invitedUsers, 
                         individualTeamObject.isAdmin, 
                         updatedObject.configuration, 
