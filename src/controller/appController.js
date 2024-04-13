@@ -54,12 +54,12 @@ export class AppController {
             this.individualTeamModel = individualTeamModel;
     }
 
-    init(navigate = false, teamsInfo) {
+    init(navigate = false, teamsInfo, settings) {
         this.#outputNavigation();
 
         if (navigate === false) {this.indexController.setView();}
         if (navigate === 'users') {this.usersController.setView();}
-        if (navigate === 'teams') {this.teamsController.setView(teamsInfo);}
+        if (navigate === 'teams') {this.teamsController.setView(teamsInfo, settings);}
     }
 
     #outputNavigation() { 

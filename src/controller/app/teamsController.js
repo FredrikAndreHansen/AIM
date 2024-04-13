@@ -6,30 +6,30 @@ export class TeamsController extends AppController {
         super(teamsModel, individualTeamController, individualTeamModel);
     }
 
-    setView(displayUsers = false) {
+    setView(displayUsers = false, settings = false) {
         this.#indexMenuHighlight();
 
-        this.#generateOutput(displayUsers);
+        this.#generateOutput(displayUsers, settings);
     }
 
-    #generateOutput(displayUsers) {
+    #generateOutput(displayUsers, settings) {
         this.teamsModel.getTeams().then((teams) => {
             this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.teamsView});
 
-            this.#outputAllTeams(teams, displayUsers);
+            this.#outputAllTeams(teams, displayUsers, settings);
 
             this.#createNewTeam(displayUsers);
         });
     }
 
-    #outputAllTeams(teams, displayUsers) {
+    #outputAllTeams(teams, displayUsers, settings) {
         const teamsListDOMElement = document.querySelector('#teams-list');
         this._helpers.SET_INNER_HTML_VALUE({set: teamsListDOMElement, to: teams});
 
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");
         this._helpers.ANIMATE_FADE_IN(allTeamsDOMElement);
 
-        this.#getIndividualTeam(displayUsers);
+        this.#getIndividualTeam(displayUsers, settings);
     }
 
     #indexMenuHighlight() {
@@ -57,11 +57,11 @@ export class TeamsController extends AppController {
         }, 200);
     }
 
-    #getIndividualTeam(displayUsers) {
+    #getIndividualTeam(displayUsers, settings) {
         if (displayUsers !== false) {
             const { teamName, members, invitedUsers, isAdmin, config, teamId } = displayUsers;
 
-            this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, config, teamId);
+            this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, config, teamId, settings);
         }
 
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");

@@ -13,13 +13,13 @@ export class IndividualTeamController {
         this.individualUserController = individualUserController;
     }
 
-    setView(teamName, members, invitedUsers, isAdmin, config, teamId) {
+    setView(teamName, members, invitedUsers, isAdmin, config, teamId, settings) {
         this.authDependencies.validateIfLoggedIn();
 
-        this.#generateOutput(teamName, members, invitedUsers, isAdmin, config, teamId);
+        this.#generateOutput(teamName, members, invitedUsers, isAdmin, config, teamId, settings);
     }
 
-    #generateOutput(teamName, members, invitedUsers, isAdmin, config, teamId) {
+    #generateOutput(teamName, members, invitedUsers, isAdmin, config, teamId, settings) {
         this.individualTeamModel.generateTeamUsers(members, invitedUsers, config, teamId).then((res) => {
             const memberQuantity = res[2];
             const membersOutput = res[0];
@@ -43,8 +43,8 @@ export class IndividualTeamController {
             this.#inviteUsers(teamName, members, invitedUsers, isAdmin, config, teamId);
 
             this.#kickUsers(members, invitedUsers, isAdmin, config, teamId);
-            
-            this.#goToSettings(teamName, members, invitedUsers, isAdmin, config, teamId);
+                
+            this.#goToSettings(teamName, members, invitedUsers, isAdmin, config, teamId, settings);
         });
     }
 
@@ -108,29 +108,37 @@ export class IndividualTeamController {
         });
     }
 
-    #goToSettings(teamName, members, invitedUsers, isAdmin, config, teamId) {
+    #goToSettings(teamName, members, invitedUsers, isAdmin, config, teamId, settings) {
         const cogWeelIconDomElement = document.querySelector('.cogwheel-icon');
+
+        const individualTeamObject = this.#createIndividualTeamObject(teamName, members, invitedUsers, isAdmin, config, teamId);
 
         cogWeelIconDomElement.addEventListener('click', () => {
             this.loadDependencies.displayLoading();
 
             if(isAdmin === true) {
-                this.#adminSettings(teamName, config, teamId);
+                this.#adminSettings(individualTeamObject);
             }
 
-            this.#goBackToIndividualTeam(teamName, members, invitedUsers, isAdmin, config, teamId);
+            this.#goBackToIndividualTeam(individualTeamObject);
 
             this.loadDependencies.removeLoading();
         });
+
+        if (settings === 'settings') {
+            this.#adminSettings(individualTeamObject);
+
+            this.#goBackToIndividualTeam(individualTeamObject);
+        }
     }
 
-    #adminSettings(teamName, config, teamId) {
-        this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.adminSettingsView(teamName, config)});
+    #adminSettings(individualTeamObject) {
+        this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.adminSettingsView(individualTeamObject.teamName, individualTeamObject.config)});
 
-        this.#toggleConfigurationItem(teamName, config, teamId);
+        this.#toggleConfigurationItem(individualTeamObject);
     }
 
-    #toggleConfigurationItem(teamName, config, teamId) {
+    #toggleConfigurationItem(individualTeamObject) {
         const allowAddUsersDOMElement = document.querySelector('#allowAddUsers');
         const allowKickUsersDOMElement = document.querySelector('#allowKickUsers');
         const allowRemoveInvitedUsersDOMElement = document.querySelector('#allowRemoveInvitedUsers');
@@ -139,27 +147,40 @@ export class IndividualTeamController {
 
         for(let i = 0; i < allConfigElements.length; i++) {
             allConfigElements[i].addEventListener('click', () => {
-                this.individualTeamModel.toggleTeamConfiguration(teamId, allConfigElements[i].id);
-                //this.#adminSettings(teamName, config, teamId);
+                this.individualTeamModel.toggleTeamConfiguration(individualTeamObject.teamId, allConfigElements[i].id).then((res) => {
+                    const updatedObject = res;
+                    const updatedIndividualTeamObject = this.#createIndividualTeamObject(
+                        updatedObject.teamName, 
+                        individualTeamObject.members, 
+                        individualTeamObject.invitedUsers, 
+                        individualTeamObject.isAdmin, 
+                        updatedObject.configuration, 
+                        individualTeamObject.teamId
+                    );
+
+                    this.helpers.initApp('teams', updatedIndividualTeamObject, 'settings');
+                });
             });
         }
     }
 
-    #goBackToIndividualTeam(teamName, members, invitedUsers, isAdmin, config, teamId) {
+    #goBackToIndividualTeam(individualTeamObject) {
         const backArrowIconDOMElement = document.querySelector('.backarrow-icon');
 
-        const individualTeamObject = {
+        backArrowIconDOMElement.addEventListener('click', () => {
+            this.helpers.initApp('teams', individualTeamObject);
+        });
+    }
+
+    #createIndividualTeamObject(teamName, members, invitedUsers, isAdmin, config, teamId) {
+        return {
             teamName: teamName,
             members: members,
             invitedUsers: invitedUsers,
             isAdmin: isAdmin,
             config: config,
             teamId: teamId
-        }
-
-        backArrowIconDOMElement.addEventListener('click', () => {
-            this.helpers.initApp('teams', individualTeamObject);
-        });
+        };
     }
 
 }

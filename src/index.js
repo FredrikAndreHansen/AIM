@@ -24,12 +24,10 @@ else {
 }
 
 // Todo
-// Have made it so that you can toggle the config options in settings, but the page needs to refresh to see the changes! Check individualTeamController > toggleConfigurationItem(), have to make the this.helpers.initApp('teams', individualTeamObject); function to refresh for the settings page! Should create a third argument for the initApp function!
 
 // ## Teams menu
 // Settings (for admin): 
-    // Rename team
-    // Set team rules (allow to add users, allow to remove users, allow to remove pending invites, allowed to schedule meetings)
+    // Rename team - check individualTeamController!
     // Delete team
 // Settings (for non-admins) - leave group, use the individualUserModel.removeUserFromTeam() function
 
@@ -57,6 +55,7 @@ else {
     // Change password
     // Change email
     // Always signed in or sign out when removing the app
+    // Dark and Light mode
     // Delete account, inform that all user data will be removed from the server
 
 // Check to integrate with Google calendar and perhaps Microsoft/Outlook calendar, to automatically add it in!

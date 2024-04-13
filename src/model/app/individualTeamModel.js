@@ -219,13 +219,22 @@ export class IndividualTeamModel {
                         const team = this.helpers.GET_VALUE(getTeam);
                         const configElementToggle = this.#toggleConfigurationElement(configOption, team.configuration);
 
-                        resolve(this.helpers.SAVE_TO_DB_IN_TEAMS_CONFIGURATION({
+                        this.helpers.SAVE_TO_DB_IN_TEAMS_CONFIGURATION({
                             dbReference: dbRef,
                             firstChild: teamId,
                             secondChild: 'configuration',
                             thirdChild: configElementToggle.configOption,
                             saveValue: configElementToggle.value
-                        }));
+                        });
+
+                        this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((getUpdatedTeam) => {
+                            if (this.helpers.IF_EXISTS(getUpdatedTeam)) {
+                                const updatedTeam = this.helpers.GET_VALUE(getUpdatedTeam);
+                                resolve(updatedTeam);
+                            } else {
+                                reject(this.handlerDependencies.throwError("No data available!"));
+                            }
+                        });
                     } else {
                         reject(this.handlerDependencies.throwError("No data available!"));
                     }
