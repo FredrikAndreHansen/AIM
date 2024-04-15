@@ -1,12 +1,13 @@
 export class IndividualTeamModel {
 
-    constructor(authDependencies, loadDependencies, handlerDependencies, encryptDependencies, helpers, views) {
+    constructor(authDependencies, loadDependencies, handlerDependencies, encryptDependencies, helpers, views, individualUserModel) {
         this.authDependencies = authDependencies;
         this.loadDependencies = loadDependencies;
         this.handlerDependencies = handlerDependencies;
         this.encryptDependencies = encryptDependencies;
         this.helpers = helpers;
         this.views = views;
+        this.individualUserModel = individualUserModel;
     }
 
     async getIndividualTeam(teamId) {
@@ -230,16 +231,18 @@ export class IndividualTeamModel {
                         this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((getUpdatedTeam) => {
                             if (this.helpers.IF_EXISTS(getUpdatedTeam)) {
                                 const updatedTeam = this.helpers.GET_VALUE(getUpdatedTeam);
+                                this.loadDependencies.removeLoading();
                                 resolve(updatedTeam);
                             } else {
+                                this.loadDependencies.removeLoading();
                                 reject(this.handlerDependencies.throwError("No data available!"));
                             }
                         });
                     } else {
+                        this.loadDependencies.removeLoading();
                         reject(this.handlerDependencies.throwError("No data available!"));
                     }
                 } catch(error) {
-                    this.loadDependencies.removeLoading();
                     reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
                 }
             });
@@ -266,6 +269,86 @@ export class IndividualTeamModel {
             const scheduleMeetingValue = config.allAllowedToScheduleMeeting;
             return {configOption: 'allAllowedToScheduleMeeting', value: !scheduleMeetingValue};
         }
+    }
+
+    renameTeam(teamId, newName) {
+        const dbRef = this.helpers.GET_DB_REFERENCE();
+
+        return new Promise((resolve, reject) => {
+            this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((getTeam) => {
+                try {
+                    if (this.helpers.IF_EXISTS(getTeam)) {
+                        const team = this.helpers.GET_VALUE(getTeam);
+                        const oldName = team.teamName;
+
+                        this.helpers.SAVE_TO_DB_IN_TEAMS({
+                            dbReference: dbRef,
+                            firstChild: teamId,
+                            secondChild: 'teamName',
+                            saveValue: newName
+                        });
+
+                        this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((getUpdatedTeam) => {
+                            if (this.helpers.IF_EXISTS(getUpdatedTeam)) {
+                                const updatedTeam = this.helpers.GET_VALUE(getUpdatedTeam);
+
+                                this.handlerDependencies.displayMessage({message: `You have change the name of <span style="font-weight: bold;">${oldName}</span> to <span style="font-weight: bold;">${newName}</span>!`, isError: false});
+
+                                resolve(updatedTeam);
+                            } else {
+                                this.loadDependencies.removeLoading();
+                                reject(this.handlerDependencies.throwError("No data available!"));
+                            }
+                        });
+                    } else {
+                        this.loadDependencies.removeLoading();
+                        reject(this.handlerDependencies.throwError("No data available!"));
+                    }
+                } catch(error) {
+                    reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                }
+            });
+        });
+    }
+
+    deleteTeam(teamId) {
+        const dbRef = this.helpers.GET_DB_REFERENCE();
+
+        return new Promise((resolve, reject) => {
+            this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((getTeam) => {
+                try {
+                    if (this.helpers.IF_EXISTS(getTeam)) {
+                        const team = this.helpers.GET_VALUE(getTeam);
+
+                        const members = team.members;
+                        this.#removeAllUsersFromTeamFromDB(members, teamId);
+
+                        const invitedUsers = Object.values(team.invitedUsers);
+                        this.#removeAllUsersFromTeamFromDB(invitedUsers, teamId, 'KICK');
+
+                        this.#removeTeamFromDB(teamId);
+                        
+                        resolve();
+                    } else {
+                        this.loadDependencies.removeLoading();
+                        reject(this.handlerDependencies.throwError("No data available!"));
+                    }
+                } catch(error) {
+                    reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                }
+            });
+        });
+    }
+
+    #removeAllUsersFromTeamFromDB(users, teamId, kick = '') {
+        for (let i = 0; i < users.length; i++) {
+            this.individualUserModel.removeUserFromTeam(users[i], teamId, kick, true);
+        }
+    }
+
+    #removeTeamFromDB(teamId) {
+        const getCurrentTeam = this.helpers.GET_DB_REFERENCE(this.helpers.TEAMS_REF + teamId);
+        getCurrentTeam.remove();
     }
 
 }

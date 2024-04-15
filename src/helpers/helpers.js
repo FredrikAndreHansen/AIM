@@ -68,6 +68,18 @@ export function VALIDATE_USER_INPUT(userInput) {
     }
 }
 
+export function CANT_BE_THE_SAME_NAME(newName, oldName, nameString = 'team') {
+    try{
+        if (newName === oldName) {
+            throwError(`The name of the ${nameString} can't be the same!`)
+        }
+
+        return true;
+    } catch(error) {
+        displayMessage({message: error, isError: true});
+    }
+}
+
 function validateNameOrCompany(name, company = '') {
     if (name.length > 64) {
         throwError(`The ${company} name is too long!<br>Maximum length is 64 characters`);
@@ -76,10 +88,18 @@ function validateNameOrCompany(name, company = '') {
     if (name.length === 0) {
         throwError(`The ${company} name cannot be empty!`);
     }
+
+    if (name.trim().length === 0) {
+        throwError(`The ${company} name cannot be empty!`);
+    }
 }
 
 function validateEmail(email) {
     if (email.length === 0) {
+        throwError("The email address cannot be empty!");
+    }
+
+    if (email.trim().length === 0) {
         throwError("The email address cannot be empty!");
     }
 
@@ -98,6 +118,10 @@ const regExp = new RegExp('[a-zA-ZŽžÀ-ÿ0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}');
 
 function validatePassword(password, confirmPassword = false) {
     if (password.length === 0) {
+        throwError("The password cannot be empty!");
+    }
+
+    if (password.trim().length === 0) {
         throwError("The password cannot be empty!");
     }
 

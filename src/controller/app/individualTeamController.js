@@ -120,22 +120,24 @@ export class IndividualTeamController {
                 this.#adminSettings(individualTeamObject);
             }
 
-            this.#goBackToIndividualTeam(individualTeamObject);
-
             this.loadDependencies.removeLoading();
         });
 
         if (settings === 'settings') {
-            this.#adminSettings(individualTeamObject);
-
-            this.#goBackToIndividualTeam(individualTeamObject);
+            this.#adminSettings(individualTeamObject);  
         }
     }
 
     #adminSettings(individualTeamObject) {
         this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.adminSettingsView(individualTeamObject.teamName, individualTeamObject.config)});
 
+        this.#goBackToIndividualTeam(individualTeamObject);
+
+        this.#renameTeam(individualTeamObject);
+
         this.#toggleConfigurationItem(individualTeamObject);
+
+        this.#deleteTeam(individualTeamObject);
     }
 
     #toggleConfigurationItem(individualTeamObject) {
@@ -147,18 +149,8 @@ export class IndividualTeamController {
 
         for(let i = 0; i < allConfigElements.length; i++) {
             allConfigElements[i].addEventListener('click', () => {
-                this.individualTeamModel.toggleTeamConfiguration(individualTeamObject.teamId, allConfigElements[i].id).then((res) => {
-                    const updatedObject = res;
-                    const updatedIndividualTeamObject = this.#createIndividualTeamObject(
-                        updatedObject.teamName, 
-                        updatedObject.members, 
-                        individualTeamObject.invitedUsers, 
-                        individualTeamObject.isAdmin, 
-                        updatedObject.configuration, 
-                        individualTeamObject.teamId
-                    );
-
-                    this.helpers.initApp('teams', updatedIndividualTeamObject, 'settings');
+                this.individualTeamModel.toggleTeamConfiguration(individualTeamObject.teamId, allConfigElements[i].id).then((updatedObject) => {
+                    this.#getUpdatedObjectAndRefreshPage(updatedObject, individualTeamObject);
                 });
             });
         }
@@ -181,6 +173,46 @@ export class IndividualTeamController {
             config: config,
             teamId: teamId
         };
+    }
+
+    #renameTeam(individualTeamObject) {
+        const changeTeamNameDOMElement = document.querySelector('#change-team-name');
+
+        changeTeamNameDOMElement.addEventListener('click', () => {
+            const teamNameDOMElement = document.querySelector('#team-name');
+            const teamName = teamNameDOMElement.value;
+            const teamId = individualTeamObject.teamId;
+            
+            if (this.helpers.VALIDATE_USER_INPUT({name: teamName}) && this.helpers.CANT_BE_THE_SAME_NAME(teamName, individualTeamObject.teamName, 'team')) {
+                this.individualTeamModel.renameTeam(teamId, teamName).then((updatedObject) => {
+                    this.#getUpdatedObjectAndRefreshPage(updatedObject, individualTeamObject);
+                });
+            }
+        });
+    }
+
+    #getUpdatedObjectAndRefreshPage(updatedObject, individualTeamObject) {
+        const updatedIndividualTeamObject = this.#createIndividualTeamObject(
+            updatedObject.teamName, 
+            updatedObject.members, 
+            individualTeamObject.invitedUsers, 
+            individualTeamObject.isAdmin, 
+            updatedObject.configuration, 
+            individualTeamObject.teamId
+        );
+
+        this.helpers.initApp('teams', updatedIndividualTeamObject, 'settings');
+    }
+
+    #deleteTeam(individualTeamObject) {
+        const deleteTeamButtonDOMElement = document.querySelector('#delete-team-button');
+        const teamId = individualTeamObject.teamId;
+
+        deleteTeamButtonDOMElement.addEventListener('click', () => {
+            this.individualTeamModel.deleteTeam(teamId).then(() => {
+                this.helpers.initApp('teams');
+            });
+        });
     }
 
 }

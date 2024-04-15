@@ -35,8 +35,8 @@ export function adminSettingsView(teamName, config) {
         <div class="content-section">
             <h1 class="header">Settings</h1>
             <hr class="hr-small">
-            <input type="text" id="search-user" placeholder="${teamName}" class="input-cut-right" maxlength="24" required />
-            <div class="btn-cut-left-green-bottom">
+            <input type="text" id="team-name" value="${teamName}" class="input-cut-right" maxlength="24" required />
+            <div class="btn-cut-left-green-bottom" id="change-team-name">
                 <img class="icon-btn-cut" src="../../graphic/pencilIcon.svg" />
             </div>
             <div class="settings-members-wrapper">

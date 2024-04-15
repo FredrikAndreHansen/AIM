@@ -155,7 +155,7 @@ export class IndividualUserModel {
         dbRef.child(this.helpers.TEAMS_GET_CHILD_REF).child(teamInfo.teamId).child('invitedUsers').push(encryptedUserId);
     }
 
-    removeUserFromTeam(userId, teamId, message) {
+    removeUserFromTeam(userId, teamId, message, teamDeletion = false) {
         this.loadDependencies.displayLoading();
 
         return new Promise((resolve, reject) => {
@@ -175,7 +175,11 @@ export class IndividualUserModel {
 
                             if (removeUser === true && removeTeam === true) {
                                 this.loadDependencies.removeLoading();
-                                resolve(this.handlerDependencies.displayMessage({message: message, isError: false}));
+                                if (teamDeletion === false) {
+                                    resolve(this.handlerDependencies.displayMessage({message: message, isError: false}));
+                                } else {
+                                    resolve();
+                                }
                             } else {
                                 this.loadDependencies.removeLoading();
                                 reject(this.handlerDependencies.throwError("No data available!"));

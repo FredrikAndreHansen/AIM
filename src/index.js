@@ -27,8 +27,7 @@ else {
 
 // ## Teams menu
 // Settings (for admin): 
-    // Rename team - check individualTeamController!
-    // Delete team
+    // Delete team - bug fix (when deleting a team you will get an "No data available!" error message from "generateTeamUsers" in individualteammodel class!)
 // Settings (for non-admins) - leave group, use the individualUserModel.removeUserFromTeam() function
 
 // ## Users menu
@@ -37,7 +36,6 @@ else {
 
 // ## Schedule meeting
 // If the user is not allowed to schedule a meeting, then remove the team from the schedule meeting menu!
-// After scheduling a meeting you can select to keep the meeting or discard it (If kept it will then show as a upcoming meeting in the notification menu, it will automatically dissapear when the date past the meeting end time!)
 // When scheduling:
     // 1. Date (max 3 dates)
     // 2. Times (max 5 per date)
@@ -46,6 +44,7 @@ else {
     // 5. meeting name (optional), meeting length(optional), adding link to join meeting(optional)
     // Pending meeting result page, it will also appear in the notification menu (for all affected users!) Meetings will appear first in the notification menu!
 
+// After scheduling a meeting it will then show as a upcoming meeting in the notification menu, it will automatically dissapear when the date past the meeting end time!
 // Edit a meeting - meeting name (optional), meeting length(optional), adding link to join meeting(optional)
 
 // ## Main menu

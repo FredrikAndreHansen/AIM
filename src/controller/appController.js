@@ -17,7 +17,7 @@ import { displayMessage, throwError } from "../libraries/handler.js";
 import { validateIfLoggedIn, removeToken, listenForUpdates } from "../helpers/auth.js";
 import { cipher, decipher } from "../helpers/encrypt.js";
 import { initApp } from "../libraries/init.js";
-import { SET_INNER_HTML_VALUE, SALT, TRIMSTRING, PARSESTRING, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL } from "../helpers/helpers.js";
+import { SET_INNER_HTML_VALUE, SALT, TRIMSTRING, PARSESTRING, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, CANT_BE_THE_SAME_NAME, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL } from "../helpers/helpers.js";
 import { IndividualTeamModel } from "../model/app/individualTeamModel.js";
 
 export class AppController {
@@ -27,7 +27,7 @@ export class AppController {
     _handlerDependencies = { displayMessage, throwError };
     _authDependencies = { validateIfLoggedIn, removeToken, listenForUpdates };
     _encryptDependencies = { cipher, decipher };
-    _helpers = { SET_INNER_HTML_VALUE, SALT, TRIMSTRING, PARSESTRING, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL, initApp };
+    _helpers = { SET_INNER_HTML_VALUE, SALT, TRIMSTRING, PARSESTRING, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, CANT_BE_THE_SAME_NAME, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL, initApp };
 
     constructor(
         indexController, 
@@ -35,7 +35,7 @@ export class AppController {
         teamsController,
         indexModel = new IndexModel(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         individualUserModel = new IndividualUserModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers),
-        individualTeamModel = new IndividualTeamModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
+        individualTeamModel = new IndividualTeamModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel),
         individualUserController = new IndividualUserController(this._authDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel, individualTeamModel),
         usersModel = new UsersModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         allUsersController = new AllUsersController(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views, individualUserController, usersModel, individualUserModel),
