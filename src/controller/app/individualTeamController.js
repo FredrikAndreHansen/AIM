@@ -209,8 +209,14 @@ export class IndividualTeamController {
         const teamId = individualTeamObject.teamId;
 
         deleteTeamButtonDOMElement.addEventListener('click', () => {
-            this.individualTeamModel.deleteTeam(teamId).then(() => {
-                this.helpers.initApp('teams');
+            // this.individualTeamModel.deleteTeam(teamId).then(() => {
+            //     this.helpers.initApp('teams');
+            // });
+            // setTimeout(() => {
+            //     this.individualTeamModel.removeTeamFromDB(teamId);
+            // }, 500);
+            this.handlerDependencies.displayMessage({message: 'delete', isError: false}, {key: 'deleteTeam'}).then((approve) => {
+                alert(approve)
             });
         });
     }

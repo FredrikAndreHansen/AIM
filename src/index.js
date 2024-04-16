@@ -27,7 +27,7 @@ else {
 
 // ## Teams menu
 // Settings (for admin): 
-    // Delete team - bug fix (when deleting a team you will get an "No data available!" error message from "generateTeamUsers" in individualteammodel class!)
+    // Delete team - In handler.js, create a function to approve, it should return a promise!
 // Settings (for non-admins) - leave group, use the individualUserModel.removeUserFromTeam() function
 
 // ## Users menu

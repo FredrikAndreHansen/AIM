@@ -326,7 +326,7 @@ export class IndividualTeamModel {
                         const invitedUsers = Object.values(team.invitedUsers);
                         this.#removeAllUsersFromTeamFromDB(invitedUsers, teamId, 'KICK');
 
-                        this.#removeTeamFromDB(teamId);
+                        // this.#removeTeamFromDB(teamId);
                         
                         resolve();
                     } else {
@@ -346,7 +346,7 @@ export class IndividualTeamModel {
         }
     }
 
-    #removeTeamFromDB(teamId) {
+    removeTeamFromDB(teamId) {
         const getCurrentTeam = this.helpers.GET_DB_REFERENCE(this.helpers.TEAMS_REF + teamId);
         getCurrentTeam.remove();
     }
