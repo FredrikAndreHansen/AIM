@@ -207,16 +207,18 @@ export class IndividualTeamController {
     #deleteTeam(individualTeamObject) {
         const deleteTeamButtonDOMElement = document.querySelector('#delete-team-button');
         const teamId = individualTeamObject.teamId;
+        const teamName = individualTeamObject.teamName;
 
         deleteTeamButtonDOMElement.addEventListener('click', () => {
-            // this.individualTeamModel.deleteTeam(teamId).then(() => {
-            //     this.helpers.initApp('teams');
-            // });
-            // setTimeout(() => {
-            //     this.individualTeamModel.removeTeamFromDB(teamId);
-            // }, 500);
-            this.handlerDependencies.displayMessage({message: 'delete', isError: false}, {key: 'deleteTeam'}).then((approve) => {
-                alert(approve)
+            this.handlerDependencies.confirmMessage({message: `Are you sure you want to delete <span style="font-weight: bold;">${teamName}</span>?`, isError: false}, {key: 'deleteTeam'}).then((confirm) => {
+                if (confirm === true) {
+                    this.individualTeamModel.deleteTeam(teamId).then(() => {
+                        this.helpers.initApp('teams');
+                    });
+                    setTimeout(() => {
+                        this.individualTeamModel.removeTeamFromDB(teamId);
+                    }, 1000);
+                }
             });
         });
     }

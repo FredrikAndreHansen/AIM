@@ -3,11 +3,15 @@ import { handlerView, confirmView } from "../view/handlers/handlerView.js";
 import { removeLoading } from "./load.js";
 import { SET_INNER_HTML_VALUE, CLOSE_MODAL, DISABLE_SCROLL } from "../helpers/helpers.js";
 
-export function displayMessage(handlerOutputValues, confirm = false) {
+export function displayMessage(handlerOutputValues) {
     const { message, isError } = handlerOutputValues;
 
-    generateOutput(message, isError, confirm);
+    generateOutput(message, isError);
 
+    removeElements();
+}
+
+function removeElements() {
     DISABLE_SCROLL();
 
     const errorBtnDOMElement = document.querySelector('#error-button');
@@ -17,13 +21,12 @@ export function displayMessage(handlerOutputValues, confirm = false) {
     removeLoading();
 }
 
-function generateOutput(message, isError, confirm) {
+function generateOutput(message, isError, confirm = false) {
     SET_INNER_HTML_VALUE({set: popupDOMElement, to: 'clear'});
     if (confirm === false) {
         SET_INNER_HTML_VALUE({set: errorDOMElement, to: handlerView(message, isError)});
     } else {
         SET_INNER_HTML_VALUE({set: errorDOMElement, to: confirmView(message)});
-        confirmMessageOnClick(confirm);
     }
 }
 
@@ -32,11 +35,29 @@ export function throwError(errorMessage) {
     throw error.message;
 }
 
-function confirmMessageOnClick(confirm) {
-    const errorBtnDOMElement = document.querySelector('#error-button');
-    errorBtnDOMElement.addEventListener('click', () => {
-        if (confirm.key === 'deleteTeam') {
-            // Create a export function and return a promise! When the promise is returned true, then the function in the controller can be executed!
+export function confirmMessage(handlerOutputValues, confirm) {
+    const { message, isError } = handlerOutputValues;
+
+    return new Promise((resolve, reject) => {
+        try {
+            generateOutput(message, isError, confirm);
+
+            removeElements();
+        
+            const errorBtnDOMElement = document.querySelector('#error-button');
+        
+            errorBtnDOMElement.addEventListener('click', () => {
+                if (confirm.key === 'deleteTeam') {
+                    resolve(true);
+                } else {
+                    reject(false);
+                }
+            });
+        } catch(error) {
+            displayMessage({message: error, isError: true});
         }
     });
+
+
+
 }

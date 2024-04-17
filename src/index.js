@@ -26,8 +26,9 @@ else {
 // Todo
 
 // ## Teams menu
+// Bug Fix - after deleting a team and then creating a new one you will get an error, it arrives from "generateTeamUsers" in "individualTeamModel"
 // Settings (for admin): 
-    // Delete team - In handler.js, create a function to approve, it should return a promise!
+    // Delete team - In handler.js, add the no button when approving
 // Settings (for non-admins) - leave group, use the individualUserModel.removeUserFromTeam() function
 
 // ## Users menu

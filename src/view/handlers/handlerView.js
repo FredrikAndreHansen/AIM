@@ -28,7 +28,8 @@ export function confirmView(confirmMessage) {
         <div class="error-box-container" id="error-box-container"></div>
                 
         <div class="error-box">
-            <h1 class="header">${confirmMessage}</h1>
+        <h1 class="header">Warning</h1>
+        <p class="paragraph-center">${confirmMessage}</p>
             <button class="btn" id="error-button">YES</button>
         </div>
     `;

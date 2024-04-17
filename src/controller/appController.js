@@ -13,7 +13,7 @@ import { UsersModel } from "../model/app/usersModel.js";
 import { IndividualUserModel } from "../model/app/individualUserModel.js";
 import { TeamsModel } from "../model/app/teamsModel.js";
 import { displayLoading, removeLoading } from "../libraries/load.js";
-import { displayMessage, throwError } from "../libraries/handler.js";
+import { displayMessage, throwError, confirmMessage } from "../libraries/handler.js";
 import { validateIfLoggedIn, removeToken, listenForUpdates } from "../helpers/auth.js";
 import { cipher, decipher } from "../helpers/encrypt.js";
 import { initApp } from "../libraries/init.js";
@@ -24,7 +24,7 @@ export class AppController {
 
     _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, popupDOMElement, individualTeamView, adminSettingsView };
     _loadDependencies = { displayLoading, removeLoading };
-    _handlerDependencies = { displayMessage, throwError };
+    _handlerDependencies = { displayMessage, throwError, confirmMessage };
     _authDependencies = { validateIfLoggedIn, removeToken, listenForUpdates };
     _encryptDependencies = { cipher, decipher };
     _helpers = { SET_INNER_HTML_VALUE, SALT, TRIMSTRING, PARSESTRING, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, CANT_BE_THE_SAME_NAME, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL, initApp };
