@@ -213,11 +213,8 @@ export class IndividualTeamController {
             this.handlerDependencies.confirmMessage({message: `Are you sure you want to delete <span style="font-weight: bold;">${teamName}</span>?`, isError: false}, {key: 'deleteTeam'}).then((confirm) => {
                 if (confirm === true) {
                     this.individualTeamModel.deleteTeam(teamId).then(() => {
-                        this.helpers.initApp('teams');
+                        this.helpers.REFRESH_APPLICATION();
                     });
-                    setTimeout(() => {
-                        this.individualTeamModel.removeTeamFromDB(teamId);
-                    }, 1000);
                 }
             });
         });

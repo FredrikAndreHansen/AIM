@@ -23,14 +23,17 @@ export function handlerView(message, isError) {
     }
 }
 
-export function confirmView(confirmMessage) {
+export function warningView(confirmMessage) {
     return `
         <div class="error-box-container" id="error-box-container"></div>
                 
         <div class="error-box">
+        <div class="exit-icon" id="remove-button">
+            <img class="exit-icon-image" src="../../graphic/exitIcon.svg" />
+        </div>
         <h1 class="header">Warning</h1>
         <p class="paragraph-center">${confirmMessage}</p>
-            <button class="btn" id="error-button">YES</button>
+            <button class="btn-red" id="error-button">DELETE</button>
         </div>
     `;
 }

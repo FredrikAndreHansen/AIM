@@ -1,5 +1,5 @@
 import { popupDOMElement, errorDOMElement } from "../index.js";
-import { handlerView, confirmView } from "../view/handlers/handlerView.js";
+import { handlerView, warningView } from "../view/handlers/handlerView.js";
 import { removeLoading } from "./load.js";
 import { SET_INNER_HTML_VALUE, CLOSE_MODAL, DISABLE_SCROLL } from "../helpers/helpers.js";
 
@@ -16,7 +16,14 @@ function removeElements() {
 
     const errorBtnDOMElement = document.querySelector('#error-button');
     const errorBoxContainerDomElement = document.querySelector('#error-box-container');
-    CLOSE_MODAL([errorBtnDOMElement, errorBoxContainerDomElement], errorDOMElement);
+    let allElements = [errorBtnDOMElement, errorBoxContainerDomElement];
+
+    if (document.querySelector('#remove-button')) {
+        const removeBtnDOMElement = document.querySelector('#remove-button');
+        allElements.push(removeBtnDOMElement);
+    }
+    
+    CLOSE_MODAL(allElements, errorDOMElement);
 
     removeLoading();
 }
@@ -26,7 +33,7 @@ function generateOutput(message, isError, confirm = false) {
     if (confirm === false) {
         SET_INNER_HTML_VALUE({set: errorDOMElement, to: handlerView(message, isError)});
     } else {
-        SET_INNER_HTML_VALUE({set: errorDOMElement, to: confirmView(message)});
+        SET_INNER_HTML_VALUE({set: errorDOMElement, to: warningView(message)});
     }
 }
 
@@ -44,9 +51,9 @@ export function confirmMessage(handlerOutputValues, confirm) {
 
             removeElements();
         
-            const errorBtnDOMElement = document.querySelector('#error-button');
+            const confirmBtnDOMElement = document.querySelector('#error-button');
         
-            errorBtnDOMElement.addEventListener('click', () => {
+            confirmBtnDOMElement.addEventListener('click', () => {
                 if (confirm.key === 'deleteTeam') {
                     resolve(true);
                 } else {
@@ -57,7 +64,5 @@ export function confirmMessage(handlerOutputValues, confirm) {
             displayMessage({message: error, isError: true});
         }
     });
-
-
 
 }

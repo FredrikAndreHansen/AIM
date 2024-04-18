@@ -313,3 +313,9 @@ export function HAS_INTERNET_CONNECTION() {
     const online = window.navigator.onLine;
     return online;
 }
+
+export function REFRESH_APPLICATION() {
+    setTimeout(() => {
+        location.reload();
+    }, 500)
+}

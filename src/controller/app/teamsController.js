@@ -44,31 +44,24 @@ export class TeamsController extends AppController {
             const teamName = this._helpers.GET_DOM_VALUE(newTeamDOMElement);
 
             if (this._helpers.VALIDATE_USER_INPUT({name: teamName})) {
-                this.teamsModel.addTeam(teamName);
-
-                this.#delayRefresh(displayUsers);
+                this.teamsModel.addTeam(teamName).then(() => {
+                    this.#generateOutput(displayUsers);
+                });
             }
         })
     }
 
-    #delayRefresh(displayUsers) {
-        setTimeout(() => {
-            this.#generateOutput(displayUsers);
-        }, 200);
-    }
-
     #getIndividualTeam(displayUsers, settings) {
-        if (displayUsers !== false) {
-            const { teamName, members, invitedUsers, isAdmin, config, teamId } = displayUsers;
-
-            this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, config, teamId, settings);
-        }
-
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");
 
         allTeamsDOMElement.forEach((getIndividualTeam) => {
 
             getIndividualTeam.addEventListener('click', () => {
+                if (displayUsers !== false) {
+                    const { teamName, members, invitedUsers, isAdmin, config, teamId } = displayUsers;
+        
+                    this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, config, teamId, settings);
+                }
 
                 this._loadDependencies.displayLoading();
                 const teamId = getIndividualTeam.getAttribute('data-id');

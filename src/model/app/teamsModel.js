@@ -91,13 +91,13 @@ export class TeamsModel {
         return count;
     }
 
-    async addTeam(teamName) {
+    addTeam(teamName) {
         this.authDependencies.validateIfLoggedIn();
 
         const currentUserId = this.helpers.GET_USER_ID();
         const dbRef = this.helpers.GET_DB_REFERENCE();
 
-        return await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
 
             this.helpers.SALT().then((salt) => {
                 const decrypt = this.encryptDependencies.decipher(salt);
