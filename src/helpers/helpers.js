@@ -315,7 +315,5 @@ export function HAS_INTERNET_CONNECTION() {
 }
 
 export function REFRESH_APPLICATION() {
-    setTimeout(() => {
-        location.reload();
-    }, 500)
+    location.reload();
 }

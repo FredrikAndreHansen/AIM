@@ -42,26 +42,20 @@ export function throwError(errorMessage) {
     throw error.message;
 }
 
-export function confirmMessage(handlerOutputValues, confirm) {
-    const { message, isError } = handlerOutputValues;
-
+export function confirmMessage(message) {
     return new Promise((resolve, reject) => {
         try {
-            generateOutput(message, isError, confirm);
+            generateOutput(message, false, true);
 
             removeElements();
         
             const confirmBtnDOMElement = document.querySelector('#error-button');
         
             confirmBtnDOMElement.addEventListener('click', () => {
-                if (confirm.key === 'deleteTeam') {
-                    resolve(true);
-                } else {
-                    reject(false);
-                }
+                resolve(true);
             });
         } catch(error) {
-            displayMessage({message: error, isError: true});
+            reject(displayMessage({message: error, isError: true}));
         }
     });
 

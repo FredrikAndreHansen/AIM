@@ -319,16 +319,13 @@ export class IndividualTeamModel {
                 try {
                     if (this.helpers.IF_EXISTS(getTeam)) {
                         const team = this.helpers.GET_VALUE(getTeam);
-
                         const members = team.members;
-                        this.#removeAllUsersFromTeamFromDB(members, teamId);
-
                         const invitedUsers = Object.values(team.invitedUsers);
+
+                        this.#removeAllUsersFromTeamFromDB(members, teamId);
                         this.#removeAllUsersFromTeamFromDB(invitedUsers, teamId, 'KICK');
 
-                        this.#removeTeamFromDB(teamId);
-                        
-                        resolve();
+                        resolve(this.#completeTeamDeletionFromDB(teamId));
                     } else {
                         this.loadDependencies.removeLoading();
                         reject(this.handlerDependencies.throwError("No data available!"));
@@ -344,6 +341,23 @@ export class IndividualTeamModel {
         for (let i = 0; i < users.length; i++) {
             this.individualUserModel.removeUserFromTeam(users[i], teamId, kick, true);
         }
+    }
+
+    #completeTeamDeletionFromDB(teamId) {
+        return new Promise((resolve, reject) => {
+            try {
+                const dbRef = this.helpers.GET_DB_REFERENCE();
+                this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((getTeam) => {
+                    if (this.helpers.IF_EXISTS(getTeam)) {     
+                        resolve(this.#removeTeamFromDB(teamId));
+                    } else {
+                        reject(this.handlerDependencies.throwError("No data available!"));
+                    }
+                });
+            } catch(error) {
+                reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+            }
+        });
     }
 
     #removeTeamFromDB(teamId) {

@@ -26,8 +26,7 @@ else {
 // Todo
 
 // ## Teams menu
-// Bug Fix - after deleting a team and then creating a new one you will get an error, it arrives from "generateTeamUsers" in "individualTeamModel"
-// Sort teams by newest first!
+// Add the option to select to sort teams by newset first or vice versa, create a configuartion row in users and set a sort object, the object will be set in the teams menu! Sorting function already exist! Check outputTeamsSorted() function in teamsModel!
 
 // Settings (for non-admins) - leave group, use the individualUserModel.removeUserFromTeam() function
 

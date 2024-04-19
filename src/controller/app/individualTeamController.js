@@ -210,7 +210,7 @@ export class IndividualTeamController {
         const teamName = individualTeamObject.teamName;
 
         deleteTeamButtonDOMElement.addEventListener('click', () => {
-            this.handlerDependencies.confirmMessage({message: `Are you sure you want to delete <span style="font-weight: bold;">${teamName}</span>?`, isError: false}, {key: 'deleteTeam'}).then((confirm) => {
+            this.handlerDependencies.confirmMessage(`Are you sure you want to delete <span style="font-weight: bold;">${teamName}</span>?`).then((confirm) => {
                 if (confirm === true) {
                     this.individualTeamModel.deleteTeam(teamId).then(() => {
                         this.helpers.REFRESH_APPLICATION();
