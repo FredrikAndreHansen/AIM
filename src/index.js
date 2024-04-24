@@ -26,8 +26,7 @@ else {
 // Todo
 
 // ## Teams menu
-// Add the option to select to sort teams by newset first or vice versa, create a configuartion row in users and set a sort object, the object will be set in the teams menu! Sorting function already exist! Check outputTeamsSorted() function in teamsModel!
-
+// Maximum 10 teams per person
 // Settings (for non-admins) - leave group, use the individualUserModel.removeUserFromTeam() function
 
 // ## Users menu
@@ -60,3 +59,5 @@ else {
 // Check to integrate with Google calendar and perhaps Microsoft/Outlook calendar, to automatically add it in!
 
 // Check to get badge notifications without opening, if possible then also automatically open app when getting a meeting notification(have a setting to also disable it also)
+
+// Check to add email verification when registering new users

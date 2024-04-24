@@ -44,6 +44,7 @@ export class TeamsModel {
 
     #checkTeams(getUserTeams, allTeams, salt) {
         const user = this.helpers.GET_VALUE(getUserTeams);
+        const sortTeams = user.configuration.sortTeams;
 
         let teams = this.helpers.GET_VALUE(allTeams);
         if (teams === null) {
@@ -51,7 +52,7 @@ export class TeamsModel {
         }
 
         return this.#outputTeamsSorted({
-            sort: false, 
+            sort: sortTeams, 
             userTeams: Object.values(user.teams),
             getTeamInfo: Object.values(teams),
             getAllTeamsById: Object.keys(teams),
@@ -163,6 +164,105 @@ export class TeamsModel {
         const addTeamToUser = dbRef.child(this.helpers.USERS_GET_CHILD_REF).child(userId).child(this.helpers.TEAMS_GET_CHILD_REF).push(getKey);
 
         return addTeamToUser;
+    }
+
+    toggleTeamsSort() {
+        this.authDependencies.validateIfLoggedIn();
+
+        const currentUserId = this.helpers.GET_USER_ID();
+        const dbRef = this.helpers.GET_DB_REFERENCE();
+
+        return new Promise((resolve, reject) => {
+            this.helpers.SALT().then((salt) => {
+                try {
+                    const decrypt = this.encryptDependencies.decipher(salt);
+                    const decryptedCurrentUserId = decrypt(currentUserId);
+
+                    this.helpers.GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((userData) => {
+                        if (this.helpers.IF_EXISTS(userData)) {
+                            const user = this.helpers.GET_VALUE(userData);
+                            const sortTeams = user.configuration.sortTeams;
+
+                            resolve(
+                                this.helpers.SAVE_TO_DB_IN_USERS_CONFIG({
+                                    dbReference: dbRef,
+                                    firstChild: decryptedCurrentUserId,
+                                    secondChild: 'sortTeams',
+                                    saveValue: !sortTeams
+                                })
+                            );
+                        } else {
+                            reject(this.handlerDependencies.throwError("No data available!"));
+                        }
+                    });
+                } catch(error) {
+                    reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                }
+            });
+        });
+    }
+
+    getSortTeamsObjectData() {
+        this.authDependencies.validateIfLoggedIn();
+
+        const currentUserId = this.helpers.GET_USER_ID();
+        const dbRef = this.helpers.GET_DB_REFERENCE();
+
+        return new Promise((resolve, reject) => {
+            this.helpers.SALT().then((salt) => {
+                try {
+                    const decrypt = this.encryptDependencies.decipher(salt);
+                    const decryptedCurrentUserId = decrypt(currentUserId);
+
+                    this.helpers.GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((userData) => {
+                        if (this.helpers.IF_EXISTS(userData)) {
+                            const user = this.helpers.GET_VALUE(userData);
+                            const sortTeams = user.configuration.sortTeams;
+
+                            resolve(sortTeams);
+                        } else {
+                            reject(this.handlerDependencies.throwError("No data available!"));
+                        }
+                    });
+                } catch(error) {
+                    reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                }
+            });
+        });
+    }
+
+    countTeamsTotal() {
+        this.authDependencies.validateIfLoggedIn();
+
+        const currentUserId = this.helpers.GET_USER_ID();
+        const dbRef = this.helpers.GET_DB_REFERENCE();
+
+        return new Promise((resolve, reject) => {
+            this.helpers.SALT().then((salt) => {
+                try{
+                    const decrypt = this.encryptDependencies.decipher(salt);
+                    const decryptedCurrentUserId = decrypt(currentUserId);
+
+                    this.helpers.GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((userData) => {
+                        if (this.helpers.IF_EXISTS(userData)) {
+                            const user = this.helpers.GET_VALUE(userData);
+                            const teamsTotal = user.teams;
+                            
+                            let count = 0;
+                            for (const [_, value] of Object.entries(teamsTotal)) {
+                                if (value) {count++;}
+                            }
+
+                            resolve(count);
+                        } else {
+                            reject(this.handlerDependencies.throwError("No data available!"));
+                        }
+                    });
+                } catch(error) {
+                    reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                }
+            });
+        });
     }
 
 }

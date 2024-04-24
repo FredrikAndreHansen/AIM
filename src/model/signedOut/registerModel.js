@@ -18,7 +18,10 @@ export class RegisterModel {
                 company: company, 
                 teams: [""],
                 invitedTeams: [""],
-                blockedUsers: [""]
+                blockedUsers: [""],
+                configuration: { 
+                    sortTeams: false
+                 }
             });
 
             this.signInModel.signInUser(email, password);
@@ -29,7 +32,7 @@ export class RegisterModel {
     }
 
     #writeUserData(userData) {
-        const { userId, name, company, teams, invitedTeams, blockedUsers } = userData;
+        const { userId, name, company, teams, invitedTeams, blockedUsers, configuration } = userData;
 
         const dbRef = this.helpers.GET_DB_REFERENCE(this.helpers.USERS_REF + userId);
 
@@ -38,7 +41,8 @@ export class RegisterModel {
             company: company,
             teams: teams,
             invitedTeams: invitedTeams,
-            blockedUsers: blockedUsers
+            blockedUsers: blockedUsers,
+            configuration: configuration
         });
     }
 

@@ -377,6 +377,30 @@ body::-webkit-scrollbar {
     cursor: pointer;
     opacity: 0.75;
 }
+.arrow-down-icon {
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+    height: var(--big);
+    width: var(--big);
+}
+.arrow-down-icon:hover{
+    cursor: pointer;
+    opacity: 0.75;
+}
+.arrow-down-icon-flipped {
+    position: relative;
+    left: 50%;
+    margin-left: -12px;
+    transform: translate(-50%);
+    transform: scale(-1);
+    height: var(--big);
+    width: var(--big);
+}
+.arrow-down-icon-flipped:hover{
+    cursor: pointer;
+    opacity: 0.75;
+}
 .inside-btn-icon-image {
     position: absolute;
     width: var(--medium-big);

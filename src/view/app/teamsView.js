@@ -1,16 +1,21 @@
-export const teamsView = `
-    <div class="content-section">
-        <h1 class="header">Manage Teams</h1>
-        <input type="text" id="new-team" placeholder="Create Team" class="input-cut-right" maxlength="24" required />
-        <div class="btn-cut-left-green">
-            <img class="icon-btn-cut" src="../../graphic/plusIcon.svg" />
+export function teamsView(sortTeamsObjectData, totalTeams) { 
+    return `
+        <div class="content-section">
+            <h1 class="header">Manage Teams</h1>
+            <input type="text" id="new-team" placeholder="Create Team" class="input-cut-right" maxlength="24" required />
+            <div class="btn-cut-left-green">
+                <img class="icon-btn-cut" src="../../graphic/plusIcon.svg" />
+            </div>
+            <div class="space-medium"></div>
+            <hr class="hr-small">
+            ${totalTeams > 1 ? '' : '<div style="display: none;"'}
+            <img id="sort-teams" class="${sortTeamsObjectData === false ? "arrow-down-icon" : "arrow-down-icon-flipped"}" src="../../../graphic/arrowDownIcon.svg" />
+            ${totalTeams > 1 ? '' : '</div>'}
+            <div class="space-x-big"></div>
+            <table id="teams-list"></table>
         </div>
-        <div class="space-medium"></div>
-        <hr class="hr-small">
-        <div class="space-x-big"></div>
-        <table id="teams-list"></table>
-    </div>
-`;
+    `;
+}
 
 export function teamsOutputView(teamInfo) {
     const { encryptedKey, team, usersInTeam } = teamInfo;

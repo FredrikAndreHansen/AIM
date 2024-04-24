@@ -14,11 +14,15 @@ export class TeamsController extends AppController {
 
     #generateOutput(displayUsers, settings) {
         this.teamsModel.getTeams().then((teams) => {
-            this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.teamsView});
+            this.teamsModel.getSortTeamsObjectData().then((sortTeamsObjectData) => {
+                this.teamsModel.countTeamsTotal().then((totalTeams) => {
+                    this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.teamsView(sortTeamsObjectData, totalTeams)});
 
-            this.#outputAllTeams(teams, displayUsers, settings);
-
-            this.#createNewTeam(displayUsers);
+                    this.#outputAllTeams(teams, displayUsers, settings);
+    
+                    this.#createNewTeam(displayUsers);
+                });
+            });
         });
     }
 
@@ -28,6 +32,8 @@ export class TeamsController extends AppController {
 
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");
         this._helpers.ANIMATE_FADE_IN(allTeamsDOMElement);
+
+        this.#toggleTeamSort();
 
         this.#getIndividualTeam(displayUsers, settings);
     }
@@ -53,6 +59,12 @@ export class TeamsController extends AppController {
 
     #getIndividualTeam(displayUsers, settings) {
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");
+    
+        if (settings === 'settings' || displayUsers !== false) {
+            const { teamName, members, invitedUsers, isAdmin, config, teamId } = displayUsers;
+        
+            this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, config, teamId, settings);
+        }
 
         allTeamsDOMElement.forEach((getIndividualTeam) => {
 
@@ -80,6 +92,16 @@ export class TeamsController extends AppController {
                         this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, config, decryptedId);
                     });
                 });
+            });
+        });
+    }
+
+    #toggleTeamSort() {
+        const sortTeamsDOMElement = document.querySelector('#sort-teams');
+
+        sortTeamsDOMElement.addEventListener('click', () => {
+            this.teamsModel.toggleTeamsSort().then(() => {
+                this._helpers.initApp('teams');
             });
         });
     }
