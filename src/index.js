@@ -26,7 +26,7 @@ else {
 // Todo
 
 // ## Teams menu
-// Maximum 10 teams per person
+// Maximum 10 people per team - use the isSubscribed in the config object in users and add isAdminSubscribed in teams and set it to isSubscribed from the admin user. The teams should check if the admin is subscribed, if so, then they and others can invite infinite people to their teams!
 // Settings (for non-admins) - leave group, use the individualUserModel.removeUserFromTeam() function
 
 // ## Users menu

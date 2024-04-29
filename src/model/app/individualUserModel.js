@@ -127,8 +127,8 @@ export class IndividualUserModel {
                         try{
                             if (this.helpers.IF_EXISTS(snapshot) && this.helpers.IF_EXISTS(getUserLoggedIn)) {
                                 const getUserLoggedInValue = this.helpers.GET_VALUE(getUserLoggedIn);
-                                const getUserLoggedInObject = Object.values(getUserLoggedInValue);
-                                const getUserLoggedInName = getUserLoggedInObject[4];
+
+                                const getUserLoggedInName = getUserLoggedInValue.username;
     
                                 this.handlerDependencies.displayMessage({message: `You have invited <span style="font-weight: bold">${userName}</span> to join <span style="font-weight: bold">${teamInfo.teamName}</span>!`, isError: false});
 

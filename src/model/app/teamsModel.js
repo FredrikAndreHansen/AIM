@@ -129,22 +129,50 @@ export class TeamsModel {
                 const decryptedCurrentUserId = decrypt(currentUserId);
 
                 this.helpers.GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((snapshot) => {
-                    if (this.helpers.IF_EXISTS(snapshot)) {
-                        this.loadDependencies.removeLoading();
+                    this.helpers.GLOBAL_CONFIG('CONTACT_URL').then((url) => {
+                        this.helpers.GLOBAL_CONFIG('MAXIMUM_TEAMS_PER_PERSON').then((MAXIMUM_TEAMS_PER_PERSON) => {
+                            this.#countTeamsCreated(decryptedCurrentUserId).then((allTeams) => {
+                            if (this.helpers.IF_EXISTS(snapshot)) {
+                                    if (this.#checkHasPermissionToCreateTeam(snapshot, MAXIMUM_TEAMS_PER_PERSON, allTeams)) {
+                                        this.loadDependencies.removeLoading();
 
-                        this.handlerDependencies.displayMessage({message: `<span style="font-weight: bold;">${teamName}</span> was successfully created!`, isError: false});
+                                        this.handlerDependencies.displayMessage({message: `<span style="font-weight: bold;">${teamName}</span> was successfully created!`, isError: false});
 
-                        resolve(this.#pushNewTeamToDB(decryptedCurrentUserId, teamName));   
-                    } else {
-                        this.loadDependencies.removeLoading();
-                        reject(this.handlerDependencies.throwError("No data available!"));
-                    }  
-                }).catch((error) => {
-                    this.loadDependencies.removeLoading();
-                    this.handlerDependencies.displayMessage({message: error, isError: true});
+                                        resolve(this.#pushNewTeamToDB(decryptedCurrentUserId, teamName));   
+                                    } else {
+                                        this.loadDependencies.removeLoading();
+
+                                        reject(this.handlerDependencies.throwError(`You have reached the limit of maximum teams! <a href="${url}" target="_blank">Contact us for more information</a>`));
+                                    }
+                                } else {
+                                    this.loadDependencies.removeLoading();
+                                    reject(this.handlerDependencies.throwError("No data available!"));
+                                }  
+                            }).catch((error) => {
+                                this.loadDependencies.removeLoading();
+                                this.handlerDependencies.displayMessage({message: error, isError: true});
+                            });
+                        });
+                    });
                 });
             });
         });
+    }
+
+    #checkHasPermissionToCreateTeam(user, MAXIMUM_TEAMS_PER_PERSON, allTeams) {
+        const userData = this.helpers.GET_VALUE(user);
+        const isUserSubscribed = userData.configuration.isSubscribed;
+
+        if (isUserSubscribed === true) {
+            return true;
+        } else {
+            if (allTeams < MAXIMUM_TEAMS_PER_PERSON) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
     }
 
     #pushNewTeamToDB(userId, teamName) {
@@ -260,6 +288,28 @@ export class TeamsModel {
                     });
                 } catch(error) {
                     reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
+                }
+            });
+        });
+    }
+
+    #countTeamsCreated(user) {
+        const dbRef = this.helpers.GET_DB_REFERENCE();
+
+        return new Promise((resolve, reject) => {
+            this.helpers.GET_DB_TEAMS_INFO(dbRef).then((getAllTeams) => {
+                if (this.helpers.IF_EXISTS(getAllTeams)) {
+                    const allTeams = this.helpers.GET_VALUE(getAllTeams);
+
+                    let count = 0;
+                    for (const team of Object.entries(allTeams)) {
+                        if (team[1].teamCreatorId === user) {
+                            count++;
+                        }
+                    }
+                    resolve(count)
+                } else {
+                    reject(this.handlerDependencies.throwError("No data available!"));
                 }
             });
         });

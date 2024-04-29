@@ -23,6 +23,33 @@ function get_db_salt_info() {
     return dbRef.child("salt").get();
 }
 
+export function GLOBAL_CONFIG(item) {
+    // Get global config from database
+    return new Promise((resolve, reject) => {
+        get_db_config_info().then((snapshot) => {
+            if (IF_EXISTS(snapshot)) {
+
+                const config = GET_VALUE(snapshot);
+                const { CONTACT_URL, MAXIMUM_PEOPLE_PER_TEAM, MAXIMUM_TEAMS_PER_PERSON } = config;
+
+                if (item === 'CONTACT_URL') {resolve(CONTACT_URL);}
+                if (item === 'MAXIMUM_PEOPLE_PER_TEAM') {resolve(MAXIMUM_PEOPLE_PER_TEAM);}
+                if (item === 'MAXIMUM_TEAMS_PER_PERSON') {resolve(MAXIMUM_TEAMS_PER_PERSON);}
+            } else {
+                reject(throwError("No data available!"));
+            }
+        }).catch((error) => {
+            displayMessage({message: error, isError: true});
+        });
+    });
+}
+
+function get_db_config_info() {
+    const dbRef = GET_DB_REFERENCE();
+
+    return dbRef.child("config").get();
+}
+
 export function TRIMSTRING(string) {
     let a = string.replaceAll('"', '');
     let b = a.replaceAll('[', '');

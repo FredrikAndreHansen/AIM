@@ -20,7 +20,8 @@ export class RegisterModel {
                 invitedTeams: [""],
                 blockedUsers: [""],
                 configuration: { 
-                    sortTeams: false
+                    sortTeams: false,
+                    isSubscribed: false
                  }
             });
 
