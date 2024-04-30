@@ -141,7 +141,6 @@ export class IndividualTeamModel {
                 if (key === members[i]) {count ++;}
             }
         }
-
         return count;
     }
 

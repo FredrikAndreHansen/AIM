@@ -115,6 +115,8 @@ export class IndividualUserModel {
 
         return await new Promise((resolve, reject) => {
 
+            this.#checkIfAdminIsSubscribed(teamInfo);
+
             this.helpers.SALT().then((salt) => {
                 const decrypt = this.encryptDependencies.decipher(salt);
                 const encryptedUserId = decrypt(userId);
@@ -124,25 +126,67 @@ export class IndividualUserModel {
 
                 this.helpers.GET_DB_USERS_INFO(dbRef, encryptedUserId).then((snapshot) => {
                     this.helpers.GET_DB_USERS_INFO(dbRef, encryptedLoggedInUserId).then((getUserLoggedIn) => {
-                        try{
-                            if (this.helpers.IF_EXISTS(snapshot) && this.helpers.IF_EXISTS(getUserLoggedIn)) {
-                                const getUserLoggedInValue = this.helpers.GET_VALUE(getUserLoggedIn);
+                        this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamInfo.teamId).then((teamSnapshot) => {
+                            try{
+                                if (this.helpers.IF_EXISTS(snapshot) && this.helpers.IF_EXISTS(getUserLoggedIn) && this.helpers.IF_EXISTS(teamSnapshot)) {
+                                    const allTeamUsers = this.#countAllTeamUsers(teamSnapshot);
+                                    
+                                    // Create a check here by comparing allTeamUsers with global MAXIMUM_PEOPLE_PER_TEAM and check if the admin is subscribed!
+                                    const getUserLoggedInValue = this.helpers.GET_VALUE(getUserLoggedIn);
 
-                                const getUserLoggedInName = getUserLoggedInValue.username;
-    
-                                this.handlerDependencies.displayMessage({message: `You have invited <span style="font-weight: bold">${userName}</span> to join <span style="font-weight: bold">${teamInfo.teamName}</span>!`, isError: false});
+                                    const getUserLoggedInName = getUserLoggedInValue.username;
+        
+                                    this.handlerDependencies.displayMessage({message: `You have invited <span style="font-weight: bold">${userName}</span> to join <span style="font-weight: bold">${teamInfo.teamName}</span>!`, isError: false});
 
-                                resolve(this.#pushNewUserInviteToDB(dbRef, encryptedUserId, getUserLoggedInName, teamInfo));
-                            } else {
-                                reject(this.handlerDependencies.throwError("No data available!"));
+                                    resolve(this.#pushNewUserInviteToDB(dbRef, encryptedUserId, getUserLoggedInName, teamInfo));
+                                } else {
+                                    reject(this.handlerDependencies.throwError("No data available!"));
+                                }
+                            } catch(error) {
+                                this.handlerDependencies.displayMessage({message: error, isError: true});
                             }
-                        } catch(error) {
-                            this.handlerDependencies.displayMessage({message: error, isError: true});
-                        }
+                        });
                     });
                 });
             });
         });
+    }
+
+    #checkIfAdminIsSubscribed(teamInfo) {
+        const dbRef = this.helpers.GET_DB_REFERENCE();
+        try {
+            this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamInfo.teamId).then((teamSnapshot) => {
+                const team = this.helpers.GET_VALUE(teamSnapshot);
+                this.helpers.GET_DB_USERS_INFO(dbRef, team.teamCreatorId).then((adminSnapshot) => {
+                    const admin = this.helpers.GET_VALUE(adminSnapshot);
+                    if (admin.configuration.isSubscribed !== team.isAdminSubscribed) {
+                        this.helpers.SAVE_TO_DB_IN_TEAMS({
+                            dbReference: dbRef,
+                            firstChild: teamInfo.teamId,
+                            secondChild: 'isAdminSubscribed',
+                            saveValue: admin.configuration.isSubscribed
+                        });
+                    }
+                })
+            });
+        } catch(error) {
+            this.handlerDependencies.displayMessage({message: error, isError: true});
+        }
+    }
+
+    #countAllTeamUsers(teamSnapshot) {
+
+            const team = this.helpers.GET_VALUE(teamSnapshot);
+            const members = team.members.length;
+            const invitedUsers = Object.values(team.invitedUsers);
+
+            let invitedUsersCount = 0;
+            for(let i = 0; i < invitedUsers.length; i++) {
+                if(invitedUsers[i]) {invitedUsersCount++;}
+            }
+
+            return members + invitedUsersCount;
+
     }
 
     #pushNewUserInviteToDB(dbRef, encryptedUserId, getUserLoggedInName, teamInfo) {

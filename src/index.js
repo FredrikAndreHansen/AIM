@@ -26,7 +26,7 @@ else {
 // Todo
 
 // ## Teams menu
-// Maximum 10 people per team - use the isSubscribed in the config object in users and add isAdminSubscribed in teams and set it to isSubscribed from the admin user. The teams should check if the admin is subscribed, if so, then they and others can invite infinite people to their teams!
+// Maximum 10 people per team - use the isSubscribed in the config object in users and add isAdminSubscribed in teams and set it to isSubscribed from the admin user. The teams should check if the admin is subscribed, if so, then they and others can invite infinite people to their teams! Continue in individualUserModel.js in inviteUserToTeam!
 // Settings (for non-admins) - leave group, use the individualUserModel.removeUserFromTeam() function
 
 // ## Users menu
@@ -43,7 +43,7 @@ else {
     // 5. meeting name (optional), meeting length(optional), adding link to join meeting(optional)
     // Pending meeting result page, it will also appear in the notification menu (for all affected users!) Meetings will appear first in the notification menu!
 
-// After scheduling a meeting it will then show as a upcoming meeting in the notification menu, it will automatically dissapear when the date past the meeting end time!
+// After scheduling a meeting it will then show as a upcoming meeting in the notification menu(for all users), it will automatically dissapear when the date past the meeting end time!
 // Edit a meeting - meeting name (optional), meeting length(optional), adding link to join meeting(optional)
 
 // ## Main menu

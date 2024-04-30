@@ -127,18 +127,20 @@ export class TeamsModel {
             this.helpers.SALT().then((salt) => {
                 const decrypt = this.encryptDependencies.decipher(salt);
                 const decryptedCurrentUserId = decrypt(currentUserId);
-
+            
                 this.helpers.GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((snapshot) => {
                     this.helpers.GLOBAL_CONFIG('CONTACT_URL').then((url) => {
                         this.helpers.GLOBAL_CONFIG('MAXIMUM_TEAMS_PER_PERSON').then((MAXIMUM_TEAMS_PER_PERSON) => {
                             this.#countTeamsCreated(decryptedCurrentUserId).then((allTeams) => {
-                            if (this.helpers.IF_EXISTS(snapshot)) {
-                                    if (this.#checkHasPermissionToCreateTeam(snapshot, MAXIMUM_TEAMS_PER_PERSON, allTeams)) {
+                                if (this.helpers.IF_EXISTS(snapshot)) {
+                                    const userData = this.helpers.GET_VALUE(snapshot);
+                                    const isUserSubscribed = userData.configuration.isSubscribed;
+                                    if (this.#checkHasPermissionToCreateTeam(isUserSubscribed, MAXIMUM_TEAMS_PER_PERSON, allTeams)) {
                                         this.loadDependencies.removeLoading();
 
                                         this.handlerDependencies.displayMessage({message: `<span style="font-weight: bold;">${teamName}</span> was successfully created!`, isError: false});
 
-                                        resolve(this.#pushNewTeamToDB(decryptedCurrentUserId, teamName));   
+                                        resolve(this.#pushNewTeamToDB(decryptedCurrentUserId, teamName, isUserSubscribed));   
                                     } else {
                                         this.loadDependencies.removeLoading();
 
@@ -159,10 +161,7 @@ export class TeamsModel {
         });
     }
 
-    #checkHasPermissionToCreateTeam(user, MAXIMUM_TEAMS_PER_PERSON, allTeams) {
-        const userData = this.helpers.GET_VALUE(user);
-        const isUserSubscribed = userData.configuration.isSubscribed;
-
+    #checkHasPermissionToCreateTeam(isUserSubscribed, MAXIMUM_TEAMS_PER_PERSON, allTeams) {
         if (isUserSubscribed === true) {
             return true;
         } else {
@@ -172,10 +171,9 @@ export class TeamsModel {
                 return false;
             }
         }
-
     }
 
-    #pushNewTeamToDB(userId, teamName) {
+    #pushNewTeamToDB(userId, teamName, isUserSubscribed) {
         const dbRef = this.helpers.GET_DB_REFERENCE();
         const addTeam = dbRef.child(this.helpers.TEAMS_GET_CHILD_REF).push({
             teamCreatorId: userId,
@@ -187,7 +185,9 @@ export class TeamsModel {
                 allAllowedToRemoveUsers: false,
                 allAllowedToRemovePendingInvites: false,
                 allAllowedToScheduleMeeting: true
-            }});
+            },
+            isAdminSubscribed: isUserSubscribed
+        });
         const getKey = addTeam.getKey();
         const addTeamToUser = dbRef.child(this.helpers.USERS_GET_CHILD_REF).child(userId).child(this.helpers.TEAMS_GET_CHILD_REF).push(getKey);
 
@@ -296,12 +296,12 @@ export class TeamsModel {
     #countTeamsCreated(user) {
         const dbRef = this.helpers.GET_DB_REFERENCE();
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this.helpers.GET_DB_TEAMS_INFO(dbRef).then((getAllTeams) => {
+                let count = 0;
                 if (this.helpers.IF_EXISTS(getAllTeams)) {
                     const allTeams = this.helpers.GET_VALUE(getAllTeams);
 
-                    let count = 0;
                     for (const team of Object.entries(allTeams)) {
                         if (team[1].teamCreatorId === user) {
                             count++;
@@ -309,7 +309,7 @@ export class TeamsModel {
                     }
                     resolve(count)
                 } else {
-                    reject(this.handlerDependencies.throwError("No data available!"));
+                    resolve(count);
                 }
             });
         });
