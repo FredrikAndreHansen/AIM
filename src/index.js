@@ -25,9 +25,7 @@ else {
 
 // Todo
 
-// ## Teams menu
-// Maximum 10 people per team - use the isSubscribed in the config object in users and add isAdminSubscribed in teams and set it to isSubscribed from the admin user. The teams should check if the admin is subscribed, if so, then they and others can invite infinite people to their teams! Continue in individualUserModel.js in inviteUserToTeam!
-// Settings (for non-admins) - leave group, use the individualUserModel.removeUserFromTeam() function
+// Bug - when deleting teams, add that the team get removed from the teams array in the users object. Add another function inside individualTeamModel.js deleteTeam function. 
 
 // ## Users menu
 // When sorting for blocked users, have it toggle to sort back to all users when sorting by blocked users

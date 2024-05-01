@@ -1,7 +1,7 @@
 export function usersView(hasBlockedUsers, displayInTeam) {
     return `
         <div class="content-section">
-            ${displayInTeam === false ? '<h1 class="header">Manage Users</h1>' : '<h1 class="header">Invite To Team</h1><img class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />'}
+            ${displayInTeam === false ? '<h1 class="header">Manage Users</h1>' : '<h1 class="header">Invite To Team</h1><img title="Go back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />'}
             <input type="text" id="search-user" placeholder="Search" class="input-cut-right" maxlength="24" required />
             <div class="btn-cut-left-blue">
                 <img class="icon-btn-cut" src="../../graphic/MagnifyingGlassIcon.svg" />

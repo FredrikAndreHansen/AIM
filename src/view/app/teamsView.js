@@ -9,7 +9,7 @@ export function teamsView(sortTeamsObjectData, totalTeams) {
             <div class="space-medium"></div>
             <hr class="hr-small">
             ${totalTeams > 1 ? '' : '<div style="display: none;"'}
-            <img id="sort-teams" class="${sortTeamsObjectData === false ? "arrow-down-icon" : "arrow-down-icon-flipped"}" src="../../../graphic/arrowDownIcon.svg" />
+            <img title="Sort teams" id="sort-teams" class="${sortTeamsObjectData === false ? "arrow-down-icon" : "arrow-down-icon-flipped"}" src="../../../graphic/arrowDownIcon.svg" />
             ${totalTeams > 1 ? '' : '</div>'}
             <div class="space-x-big"></div>
             <table id="teams-list"></table>

@@ -347,7 +347,7 @@ export class IndividualTeamModel {
             try {
                 const dbRef = this.helpers.GET_DB_REFERENCE();
                 this.helpers.GET_DB_INDIVIDUAL_TEAM_INFO(dbRef, teamId).then((getTeam) => {
-                    if (this.helpers.IF_EXISTS(getTeam)) {     
+                    if (this.helpers.IF_EXISTS(getTeam)) {  
                         resolve(this.#removeTeamFromDB(teamId));
                     } else {
                         reject(this.handlerDependencies.throwError("No data available!"));

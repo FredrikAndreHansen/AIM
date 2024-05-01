@@ -4,7 +4,7 @@ import { indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, men
 import { usersView, userOutputView, userSearchOutput } from "../view/app/usersView.js";
 import { individualUserView } from "../view/app/individualUserView.js";
 import { teamsView, teamsOutputView, noTeams } from "../view/app/teamsView.js";
-import { individualTeamView, adminSettingsView } from "../view/app/individualTeamView.js";
+import { individualTeamView, adminSettingsView, userSettingsView } from "../view/app/individualTeamView.js";
 import { IndividualUserController } from "./app/individualUserController.js";
 import { IndividualTeamController } from "./app/individualTeamController.js";
 import { AllUsersController } from "./app/allUsersController.js";
@@ -22,7 +22,7 @@ import { IndividualTeamModel } from "../model/app/individualTeamModel.js";
 
 export class AppController {
 
-    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, popupDOMElement, individualTeamView, adminSettingsView };
+    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView };
     _loadDependencies = { displayLoading, removeLoading };
     _handlerDependencies = { displayMessage, throwError, confirmMessage };
     _authDependencies = { validateIfLoggedIn, removeToken, listenForUpdates };

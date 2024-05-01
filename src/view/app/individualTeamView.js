@@ -2,8 +2,8 @@ export function individualTeamView(teamName, memberQuantity, invitedUsersQuantit
     return `
         <div class="content-section">
             <h1 class="header">${teamName}</h1>
-            <img class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
-            <img class="cogwheel-icon" src="../../../graphic/cogwheelIcon.svg" />
+            <img title="Go back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
+            <img title="Settings" class="cogwheel-icon" src="../../../graphic/cogwheelIcon.svg" />
             ${isAdmin === true || config.allAllowedToAddUsers === true ? '<button id="invite-members-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userInviteIcon.svg" />INVITE USERS</button>' : ''}
             <div class="space-medium"></div>
             <hr class="hr-small">
@@ -16,26 +16,12 @@ export function individualTeamView(teamName, memberQuantity, invitedUsersQuantit
     `;
 }
 
-export function inviteUsersView(teamName) {
-    return `
-        <div class="content-section">
-            <h1 class="header">Invite to</h1>
-            <h2 class="header-small">${teamName}</h2>
-            <img class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
-            <div class="space-medium"></div>
-            <hr class="hr-small">
-            <div class="space-x-big"></div>
-            <table id="user-list"></table>
-        </div>
-    `;
-}
-
 export function adminSettingsView(teamName, config) {
     return `
         <div class="content-section">
             <h1 class="header">Settings</h1>
             <hr class="hr-small">
-            <input type="text" id="team-name" value="${teamName}" class="input-cut-right" maxlength="24" required />
+            <input title="Change team name" type="text" id="team-name" value="${teamName}" class="input-cut-right" maxlength="24" required />
             <div class="btn-cut-left-green-bottom" id="change-team-name">
                 <img class="icon-btn-cut" src="../../graphic/pencilIcon.svg" />
             </div>
@@ -52,7 +38,22 @@ export function adminSettingsView(teamName, config) {
             </div>
             <br />
             <button id="delete-team-button" class="btn-red"><img class="inside-btn-icon-image-right" src="../../../graphic/exitIconWhite.svg" />DELETE TEAM</button>
-            <img class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
+            <img title="Go back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
+        </div>
+    `;
+}
+
+export function userSettingsView(teamName) {
+    return `
+        <div class="content-section">
+            <h1 class="header">Settings</h1>
+            <h2 class="header-small">${teamName}</h2>
+            <hr class="hr-small">
+            <div class="space-x-big"></div>
+            <div class="space-x-big"></div>
+            <div class="space-x-big"></div>
+            <button id="leave-team-button" class="btn-red"><img class="inside-btn-icon-image-right" src="../../../graphic/exitIconWhite.svg" />LEAVE TEAM</button>
+            <img title="Go back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
         </div>
     `;
 }

@@ -23,7 +23,7 @@ export function handlerView(message, isError) {
     }
 }
 
-export function warningView(confirmMessage) {
+export function warningView(confirmMessage, confirm) {
     return `
         <div class="error-box-container" id="error-box-container"></div>
                 
@@ -33,7 +33,7 @@ export function warningView(confirmMessage) {
         </div>
         <h1 class="header">Warning</h1>
         <p class="paragraph-center">${confirmMessage}</p>
-            <button class="btn-red" id="error-button">DELETE</button>
+            <button class="btn-red" id="error-button">${confirm}</button>
         </div>
     `;
 }

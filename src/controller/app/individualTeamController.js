@@ -118,6 +118,8 @@ export class IndividualTeamController {
 
             if(isAdmin === true) {
                 this.#adminSettings(individualTeamObject);
+            } else {
+                this.#userSettings(individualTeamObject);
             }
 
             this.loadDependencies.removeLoading();
@@ -138,6 +140,14 @@ export class IndividualTeamController {
         this.#toggleConfigurationItem(individualTeamObject);
 
         this.#deleteTeam(individualTeamObject);
+    }
+
+    #userSettings(individualTeamObject) {
+        this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.userSettingsView(individualTeamObject.teamName)});
+
+        this.#goBackToIndividualTeam(individualTeamObject);
+
+        this.#leaveTeam(individualTeamObject);
     }
 
     #toggleConfigurationItem(individualTeamObject) {
@@ -204,13 +214,29 @@ export class IndividualTeamController {
         this.helpers.initApp('teams', updatedIndividualTeamObject, 'settings');
     }
 
+    #leaveTeam(individualTeamObject) {
+        const leaveTeamButtonDOMElement = document.querySelector('#leave-team-button');
+        const teamId = individualTeamObject.teamId;
+        const teamName = individualTeamObject.teamName;
+
+        leaveTeamButtonDOMElement.addEventListener('click', () => {
+            this.handlerDependencies.confirmMessage(`Are you sure you want to leave <span style="font-weight: bold;">${teamName}</span>?`, 'LEAVE').then((confirm) => {
+                if (confirm === true) {
+                    this.individualUserModel.removeUserFromTeam(false, teamId, false, false).then(() => {
+                        this.helpers.REFRESH_APPLICATION();
+                    });
+                }
+            });
+        });
+    }
+
     #deleteTeam(individualTeamObject) {
         const deleteTeamButtonDOMElement = document.querySelector('#delete-team-button');
         const teamId = individualTeamObject.teamId;
         const teamName = individualTeamObject.teamName;
 
         deleteTeamButtonDOMElement.addEventListener('click', () => {
-            this.handlerDependencies.confirmMessage(`Are you sure you want to delete <span style="font-weight: bold;">${teamName}</span>?`).then((confirm) => {
+            this.handlerDependencies.confirmMessage(`Are you sure you want to delete <span style="font-weight: bold;">${teamName}</span>?`, 'DELETE').then((confirm) => {
                 if (confirm === true) {
                     this.individualTeamModel.deleteTeam(teamId).then(() => {
                         this.helpers.REFRESH_APPLICATION();

@@ -33,7 +33,7 @@ function generateOutput(message, isError, confirm = false) {
     if (confirm === false) {
         SET_INNER_HTML_VALUE({set: errorDOMElement, to: handlerView(message, isError)});
     } else {
-        SET_INNER_HTML_VALUE({set: errorDOMElement, to: warningView(message)});
+        SET_INNER_HTML_VALUE({set: errorDOMElement, to: warningView(message, confirm)});
     }
 }
 
@@ -42,10 +42,10 @@ export function throwError(errorMessage) {
     throw error.message;
 }
 
-export function confirmMessage(message) {
+export function confirmMessage(message, confirm) {
     return new Promise((resolve, reject) => {
         try {
-            generateOutput(message, false, true);
+            generateOutput(message, false, confirm);
 
             removeElements();
         
