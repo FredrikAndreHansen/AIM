@@ -25,8 +25,6 @@ else {
 
 // Todo
 
-// Bug - when deleting teams, add that the team get removed from the teams array in the users object. Add another function inside individualTeamModel.js deleteTeam function. 
-
 // ## Users menu
 // When sorting for blocked users, have it toggle to sort back to all users when sorting by blocked users
 // Invite users to teams via the User menu (Can only see teams that you are allowed to invite) - If no teams available then the invite button will dissapear!

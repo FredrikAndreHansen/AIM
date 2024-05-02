@@ -143,11 +143,13 @@ export class IndividualTeamController {
     }
 
     #userSettings(individualTeamObject) {
-        this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.userSettingsView(individualTeamObject.teamName)});
+        this.individualTeamModel.getTeamAdminName(individualTeamObject.teamId).then((adminUser) => {
+            this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.userSettingsView(individualTeamObject.teamName, adminUser)});
 
-        this.#goBackToIndividualTeam(individualTeamObject);
-
-        this.#leaveTeam(individualTeamObject);
+            this.#goBackToIndividualTeam(individualTeamObject);
+    
+            this.#leaveTeam(individualTeamObject);
+        });
     }
 
     #toggleConfigurationItem(individualTeamObject) {
@@ -238,8 +240,12 @@ export class IndividualTeamController {
         deleteTeamButtonDOMElement.addEventListener('click', () => {
             this.handlerDependencies.confirmMessage(`Are you sure you want to delete <span style="font-weight: bold;">${teamName}</span>?`, 'DELETE').then((confirm) => {
                 if (confirm === true) {
-                    this.individualTeamModel.deleteTeam(teamId).then(() => {
-                        this.helpers.REFRESH_APPLICATION();
+                    this.individualTeamModel.removeAllUsersFromTeamFromDB(teamId, 'RemoveInvitedUsers').then(() => {
+                        this.individualTeamModel.removeAllUsersFromTeamFromDB(teamId).then(() => {
+                            this.individualTeamModel.deleteTeam(teamId).then(() => {
+                                this.helpers.REFRESH_APPLICATION();
+                            });
+                        });
                     });
                 }
             });

@@ -43,15 +43,18 @@ export function adminSettingsView(teamName, config) {
     `;
 }
 
-export function userSettingsView(teamName) {
+export function userSettingsView(teamName, adminUser) {
     return `
         <div class="content-section">
             <h1 class="header">Settings</h1>
             <h2 class="header-small">${teamName}</h2>
             <hr class="hr-small">
             <div class="space-x-big"></div>
-            <div class="space-x-big"></div>
-            <div class="space-x-big"></div>
+            <div class="settings-members-wrapper">
+                <p class="paragraph-center">Only the administrator can make changes to the team</p>
+                <p class="paragraph-center">Please contact <span style="font-weight: bold;">${adminUser}</span> for more information!</p>
+            </div>
+            <div class="space-medium"></div>
             <button id="leave-team-button" class="btn-red"><img class="inside-btn-icon-image-right" src="../../../graphic/exitIconWhite.svg" />LEAVE TEAM</button>
             <img title="Go back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
         </div>
