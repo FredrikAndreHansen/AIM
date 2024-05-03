@@ -327,12 +327,17 @@ function enable_scroll() {
     viewDOMElement.classList.remove("remove-scrolling");
 }
 
-export function CLOSE_MODAL(clickListeners, element) {
-    for(let i = 0; i < clickListeners.length; i++) {
-        clickListeners[i].addEventListener('click', function() {
-            SET_INNER_HTML_VALUE({set: element, to: 'clear'});
-            enable_scroll();
-        });
+export function CLOSE_MODAL(clickListeners, element, noClick = false) {
+    if (noClick === false) {
+        for(let i = 0; i < clickListeners.length; i++) {
+            clickListeners[i].addEventListener('click', function() {
+                SET_INNER_HTML_VALUE({set: element, to: 'clear'});
+                enable_scroll();
+            });
+        }
+    } else {
+        SET_INNER_HTML_VALUE({set: element, to: 'clear'});
+        enable_scroll();
     }
 }
 

@@ -6,21 +6,25 @@ export class TeamsController extends AppController {
         super(teamsModel, individualTeamController, individualTeamModel);
     }
 
-    setView(displayUsers = false, settings = false) {
+    setView(displayUsers = false, settings = false, inviteUsersToTeam = false) {
         this.#indexMenuHighlight();
 
-        this.#generateOutput(displayUsers, settings);
+        this.#generateOutput(displayUsers, settings, inviteUsersToTeam);
     }
 
-    #generateOutput(displayUsers, settings) {
+    #generateOutput(displayUsers, settings, inviteUsersToTeam) {
         this.teamsModel.getTeams().then((teams) => {
             this.teamsModel.getSortTeamsObjectData().then((sortTeamsObjectData) => {
                 this.teamsModel.countTeamsTotal().then((totalTeams) => {
-                    this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.teamsView(sortTeamsObjectData, totalTeams)});
+                    if (inviteUsersToTeam === false) {
+                        this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.teamsView(sortTeamsObjectData, totalTeams)});
 
-                    this.#outputAllTeams(teams, displayUsers, settings);
-    
-                    this.#createNewTeam(displayUsers);
+                        this.#outputAllTeams(teams, displayUsers, settings);
+        
+                        this.#createNewTeam(displayUsers);
+                    } else {
+                        this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.inviteUserToTeamView()});
+                    }
                 });
             });
         });

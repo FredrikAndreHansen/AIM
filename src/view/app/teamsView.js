@@ -39,3 +39,16 @@ export const noTeams = `
         <img class="sad-icon" src="../../graphic/sadIcon.svg" />
     </div>
 `;
+
+export function inviteUserToTeamView() { 
+    return `
+        <div class="content-section">
+            <h1 class="header">Invite</h1>
+            <div class="space-medium"></div>
+            <hr class="hr-small">
+
+            <div class="space-x-big"></div>
+            <table id="teams-list"></table>
+        </div>
+    `;
+}

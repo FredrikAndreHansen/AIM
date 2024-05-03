@@ -3,7 +3,7 @@ import { headerView } from "../view/handlers/headerView.js";
 import { indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView } from "../view/app/indexView.js";
 import { usersView, userOutputView, userSearchOutput } from "../view/app/usersView.js";
 import { individualUserView } from "../view/app/individualUserView.js";
-import { teamsView, teamsOutputView, noTeams } from "../view/app/teamsView.js";
+import { teamsView, teamsOutputView, noTeams, inviteUserToTeamView } from "../view/app/teamsView.js";
 import { individualTeamView, adminSettingsView, userSettingsView } from "../view/app/individualTeamView.js";
 import { IndividualUserController } from "./app/individualUserController.js";
 import { IndividualTeamController } from "./app/individualTeamController.js";
@@ -22,7 +22,7 @@ import { IndividualTeamModel } from "../model/app/individualTeamModel.js";
 
 export class AppController {
 
-    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView };
+    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, inviteUserToTeamView, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView };
     _loadDependencies = { displayLoading, removeLoading };
     _handlerDependencies = { displayMessage, throwError, confirmMessage };
     _authDependencies = { validateIfLoggedIn, removeToken, listenForUpdates };
@@ -54,12 +54,12 @@ export class AppController {
             this.individualTeamModel = individualTeamModel;
     }
 
-    init(navigate = false, teamsInfo, settings) {
+    init(navigate = false, teamsInfo, settings, inviteUsersToTeam) {
         this.#outputNavigation();
 
         if (navigate === false) {this.indexController.setView();}
         if (navigate === 'users') {this.usersController.setView();}
-        if (navigate === 'teams') {this.teamsController.setView(teamsInfo, settings);}
+        if (navigate === 'teams') {this.teamsController.setView(teamsInfo, settings, inviteUsersToTeam);}
     }
 
     #outputNavigation() { 

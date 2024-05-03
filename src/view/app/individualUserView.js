@@ -1,5 +1,6 @@
 export function individualUserView(userInfo) {
     const {userName, company, isBlocked, displayInTeam, kickUserFromTeam} = userInfo;
+
     let build = `
         <div class="error-box-container"></div>
         <div class="popup-box ">
@@ -18,6 +19,7 @@ export function individualUserView(userInfo) {
                 ${displayInTeam === false ? '<button id="user-block-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userBlockIcon.svg" /> BLOCK</button>' : ''}
                 </div>
             `;
+            
         } else {
             build += `
                 <button id="user-unblock-button" class="btn-green"><img class="inside-btn-icon-image" src="../../../graphic/teamsIcon.svg" /> UNBLOCK</button>

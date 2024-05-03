@@ -59,6 +59,7 @@ export class IndividualUserController {
 
             userInviteToTeamBtnDOMElement.addEventListener('click', () => {
                 if (displayInTeam === true) {
+                    // Invite from the team
                     this.individualUserModel.inviteUserToTeam(userId, userName, teamInfo).then(() => {
 
                         this.helpers.SALT().then((salt) => {
@@ -70,7 +71,9 @@ export class IndividualUserController {
                         });
                     });
                 } else {
-                    // Code for inviting users through the user menu!
+                    // Invite through the user menu
+                    this.helpers.CLOSE_MODAL(userInviteToTeamBtnDOMElement, this.views.popupDOMElement, true);
+                    this.helpers.initApp('teams', teamInfo, false, true);
                 }
             });
         }
