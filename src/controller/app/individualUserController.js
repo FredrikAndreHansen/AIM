@@ -73,7 +73,7 @@ export class IndividualUserController {
                 } else {
                     // Invite through the user menu
                     this.helpers.CLOSE_MODAL(userInviteToTeamBtnDOMElement, this.views.popupDOMElement, true);
-                    this.helpers.initApp('teams', teamInfo, false, true);
+                    this.helpers.initApp('teams', teamInfo, false, { userId: userId, userName: userName });
                 }
             });
         }

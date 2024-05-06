@@ -27,7 +27,7 @@ else {
 
 // ## Users menu
 // When sorting for blocked users, have it toggle to sort back to all users when sorting by blocked users
-// Invite users to teams via the User menu (Can only see teams that you are allowed to invite) - If no teams available then the invite button will dissapear!
+// Invite users to teams via the User menu (Can only see teams that you are allowed to invite) - If no teams available then you will get "no teams or create teams" notification!
 
 // ## Schedule meeting
 // If the user is not allowed to schedule a meeting, then remove the team from the schedule meeting menu!
@@ -52,7 +52,7 @@ else {
     // Dark and Light mode
     // Delete account, inform that all user data will be removed from the server
 
-// Check to integrate with Google calendar and perhaps Microsoft/Outlook calendar, to automatically add it in!
+// Check to integrate with Google calendar and perhaps Microsoft/Outlook calendar, to automatically add it in! Add to Settings in the main menu, and also as a popup for the first time when accepting a meeting schedule, or when creating a meeting! Create a value in the user configuration object
 
 // Check to get badge notifications without opening, if possible then also automatically open app when getting a meeting notification(have a setting to also disable it also)
 

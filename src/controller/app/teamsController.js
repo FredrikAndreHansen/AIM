@@ -13,33 +13,40 @@ export class TeamsController extends AppController {
     }
 
     #generateOutput(displayUsers, settings, inviteUsersToTeam) {
-        this.teamsModel.getTeams().then((teams) => {
-            this.teamsModel.getSortTeamsObjectData().then((sortTeamsObjectData) => {
-                this.teamsModel.countTeamsTotal().then((totalTeams) => {
-                    if (inviteUsersToTeam === false) {
-                        this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.teamsView(sortTeamsObjectData, totalTeams)});
+        this.teamsModel.getTeams(inviteUsersToTeam).then((teamsInfo) => {
+            const teams = teamsInfo[0];
+            const totalTeams = teamsInfo[1];
 
-                        this.#outputAllTeams(teams, displayUsers, settings);
+            this.teamsModel.getSortTeamsObjectData().then((sortTeamsObjectData) => {
+                if (inviteUsersToTeam === false) {
+                    this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.teamsView(sortTeamsObjectData, totalTeams)});
+
+                    this.#outputAllTeams(teams, displayUsers, settings);
         
-                        this.#createNewTeam(displayUsers);
-                    } else {
-                        this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.inviteUserToTeamView()});
-                    }
-                });
+                    this.#createNewTeam(displayUsers);
+                } else {
+                    this._helpers.SET_INNER_HTML_VALUE({set: this._views.viewDOMElement, to: this._views.inviteUserToTeamView(inviteUsersToTeam, sortTeamsObjectData, totalTeams)});
+                        
+                    this.#outputAllTeams(teams, displayUsers, settings, inviteUsersToTeam);
+
+                    this.#backToUsersPage();
+                }
             });
         });
     }
 
-    #outputAllTeams(teams, displayUsers, settings) {
+    #outputAllTeams(teams, displayUsers, settings, userInvite = false) {
         const teamsListDOMElement = document.querySelector('#teams-list');
         this._helpers.SET_INNER_HTML_VALUE({set: teamsListDOMElement, to: teams});
 
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");
         this._helpers.ANIMATE_FADE_IN(allTeamsDOMElement);
 
-        this.#toggleTeamSort();
+        this.#toggleTeamSort(userInvite, displayUsers);
 
-        this.#getIndividualTeam(displayUsers, settings);
+        if (userInvite === false) {
+            this.#getIndividualTeam(displayUsers, settings);
+        }
     }
 
     #indexMenuHighlight() {
@@ -55,7 +62,7 @@ export class TeamsController extends AppController {
 
             if (this._helpers.VALIDATE_USER_INPUT({name: teamName})) {
                 this.teamsModel.addTeam(teamName).then(() => {
-                    this.#generateOutput(displayUsers);
+                    this.#generateOutput(displayUsers, false, false);
                 });
             }
         })
@@ -100,13 +107,26 @@ export class TeamsController extends AppController {
         });
     }
 
-    #toggleTeamSort() {
+    #toggleTeamSort(userInvite, displayUsers) {
         const sortTeamsDOMElement = document.querySelector('#sort-teams');
 
         sortTeamsDOMElement.addEventListener('click', () => {
             this.teamsModel.toggleTeamsSort().then(() => {
-                this._helpers.initApp('teams');
+                if (userInvite === false) {
+                    this._helpers.initApp('teams');
+                } else {
+                    const { userId: userId, userName: userName } = userInvite
+                    this._helpers.initApp('teams', displayUsers, false, { userId: userId, userName: userName });
+                }
             });
+        });
+    }
+
+    #backToUsersPage() {
+        const backArrowIconDOMElement = document.querySelector('.backarrow-icon');
+
+        backArrowIconDOMElement.addEventListener('click', () => {
+            this._helpers.initApp('users');
         });
     }
 

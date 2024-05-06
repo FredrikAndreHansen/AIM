@@ -7,11 +7,7 @@ export function teamsView(sortTeamsObjectData, totalTeams) {
                 <img class="icon-btn-cut" src="../../graphic/plusIcon.svg" />
             </div>
             <div class="space-medium"></div>
-            <hr class="hr-small">
-            ${totalTeams > 1 ? '' : '<div style="display: none;"'}
-            <img title="Sort teams" id="sort-teams" class="${sortTeamsObjectData === false ? "arrow-down-icon" : "arrow-down-icon-flipped"}" src="../../../graphic/arrowDownIcon.svg" />
-            ${totalTeams > 1 ? '' : '</div>'}
-            <div class="space-x-big"></div>
+            ${sortTeams(sortTeamsObjectData, totalTeams)}
             <table id="teams-list"></table>
         </div>
     `;
@@ -32,23 +28,37 @@ export function teamsOutputView(teamInfo) {
     `;
 }
 
-export const noTeams = `
-    <div class="index-section-fadein">
-        <p class="paragraph-center">You have no teams!</p>
-        <p class="paragraph-center-small">You can either create a new team or be invited to one</p>
-        <img class="sad-icon" src="../../graphic/sadIcon.svg" />
-    </div>
-`;
+export function noTeams(inviteUser) { 
+    return `
+        <div class="wrapper">
+            <div class="index-section-fadein">
+                <p class="paragraph-center">You have no teams!</p>
+                <p class="paragraph-center-small">${inviteUser === false ? 'You can either create a new team or be invited to one' : "Either you don't have any teams or your current team doesn't allow you to invite users"}</p>
+                <img class="sad-icon" src="../../graphic/sadIcon.svg" />
+            </div>
+        </div>
+    `;
+};
 
-export function inviteUserToTeamView() { 
+export function inviteUserToTeamView(inviteUsersToTeam, sortTeamsObjectData, totalTeams) { 
+    const { userName } = inviteUsersToTeam
     return `
         <div class="content-section">
-            <h1 class="header">Invite</h1>
+            <p class="header-small">Invite <span style="font-weight: bold;">${userName}</span> to a team</p>
             <div class="space-medium"></div>
-            <hr class="hr-small">
-
-            <div class="space-x-big"></div>
+            ${sortTeams(sortTeamsObjectData, totalTeams)}
             <table id="teams-list"></table>
+            <img title="Go back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
         </div>
+    `;
+}
+
+function sortTeams(sortTeamsObjectData, totalTeams) {
+    return `
+        <hr class="hr-small">
+        ${totalTeams > 1 ? '' : '<div style="display: none;"'}
+        <img title="Sort teams" id="sort-teams" class="${sortTeamsObjectData === false ? "arrow-down-icon" : "arrow-down-icon-flipped"}" src="../../../graphic/arrowDownIcon.svg" />
+        ${totalTeams > 1 ? '' : '</div>'}
+        <div class="space-x-big"></div>
     `;
 }

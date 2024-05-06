@@ -9,7 +9,7 @@ export class TeamsModel {
         this.views = views;
     }
 
-    async getTeams() {
+    async getTeams(inviteUser = false) {
         this.authDependencies.validateIfLoggedIn();
 
         const currentUserId = this.helpers.GET_USER_ID();
@@ -24,11 +24,11 @@ export class TeamsModel {
                 this.helpers.GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((userTeams) => {
                     if (this.helpers.IF_EXISTS(userTeams)) {
                         this.helpers.GET_DB_TEAMS_INFO(dbRef).then((allTeams) => {
-                            const HTMLOutput = this.#checkTeams(userTeams, allTeams, salt);
+                            const [HTMLOutput, count] = this.#checkTeams(userTeams, allTeams, salt, inviteUser, decryptedCurrentUserId);
 
                             this.loadDependencies.removeLoading();
 
-                            resolve(HTMLOutput);
+                            resolve([HTMLOutput, count]);
                         })
                     } else {
                         this.loadDependencies.removeLoading();
@@ -42,7 +42,7 @@ export class TeamsModel {
         });
     }
 
-    #checkTeams(getUserTeams, allTeams, salt) {
+    #checkTeams(getUserTeams, allTeams, salt, inviteUser, decryptedCurrentUserId) {
         const user = this.helpers.GET_VALUE(getUserTeams);
         const sortTeams = user.configuration.sortTeams;
 
@@ -56,27 +56,35 @@ export class TeamsModel {
             userTeams: Object.values(user.teams),
             getTeamInfo: Object.values(teams),
             getAllTeamsById: Object.keys(teams),
-            encrypt: this.encryptDependencies.cipher(salt)
+            encrypt: this.encryptDependencies.cipher(salt),
+            inviteUser: inviteUser,
+            currentUserId: decryptedCurrentUserId
         });
     }
 
     #outputTeamsSorted(outputObject) {
-        const { sort, userTeams, getTeamInfo, getAllTeamsById, encrypt } = outputObject;
+        const { sort, userTeams, getTeamInfo, getAllTeamsById, encrypt, inviteUser, currentUserId } = outputObject;
         let HTMLOutput = '';
+        let count = 0;
         let isEmpty = true;
 
         if (sort === true) {
             for(let i = 0; i < userTeams.length; i++) {
                 for(let ii = 0; ii < getAllTeamsById.length; ii++) {
-                    if (userTeams[i] === getAllTeamsById[ii]) {
+
+                    // If inviteUser is false then output all teams, if not, then output only teams that the current user is allowed to invite other users to!
+                    if (userTeams[i] === getAllTeamsById[ii] && inviteUser === false || inviteUser !== false && getTeamInfo[ii].configuration.allAllowedToAddUsers
+                    === true && userTeams[i] === getAllTeamsById[ii] || inviteUser !== false && userTeams[i] === getAllTeamsById[ii] && getTeamInfo[ii].teamCreatorId === currentUserId) {
+
                         const membersQuantity = getTeamInfo[ii].members;
-                        const memberCount = this.#countMembers(membersQuantity)
+                        const memberCount = this.#countMembers(membersQuantity);
 
                         HTMLOutput += this.views.teamsOutputView({
                             encryptedKey: encrypt(getAllTeamsById[ii]), 
                             team: getTeamInfo[ii].teamName,
                             usersInTeam: memberCount
                         });
+                        count++;
                         isEmpty = false;
                     }
                 }
@@ -84,7 +92,11 @@ export class TeamsModel {
         } else {
             for(let i = userTeams.length; i > 0; i--) {
                 for(let ii = 0; ii < getAllTeamsById.length; ii++) {
-                    if (userTeams[i] === getAllTeamsById[ii]) {
+
+                    // If inviteUser is false then output all teams, if not, then output only teams that the current user is allowed to invite other users to!
+                    if (userTeams[i] === getAllTeamsById[ii] && inviteUser === false || inviteUser !== false && getTeamInfo[ii].configuration.allAllowedToAddUsers
+                    === true && userTeams[i] === getAllTeamsById[ii] || inviteUser !== false && userTeams[i] === getAllTeamsById[ii] && getTeamInfo[ii].teamCreatorId === currentUserId) {
+
                         const membersQuantity = getTeamInfo[ii].members;
                         const memberCount = this.#countMembers(membersQuantity)
 
@@ -93,17 +105,18 @@ export class TeamsModel {
                             team: getTeamInfo[ii].teamName,
                             usersInTeam: memberCount
                         });
+                        count++;
                         isEmpty = false;
                     }
                 }
             }
         }
 
-        if (isEmpty === true) {
-            HTMLOutput = this.views.noTeams;
+        if (count === 0) {
+            HTMLOutput = this.views.noTeams(inviteUser);
         }
 
-        return HTMLOutput;
+        return [HTMLOutput, count];
     }
 
     #countMembers(members) {
@@ -248,40 +261,6 @@ export class TeamsModel {
                             const sortTeams = user.configuration.sortTeams;
 
                             resolve(sortTeams);
-                        } else {
-                            reject(this.handlerDependencies.throwError("No data available!"));
-                        }
-                    });
-                } catch(error) {
-                    reject(this.handlerDependencies.displayMessage({message: error, isError: true}));
-                }
-            });
-        });
-    }
-
-    countTeamsTotal() {
-        this.authDependencies.validateIfLoggedIn();
-
-        const currentUserId = this.helpers.GET_USER_ID();
-        const dbRef = this.helpers.GET_DB_REFERENCE();
-
-        return new Promise((resolve, reject) => {
-            this.helpers.SALT().then((salt) => {
-                try{
-                    const decrypt = this.encryptDependencies.decipher(salt);
-                    const decryptedCurrentUserId = decrypt(currentUserId);
-
-                    this.helpers.GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((userData) => {
-                        if (this.helpers.IF_EXISTS(userData)) {
-                            const user = this.helpers.GET_VALUE(userData);
-                            const teamsTotal = user.teams;
-                            
-                            let count = 0;
-                            for (const [_, value] of Object.entries(teamsTotal)) {
-                                if (value) {count++;}
-                            }
-
-                            resolve(count);
                         } else {
                             reject(this.handlerDependencies.throwError("No data available!"));
                         }

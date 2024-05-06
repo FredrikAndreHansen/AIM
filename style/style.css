@@ -204,6 +204,9 @@ body::-webkit-scrollbar {
 		opacity: 1;
 	}
 }
+.wrapper {
+    padding: 0 var(--big) 0 var(--big);
+}
 .space-x-big {
     height: var(--x-big);
 }
