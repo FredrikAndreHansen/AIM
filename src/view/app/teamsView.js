@@ -33,12 +33,12 @@ export function noTeams(inviteUser) {
         <div class="wrapper">
             <div class="index-section-fadein">
                 <p class="paragraph-center">You have no teams!</p>
-                <p class="paragraph-center-small">${inviteUser === false ? 'You can either create a new team or be invited to one' : "Either you don't have any teams or your current team doesn't allow you to invite users"}</p>
+                <p class="paragraph-center-small-nobreak">${inviteUser === false ? 'You can either create a new team or be invited to one' : "Either your teams doesn't allow you to invite users or the user is already a part of your teams"}</p>
                 <img class="sad-icon" src="../../graphic/sadIcon.svg" />
             </div>
         </div>
     `;
-};
+}
 
 export function inviteUserToTeamView(inviteUsersToTeam, sortTeamsObjectData, totalTeams) { 
     const { userName } = inviteUsersToTeam

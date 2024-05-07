@@ -27,7 +27,9 @@ else {
 
 // ## Users menu
 // When sorting for blocked users, have it toggle to sort back to all users when sorting by blocked users
-// Invite users to teams via the User menu (Can only see teams that you are allowed to invite) - If no teams available then you will get "no teams or create teams" notification!
+
+// Add a check in inviteUserToTeam in IndividualUserModel to see if the user is already invited!
+// Add in TeamsController to init after user invite!
 
 // ## Schedule meeting
 // If the user is not allowed to schedule a meeting, then remove the team from the schedule meeting menu!

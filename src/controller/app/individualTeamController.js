@@ -238,7 +238,7 @@ export class IndividualTeamController {
         const teamName = individualTeamObject.teamName;
 
         deleteTeamButtonDOMElement.addEventListener('click', () => {
-            this.handlerDependencies.confirmMessage(`Are you sure you want to delete <span style="font-weight: bold;">${teamName}</span>?`, 'DELETE').then((confirm) => {
+            this.handlerDependencies.confirmMessage(`Are you sure you want to delete <span style="font-weight: bold;">${teamName}</span>?`, { btnText: 'DELETE', btnColor: '-red' }).then((confirm) => {
                 if (confirm === true) {
                     this.individualTeamModel.removeAllUsersFromTeamFromDB(teamId, 'RemoveInvitedUsers').then(() => {
                         this.individualTeamModel.removeAllUsersFromTeamFromDB(teamId).then(() => {

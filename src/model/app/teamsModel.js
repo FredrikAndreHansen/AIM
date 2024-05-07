@@ -9,7 +9,7 @@ export class TeamsModel {
         this.views = views;
     }
 
-    async getTeams(inviteUser = false) {
+    async getTeams(inviteUserId = false) {
         this.authDependencies.validateIfLoggedIn();
 
         const currentUserId = this.helpers.GET_USER_ID();
@@ -20,6 +20,9 @@ export class TeamsModel {
             this.helpers.SALT().then((salt) => {
                 const decrypt = this.encryptDependencies.decipher(salt);
                 const decryptedCurrentUserId = decrypt(currentUserId);
+
+                let inviteUser = false;
+                if (inviteUserId !== false) {inviteUser = decrypt(inviteUserId.userId);}
 
                 this.helpers.GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((userTeams) => {
                     if (this.helpers.IF_EXISTS(userTeams)) {
@@ -66,47 +69,38 @@ export class TeamsModel {
         const { sort, userTeams, getTeamInfo, getAllTeamsById, encrypt, inviteUser, currentUserId } = outputObject;
         let HTMLOutput = '';
         let count = 0;
-        let isEmpty = true;
 
         if (sort === true) {
             for(let i = 0; i < userTeams.length; i++) {
-                for(let ii = 0; ii < getAllTeamsById.length; ii++) {
+                for(let j = 0; j < getAllTeamsById.length; j++) {
 
-                    // If inviteUser is false then output all teams, if not, then output only teams that the current user is allowed to invite other users to!
-                    if (userTeams[i] === getAllTeamsById[ii] && inviteUser === false || inviteUser !== false && getTeamInfo[ii].configuration.allAllowedToAddUsers
-                    === true && userTeams[i] === getAllTeamsById[ii] || inviteUser !== false && userTeams[i] === getAllTeamsById[ii] && getTeamInfo[ii].teamCreatorId === currentUserId) {
-
-                        const membersQuantity = getTeamInfo[ii].members;
+                    if (this.#checkToOutputTeam(userTeams[i], getAllTeamsById[j], inviteUser, getTeamInfo[j], currentUserId)) {
+                        const membersQuantity = getTeamInfo[j].members;
                         const memberCount = this.#countMembers(membersQuantity);
 
                         HTMLOutput += this.views.teamsOutputView({
-                            encryptedKey: encrypt(getAllTeamsById[ii]), 
-                            team: getTeamInfo[ii].teamName,
+                            encryptedKey: encrypt(getAllTeamsById[j]), 
+                            team: getTeamInfo[j].teamName,
                             usersInTeam: memberCount
                         });
                         count++;
-                        isEmpty = false;
                     }
                 }
             }
         } else {
             for(let i = userTeams.length; i > 0; i--) {
-                for(let ii = 0; ii < getAllTeamsById.length; ii++) {
+                for(let j = 0; j < getAllTeamsById.length; j++) {
 
-                    // If inviteUser is false then output all teams, if not, then output only teams that the current user is allowed to invite other users to!
-                    if (userTeams[i] === getAllTeamsById[ii] && inviteUser === false || inviteUser !== false && getTeamInfo[ii].configuration.allAllowedToAddUsers
-                    === true && userTeams[i] === getAllTeamsById[ii] || inviteUser !== false && userTeams[i] === getAllTeamsById[ii] && getTeamInfo[ii].teamCreatorId === currentUserId) {
-
-                        const membersQuantity = getTeamInfo[ii].members;
+                    if (this.#checkToOutputTeam(userTeams[i], getAllTeamsById[j], inviteUser, getTeamInfo[j], currentUserId)) {
+                        const membersQuantity = getTeamInfo[j].members;
                         const memberCount = this.#countMembers(membersQuantity)
 
                         HTMLOutput += this.views.teamsOutputView({
-                            encryptedKey: encrypt(getAllTeamsById[ii]), 
-                            team: getTeamInfo[ii].teamName,
+                            encryptedKey: encrypt(getAllTeamsById[j]), 
+                            team: getTeamInfo[j].teamName,
                             usersInTeam: memberCount
                         });
                         count++;
-                        isEmpty = false;
                     }
                 }
             }
@@ -127,6 +121,39 @@ export class TeamsModel {
         }
 
         return count;
+    }
+
+    #checkToOutputTeam(userTeams, getAllTeamsById, inviteUser, getTeamInfo, currentUserId) {
+        if(userTeams === getAllTeamsById) {
+
+            const allInvitedUsers = Object.entries(getTeamInfo.invitedUsers);
+            for (const [_, invitedUsers] of allInvitedUsers) {
+                if (invitedUsers === inviteUser) {
+                    return false;
+                }
+            }
+
+            for (let i = 0; i < getTeamInfo.members.length; i++) {
+                if (getTeamInfo.members[i] === inviteUser) {
+                    return false;
+                }
+            }
+
+            if(inviteUser === false) {
+                return true;
+            }
+
+            if(inviteUser !== false && getTeamInfo.configuration.allAllowedToAddUsers === true) {
+                return true;
+            }
+
+            if(inviteUser !== false && getTeamInfo.teamCreatorId === currentUserId) {
+                return true;
+            }
+        } else {
+            return false;
+        }
+        return false;
     }
 
     addTeam(teamName) {

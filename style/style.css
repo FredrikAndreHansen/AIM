@@ -305,6 +305,14 @@ body::-webkit-scrollbar {
     overflow-wrap: break-word;
 }
 
+.paragraph-center-small-nobreak {
+    text-align: center;
+    font-family: var(--font);
+    font-size: var(--small);
+    color: var(--dark-grey);
+    word-break: break-word;
+}
+
 .paragraph-left {
     margin-top: 8px;
     text-align: left;

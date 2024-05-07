@@ -44,9 +44,7 @@ export class TeamsController extends AppController {
 
         this.#toggleTeamSort(userInvite, displayUsers);
 
-        if (userInvite === false) {
-            this.#getIndividualTeam(displayUsers, settings);
-        }
+        this.#getIndividualTeam(displayUsers, settings, userInvite);  
     }
 
     #indexMenuHighlight() {
@@ -68,7 +66,7 @@ export class TeamsController extends AppController {
         })
     }
 
-    #getIndividualTeam(displayUsers, settings) {
+    #getIndividualTeam(displayUsers, settings, userInvite) {
         const allTeamsDOMElement = document.querySelectorAll("#all-teams");
     
         if (settings === 'settings' || displayUsers !== false) {
@@ -100,7 +98,17 @@ export class TeamsController extends AppController {
                         const config = team.configuration;
                         const invitedUsers = Object.values(team.invitedUsers);
 
-                        this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, config, decryptedId);
+                        if (userInvite === false) {
+                            this.individualTeamController.setView(teamName, members, invitedUsers, isAdmin, config, decryptedId);
+                        } else {
+                            this._handlerDependencies.confirmMessage(`Are you sure you want to invite <span style="font-weight: bold;">${userInvite.userName}</span> to <span style="font-weight: bold;">${teamName}</span>?`, { btnText: 'INVITE', btnColor: '' }).then((confirm) => {
+                                if (confirm === true) {
+                                    this.individualUserModel.inviteUserToTeam(userInvite.userId, userInvite.userName, { teamId: decryptedId, teamName: teamName }).then(() => {
+                                        // Init again here
+                                    })
+                                }
+                            });
+                        }
                     });
                 });
             });

@@ -28,12 +28,12 @@ function removeElements() {
     removeLoading();
 }
 
-function generateOutput(message, isError, confirm = false) {
+function generateOutput(message, isError, button = false) {
     SET_INNER_HTML_VALUE({set: popupDOMElement, to: 'clear'});
-    if (confirm === false) {
+    if (button === false) {
         SET_INNER_HTML_VALUE({set: errorDOMElement, to: handlerView(message, isError)});
     } else {
-        SET_INNER_HTML_VALUE({set: errorDOMElement, to: warningView(message, confirm)});
+        SET_INNER_HTML_VALUE({set: errorDOMElement, to: warningView(message, button)});
     }
 }
 
@@ -42,10 +42,10 @@ export function throwError(errorMessage) {
     throw error.message;
 }
 
-export function confirmMessage(message, confirm) {
+export function confirmMessage(message, button) {
     return new Promise((resolve, reject) => {
         try {
-            generateOutput(message, false, confirm);
+            generateOutput(message, false, button);
 
             removeElements();
         

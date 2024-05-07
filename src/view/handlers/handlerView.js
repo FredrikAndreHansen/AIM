@@ -23,7 +23,9 @@ export function handlerView(message, isError) {
     }
 }
 
-export function warningView(confirmMessage, confirm) {
+export function warningView(confirmMessage, button) {
+    const { btnText, btnColor } = button;
+
     return `
         <div class="error-box-container" id="error-box-container"></div>
                 
@@ -33,7 +35,7 @@ export function warningView(confirmMessage, confirm) {
         </div>
         <h1 class="header">Warning</h1>
         <p class="paragraph-center">${confirmMessage}</p>
-            <button class="btn-red" id="error-button">${confirm}</button>
+            <button class="btn${btnColor}" id="error-button">${btnText}</button>
         </div>
     `;
 }
