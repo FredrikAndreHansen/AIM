@@ -130,20 +130,24 @@ export class IndividualUserModel {
                             this.helpers.GLOBAL_CONFIG('CONTACT_URL').then((url) => {
                                 this.helpers.GLOBAL_CONFIG('MAXIMUM_PEOPLE_PER_TEAM').then((MAXIMUM_PEOPLE_PER_TEAM) => {
                                     try{
-                                        if (this.helpers.IF_EXISTS(snapshot) && this.helpers.IF_EXISTS(getUserLoggedIn) && this.helpers.IF_EXISTS(teamSnapshot)) {
-                                            if(this.#checkIfUserCanBeInvited(teamSnapshot, MAXIMUM_PEOPLE_PER_TEAM)) {
-                                                const getUserLoggedInValue = this.helpers.GET_VALUE(getUserLoggedIn);
+                                        if(this.#checkIfUserIsAlreadyInTeam(teamSnapshot, encryptedUserId)) {
+                                            if (this.helpers.IF_EXISTS(snapshot) && this.helpers.IF_EXISTS(getUserLoggedIn) && this.helpers.IF_EXISTS(teamSnapshot)) {
+                                                if(this.#checkIfUserCanBeInvited(teamSnapshot, MAXIMUM_PEOPLE_PER_TEAM)) {
+                                                    const getUserLoggedInValue = this.helpers.GET_VALUE(getUserLoggedIn);
 
-                                                const getUserLoggedInName = getUserLoggedInValue.username;
-                    
-                                                this.handlerDependencies.displayMessage({message: `You have invited <span style="font-weight: bold">${userName}</span> to join <span style="font-weight: bold">${teamInfo.teamName}</span>!`, isError: false});
+                                                    const getUserLoggedInName = getUserLoggedInValue.username;
+                        
+                                                    this.handlerDependencies.displayMessage({message: `You have invited <span style="font-weight: bold">${userName}</span> to join <span style="font-weight: bold">${teamInfo.teamName}</span>!`, isError: false});
 
-                                                resolve(this.#pushNewUserInviteToDB(dbRef, encryptedUserId, getUserLoggedInName, teamInfo));
+                                                    resolve(this.#pushNewUserInviteToDB(dbRef, encryptedUserId, getUserLoggedInName, teamInfo));
+                                                } else {
+                                                    reject(this.handlerDependencies.throwError(`You have reached the limit of maximum users! <a href="${url}" target="_blank">Contact us for more information</a>`));
+                                                }
                                             } else {
-                                                reject(this.handlerDependencies.throwError(`You have reached the limit of maximum users! <a href="${url}" target="_blank">Contact us for more information</a>`));
+                                                reject(this.handlerDependencies.throwError("No data available!"));
                                             }
                                         } else {
-                                            reject(this.handlerDependencies.throwError("No data available!"));
+                                            reject(this.handlerDependencies.throwError("Something went wrong, please try again later!"));
                                         }
                                     } catch(error) {
                                         this.handlerDependencies.displayMessage({message: error, isError: true});
@@ -170,6 +174,26 @@ export class IndividualUserModel {
         } else {
             return false;
         }
+    }
+
+    #checkIfUserIsAlreadyInTeam(teamSnapshot, userId) {
+        const team = this.helpers.GET_VALUE(teamSnapshot);
+        const invitedUsers = Object.entries(team.invitedUsers);
+
+        for (const [_, invitedUsierId] of invitedUsers) {
+            if (invitedUsierId === userId) {
+                return false;
+            }
+        }
+
+        const members = team.members;
+        for (let i = 0; i < members.length; i++) {
+            if (members[i] === userId) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     #setIsAdminSubscribed(teamInfo) {
