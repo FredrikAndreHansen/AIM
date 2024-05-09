@@ -28,9 +28,6 @@ else {
 // ## Users menu
 // When sorting for blocked users, have it toggle to sort back to all users when sorting by blocked users
 
-// Add a check in inviteUserToTeam in IndividualUserModel to see if the user is already invited!
-// Add in TeamsController to init after user invite!
-
 // ## Schedule meeting
 // If the user is not allowed to schedule a meeting, then remove the team from the schedule meeting menu!
 // When scheduling:

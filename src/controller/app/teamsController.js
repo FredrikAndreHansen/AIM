@@ -104,7 +104,7 @@ export class TeamsController extends AppController {
                             this._handlerDependencies.confirmMessage(`Are you sure you want to invite <span style="font-weight: bold;">${userInvite.userName}</span> to <span style="font-weight: bold;">${teamName}</span>?`, { btnText: 'INVITE', btnColor: '' }).then((confirm) => {
                                 if (confirm === true) {
                                     this.individualUserModel.inviteUserToTeam(userInvite.userId, userInvite.userName, { teamId: decryptedId, teamName: teamName }).then(() => {
-                                        // Init again here
+                                        this._helpers.initApp('teams', false, false, { userId: userInvite.userId, userName: userInvite.userName });
                                     })
                                 }
                             });

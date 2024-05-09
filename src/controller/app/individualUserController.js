@@ -66,7 +66,6 @@ export class IndividualUserController {
                             const decrypt = this.encryptDependencies.decipher(salt);
                             const encryptedUserId = decrypt(userId);
                             teamInfo.invitedUsers.push(encryptedUserId);
-  
                             this.helpers.initApp('teams', teamInfo);
                         });
                     });
