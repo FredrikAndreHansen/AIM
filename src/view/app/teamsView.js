@@ -53,7 +53,7 @@ export function inviteUserToTeamView(inviteUsersToTeam, sortTeamsObjectData, tot
     `;
 }
 
-function sortTeams(sortTeamsObjectData, totalTeams) {
+export function sortTeams(sortTeamsObjectData, totalTeams) {
     return `
         <hr class="hr-small">
         ${totalTeams > 1 ? '' : '<div style="display: none;"'}

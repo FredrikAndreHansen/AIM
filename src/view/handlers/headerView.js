@@ -11,7 +11,9 @@ export function headerView(isLoggedIn) {
                 <div class="main-menu-teams-clicked"></div>
                 <menuitem title="Manage Teams" id="main-menu-teams"></menuitem>
                 
+                <div class="main-menu-meeting-clicked"></div>
                 <menuitem title="Schedule a Meeting" id="main-menu-meeting"></menuitem>
+                
                 <menuitem title="Sign Out" id="main-menu-sign-out"></menuitem>
 
                 <div id="menu-alerts"></div>

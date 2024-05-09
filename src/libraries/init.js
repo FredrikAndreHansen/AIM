@@ -2,6 +2,7 @@ import { OfflineController } from "../controller/offlineController.js";
 import { IndexController } from "../controller/app/indexController.js";
 import { UsersController } from "../controller/app/usersController.js";
 import { TeamsController } from "../controller/app/teamsController.js";
+import { MeetingController } from "../controller/app/meetingController.js";
 import { SignInController } from "../controller/signedOut/signInController.js"
 import { RegisterController } from "../controller/signedOut/registerController.js";
 import { PasswordResetController } from "../controller/signedOut/passwordResetController.js";
@@ -20,11 +21,13 @@ export function initApp(navigate, teamsInfo = false, settings = false, inviteUse
     const indexController = new IndexController();
     const usersController = new UsersController();
     const teamsController = new TeamsController();
+    const meetingController = new MeetingController();
 
     return new AppController(
         indexController, 
         usersController,
-        teamsController
+        teamsController,
+        meetingController
     );
 }
 

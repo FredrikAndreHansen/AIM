@@ -7,7 +7,7 @@ export class TeamsController extends AppController {
     }
 
     setView(displayUsers = false, settings = false, inviteUsersToTeam = false) {
-        this.#indexMenuHighlight();
+        this.#teamsMenuHighlight();
 
         this.#generateOutput(displayUsers, settings, inviteUsersToTeam);
     }
@@ -47,7 +47,7 @@ export class TeamsController extends AppController {
         this.#getIndividualTeam(displayUsers, settings, userInvite);  
     }
 
-    #indexMenuHighlight() {
+    #teamsMenuHighlight() {
         const mainMenuTeamsDOMElement = document.querySelector('#main-menu-teams');
         this._helpers.SET_MENU_HIGHLIGHT(mainMenuTeamsDOMElement);
     }

@@ -5,6 +5,7 @@ import { usersView, userOutputView, userSearchOutput } from "../view/app/usersVi
 import { individualUserView } from "../view/app/individualUserView.js";
 import { teamsView, teamsOutputView, noTeams, inviteUserToTeamView } from "../view/app/teamsView.js";
 import { individualTeamView, adminSettingsView, userSettingsView } from "../view/app/individualTeamView.js";
+import { meetingView, calendarView } from "../view/app/meetingView.js";
 import { IndividualUserController } from "./app/individualUserController.js";
 import { IndividualTeamController } from "./app/individualTeamController.js";
 import { AllUsersController } from "./app/allUsersController.js";
@@ -22,7 +23,7 @@ import { IndividualTeamModel } from "../model/app/individualTeamModel.js";
 
 export class AppController {
 
-    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, inviteUserToTeamView, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView };
+    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, inviteUserToTeamView, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView, meetingView, calendarView };
     _loadDependencies = { displayLoading, removeLoading };
     _handlerDependencies = { displayMessage, throwError, confirmMessage };
     _authDependencies = { validateIfLoggedIn, removeToken, listenForUpdates };
@@ -33,6 +34,7 @@ export class AppController {
         indexController, 
         usersController,
         teamsController,
+        meetingController,
         indexModel = new IndexModel(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         individualUserModel = new IndividualUserModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers),
         individualTeamModel = new IndividualTeamModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel),
@@ -44,6 +46,7 @@ export class AppController {
             this.indexController = indexController;
             this.usersController = usersController;
             this.teamsController = teamsController;
+            this.meetingController = meetingController;
             this.indexModel = indexModel;
             this.usersModel = usersModel;
             this.individualUserController = individualUserController;
@@ -60,6 +63,7 @@ export class AppController {
         if (navigate === false) {this.indexController.setView();}
         if (navigate === 'users') {this.usersController.setView();}
         if (navigate === 'teams') {this.teamsController.setView(teamsInfo, settings, inviteUsersToTeam);}
+        if (navigate === 'meeting') {this.meetingController.setView();}
     }
 
     #outputNavigation() { 
@@ -76,6 +80,8 @@ export class AppController {
         this.#navigateToUsersPage();
 
         this.#navigateToTeamsPage();
+
+        this.#navigateToMeetingPage();
 
         this.#logOut();
     }
@@ -105,6 +111,14 @@ export class AppController {
 
         mainMenuTeamsDOMElement.addEventListener('click', () => {
             this.init('teams');
+        });
+    }
+
+    #navigateToMeetingPage() {
+        const mainMenuTeamsDOMElement = document.querySelector('#main-menu-meeting');
+
+        mainMenuTeamsDOMElement.addEventListener('click', () => {
+            this.init('meeting');
         });
     }
 

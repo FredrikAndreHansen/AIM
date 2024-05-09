@@ -28,9 +28,9 @@ else {
 // ## Schedule meeting
 // If the user is not allowed to schedule a meeting, then remove the team from the schedule meeting menu!
 // When scheduling:
-    // 1. Date (max 3 dates)
-    // 2. Times (max 5 per date)
-    // 3. Select team (Remove team if the "allowed to schedule meetings" is set to false!)
+    // 1. Select team (Remove team if the "allowed to schedule meetings" is set to false!)
+    // 2. Date (max 3 dates)
+    // 3. Times (max 5 per date)
     // 4. Get a list of all users (so that you can discard users for the meeting(in case someone is sick!))
     // 5. meeting name (optional), meeting length(optional), adding link to join meeting(optional)
     // Pending meeting result page, it will also appear in the notification menu (for all affected users!) Meetings will appear first in the notification menu!

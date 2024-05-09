@@ -222,7 +222,7 @@ export class IndividualTeamController {
         const teamName = individualTeamObject.teamName;
 
         leaveTeamButtonDOMElement.addEventListener('click', () => {
-            this.handlerDependencies.confirmMessage(`Are you sure you want to leave <span style="font-weight: bold;">${teamName}</span>?`, 'LEAVE').then((confirm) => {
+            this.handlerDependencies.confirmMessage(`Are you sure you want to leave <span style="font-weight: bold;">${teamName}</span>?`, { btnText: 'LEAVE', btnColor: '-red' }).then((confirm) => {
                 if (confirm === true) {
                     this.individualUserModel.removeUserFromTeam(false, teamId, false, false).then(() => {
                         this.helpers.REFRESH_APPLICATION();

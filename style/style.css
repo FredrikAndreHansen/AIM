@@ -151,6 +151,18 @@ body::-webkit-scrollbar {
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.25);
 }
+.main-menu-meeting-clicked {
+    position: fixed;
+    left: 192px;
+    height: var(--xx-big);
+    width: 144px;
+    background-image: url('../graphic/calendarIcon.svg');
+    background-size: 13%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    opacity: 0;
+}
 #main-menu-sign-out {
     position: fixed;
     left: 336px;
