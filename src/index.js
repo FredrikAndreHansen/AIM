@@ -25,9 +25,6 @@ else {
 
 // Todo
 
-// ## Users menu
-// When sorting for blocked users, have it toggle to sort back to all users when sorting by blocked users
-
 // ## Schedule meeting
 // If the user is not allowed to schedule a meeting, then remove the team from the schedule meeting menu!
 // When scheduling:

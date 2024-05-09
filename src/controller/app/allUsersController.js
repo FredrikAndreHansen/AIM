@@ -19,7 +19,7 @@ export class AllUsersController {
 
             this.#searchUsers(displayInTeam, teamInfo);
 
-            this.#filterByBlockedUsers(hasBlockedUsers, displayInTeam, teamInfo);
+            this.#toggleAllOrBlockedUsers(hasBlockedUsers, displayInTeam, teamInfo);
 
             this.#goBackToIndividualTeamPage(displayInTeam, teamInfo);
         });
@@ -72,7 +72,7 @@ export class AllUsersController {
             })
         });
     }
-
+    
     #searchUsers(displayInTeam, teamInfo) {
         const searchUserDomElement = document.querySelector('#search-user');
         searchUserDomElement.addEventListener('input', () => {
@@ -98,20 +98,37 @@ export class AllUsersController {
         }
     }
 
-    #filterByBlockedUsers(hasBlockedUsers, displayInTeam, teamInfo) {
+    #toggleAllOrBlockedUsers(hasBlockedUsers, displayInTeam, teamInfo) {
         if (hasBlockedUsers === false) {
             return;
         }
 
         const hasBlockedUsersBtnDOMElement = document.querySelector('#has-blocked-users-button');
+        let toggleUsers = false;
+
         hasBlockedUsersBtnDOMElement.addEventListener('click', () => {
+            toggleUsers = this.#toggleFilterUsersBlockedOrAllButton(toggleUsers, hasBlockedUsersBtnDOMElement);
+
             this.#displayUsers({
                 searchQuery: '', 
-                onlyDisplayBlockedUsers: true,
+                onlyDisplayBlockedUsers: toggleUsers,
                 displayInTeam: displayInTeam,
                 teamInfo: teamInfo
             });
         });
+    }
+
+    #toggleFilterUsersBlockedOrAllButton(toggleUsers, hasBlockedUsersBtnDOMElement) {
+        const searchUserDomElement = document.querySelector('#search-user');
+        this.helpers.CLEAR_DOM_VALUE(searchUserDomElement);
+
+        if (toggleUsers === true) {
+            hasBlockedUsersBtnDOMElement.innerHTML = '<img class="inside-btn-icon-image" src="../../../graphic/userBlockIcon.svg" />FILTER BY BLOCKED USERS';
+        } else {
+            hasBlockedUsersBtnDOMElement.innerHTML = '<img class="inside-btn-icon-image" src="../../../graphic/userIcon.svg" />SHOW ALL USERS';
+        }
+
+        return !toggleUsers;
     }
 
     #goBackToIndividualTeamPage(displayInTeam, teamInfo) {
