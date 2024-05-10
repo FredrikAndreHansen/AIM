@@ -5,14 +5,17 @@ import { usersView, userOutputView, userSearchOutput } from "../view/app/usersVi
 import { individualUserView } from "../view/app/individualUserView.js";
 import { teamsView, teamsOutputView, noTeams, inviteUserToTeamView } from "../view/app/teamsView.js";
 import { individualTeamView, adminSettingsView, userSettingsView } from "../view/app/individualTeamView.js";
-import { meetingView, calendarView } from "../view/app/meetingView.js";
+import { meetingView, calendarView, selectDateView } from "../view/app/meetingView.js";
 import { IndividualUserController } from "./app/individualUserController.js";
 import { IndividualTeamController } from "./app/individualTeamController.js";
 import { AllUsersController } from "./app/allUsersController.js";
+import { SelectDateController } from "./app/meetingFlow/01_selectDateController.js";
 import { IndexModel } from "../model/app/indexModel.js";
 import { UsersModel } from "../model/app/usersModel.js";
 import { IndividualUserModel } from "../model/app/individualUserModel.js";
 import { TeamsModel } from "../model/app/teamsModel.js";
+import { MeetingModel } from "../model/app/meetingModel.js";
+import { SelectDateModel } from "../model/app/meetingFlow/01_selectDateModel.js";
 import { displayLoading, removeLoading } from "../libraries/load.js";
 import { displayMessage, throwError, confirmMessage } from "../libraries/handler.js";
 import { validateIfLoggedIn, removeToken, listenForUpdates } from "../helpers/auth.js";
@@ -23,7 +26,7 @@ import { IndividualTeamModel } from "../model/app/individualTeamModel.js";
 
 export class AppController {
 
-    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, inviteUserToTeamView, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView, meetingView, calendarView };
+    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, inviteUserToTeamView, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView, meetingView, calendarView, selectDateView };
     _loadDependencies = { displayLoading, removeLoading };
     _handlerDependencies = { displayMessage, throwError, confirmMessage };
     _authDependencies = { validateIfLoggedIn, removeToken, listenForUpdates };
@@ -38,10 +41,13 @@ export class AppController {
         indexModel = new IndexModel(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         individualUserModel = new IndividualUserModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers),
         individualTeamModel = new IndividualTeamModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel),
+        meetingModel = new MeetingModel(),
+        selectDateModel = new SelectDateModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._helpers),
         individualUserController = new IndividualUserController(this._authDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel, individualTeamModel),
         usersModel = new UsersModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         allUsersController = new AllUsersController(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views, individualUserController, usersModel, individualUserModel),
         individualTeamController = new IndividualTeamController(this._handlerDependencies, this._authDependencies, this._loadDependencies, this._encryptDependencies, this._helpers, this._views, individualTeamModel, individualUserModel, allUsersController, individualUserController),
+        selectDateController = new SelectDateController(this._helpers, this._views, selectDateModel),
         teamsModel = new TeamsModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views)) { 
             this.indexController = indexController;
             this.usersController = usersController;
@@ -49,21 +55,24 @@ export class AppController {
             this.meetingController = meetingController;
             this.indexModel = indexModel;
             this.usersModel = usersModel;
+            this.meetingModel = meetingModel;
+            this.selectDateModel = selectDateModel;
             this.individualUserController = individualUserController;
             this.individualUserModel = individualUserModel;
             this.allUsersController = allUsersController;
             this.teamsModel = teamsModel;
             this.individualTeamController = individualTeamController;
+            this.selectDateController = selectDateController;
             this.individualTeamModel = individualTeamModel;
     }
 
-    init(navigate = false, teamsInfo, settings, inviteUsersToTeam) {
+    init(navigate = false, data, settings, inviteUsersToTeam) {
         this.#outputNavigation();
 
         if (navigate === false) {this.indexController.setView();}
         if (navigate === 'users') {this.usersController.setView();}
-        if (navigate === 'teams') {this.teamsController.setView(teamsInfo, settings, inviteUsersToTeam);}
-        if (navigate === 'meeting') {this.meetingController.setView();}
+        if (navigate === 'teams') {this.teamsController.setView(data, settings, inviteUsersToTeam);}
+        if (navigate === 'meeting') {this.meetingController.setView(data);}
     }
 
     #outputNavigation() { 

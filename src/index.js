@@ -27,8 +27,6 @@ else {
 
 // ## Schedule meeting
 // When scheduling:
-    // 1. Select team (Remove team if the "allowed to schedule meetings" is set to false!)
-    // 2. Date (max 3 dates)
     // 3. Times (max 5 per date)
     // 4. Get a list of all users (so that you can discard users for the meeting(in case someone is sick!))
     // 5. meeting name (optional), meeting length(optional), adding link to join meeting(optional)

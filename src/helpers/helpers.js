@@ -355,3 +355,14 @@ export function HAS_INTERNET_CONNECTION() {
 export function REFRESH_APPLICATION() {
     location.reload();
 }
+
+export function PRINT_CURRENT_DATE() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    const printedDate = year + '-' + ('0' + month).slice(-2) + '-' + ('0' + day).slice(-2);
+
+    return printedDate;
+}
