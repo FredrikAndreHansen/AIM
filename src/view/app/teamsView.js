@@ -28,12 +28,14 @@ export function teamsOutputView(teamInfo) {
     `;
 }
 
-export function noTeams(inviteUser) { 
+export function noTeams(inviteUser, addToMeeting) { 
     return `
         <div class="wrapper">
             <div class="index-section-fadein">
-                <p class="paragraph-center">You have no teams!</p>
-                <p class="paragraph-center-small-nobreak">${inviteUser === false ? 'You can either create a new team or be invited to one' : "Either your teams doesn't allow you to invite users or the user is already a part of your teams"}</p>
+                <p class="paragraph-center">${addToMeeting === false ? 'You have no teams!' : 'You need a team to schedule a meeting!'}</p>
+                <p class="paragraph-center-small-nobreak">
+                    ${addToMeeting === false ? inviteUser === false ? 'You can either create a new team or be invited to one' : "Either your teams doesn't allow you to invite users or the user is already a part of your teams" : "If you already have a team it could be that you don't have permission to schedule a meeting, then check with your team administrator for more information"}
+                </p>
                 <img class="sad-icon" src="../../graphic/sadIcon.svg" />
             </div>
         </div>

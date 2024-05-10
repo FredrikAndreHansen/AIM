@@ -26,7 +26,6 @@ else {
 // Todo
 
 // ## Schedule meeting
-// If the user is not allowed to schedule a meeting, then remove the team from the schedule meeting menu!
 // When scheduling:
     // 1. Select team (Remove team if the "allowed to schedule meetings" is set to false!)
     // 2. Date (max 3 dates)
@@ -36,7 +35,7 @@ else {
     // Pending meeting result page, it will also appear in the notification menu (for all affected users!) Meetings will appear first in the notification menu!
 
 // After scheduling a meeting it will then show as a upcoming meeting in the notification menu(for all users), it will automatically dissapear when the date past the meeting end time!
-// Edit a meeting - meeting name (optional), meeting length(optional), adding link to join meeting(optional)
+// Edit a meeting - meeting name (optional), meeting length(optional), adding link to join meeting(optional), or delete the meeting (Only the meeting creator and team admin can edit the meeting)
 
 // ## Main menu
 // Settings in main menu
@@ -45,7 +44,6 @@ else {
     // Change password
     // Change email
     // Always signed in or sign out when removing the app
-    // Dark and Light mode
     // Delete account, inform that all user data will be removed from the server
 
 // Check to integrate with Google calendar and perhaps Microsoft/Outlook calendar, to automatically add it in! Add to Settings in the main menu, and also as a popup for the first time when accepting a meeting schedule, or when creating a meeting! Create a value in the user configuration object

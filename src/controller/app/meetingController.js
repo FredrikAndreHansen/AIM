@@ -13,7 +13,7 @@ export class MeetingController extends AppController {
     }
 
     #generateOutput() {
-        this.teamsModel.getTeams().then((teamsInfo) => {
+        this.teamsModel.getTeams(false, true).then((teamsInfo) => {
             const teams = teamsInfo[0];
             const totalTeams = teamsInfo[1];
 

@@ -9,7 +9,7 @@ export class TeamsModel {
         this.views = views;
     }
 
-    async getTeams(inviteUserId = false) {
+    async getTeams(inviteUserId = false, addToMeeting = false) {
         this.authDependencies.validateIfLoggedIn();
 
         const currentUserId = this.helpers.GET_USER_ID();
@@ -27,7 +27,7 @@ export class TeamsModel {
                 this.helpers.GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((userTeams) => {
                     if (this.helpers.IF_EXISTS(userTeams)) {
                         this.helpers.GET_DB_TEAMS_INFO(dbRef).then((allTeams) => {
-                            const [HTMLOutput, count] = this.#checkTeams(userTeams, allTeams, salt, inviteUser, decryptedCurrentUserId);
+                            const [HTMLOutput, count] = this.#checkTeams(userTeams, allTeams, salt, inviteUser, decryptedCurrentUserId, addToMeeting);
 
                             this.loadDependencies.removeLoading();
 
@@ -45,7 +45,7 @@ export class TeamsModel {
         });
     }
 
-    #checkTeams(getUserTeams, allTeams, salt, inviteUser, decryptedCurrentUserId) {
+    #checkTeams(getUserTeams, allTeams, salt, inviteUser, decryptedCurrentUserId, addToMeeting) {
         const user = this.helpers.GET_VALUE(getUserTeams);
         const sortTeams = user.configuration.sortTeams;
 
@@ -61,12 +61,13 @@ export class TeamsModel {
             getAllTeamsById: Object.keys(teams),
             encrypt: this.encryptDependencies.cipher(salt),
             inviteUser: inviteUser,
-            currentUserId: decryptedCurrentUserId
+            currentUserId: decryptedCurrentUserId,
+            addToMeeting: addToMeeting
         });
     }
 
     #outputTeamsSorted(outputObject) {
-        const { sort, userTeams, getTeamInfo, getAllTeamsById, encrypt, inviteUser, currentUserId } = outputObject;
+        const { sort, userTeams, getTeamInfo, getAllTeamsById, encrypt, inviteUser, currentUserId, addToMeeting } = outputObject;
         let HTMLOutput = '';
         let count = 0;
 
@@ -74,7 +75,7 @@ export class TeamsModel {
             for(let i = 0; i < userTeams.length; i++) {
                 for(let j = 0; j < getAllTeamsById.length; j++) {
 
-                    if (this.#checkToOutputTeam(userTeams[i], getAllTeamsById[j], inviteUser, getTeamInfo[j], currentUserId)) {
+                    if (this.#checkToOutputTeam(userTeams[i], getAllTeamsById[j], inviteUser, getTeamInfo[j], currentUserId, addToMeeting)) {
                         const membersQuantity = getTeamInfo[j].members;
                         const memberCount = this.#countMembers(membersQuantity);
 
@@ -91,7 +92,7 @@ export class TeamsModel {
             for(let i = userTeams.length; i > 0; i--) {
                 for(let j = 0; j < getAllTeamsById.length; j++) {
 
-                    if (this.#checkToOutputTeam(userTeams[i], getAllTeamsById[j], inviteUser, getTeamInfo[j], currentUserId)) {
+                    if (this.#checkToOutputTeam(userTeams[i], getAllTeamsById[j], inviteUser, getTeamInfo[j], currentUserId, addToMeeting)) {
                         const membersQuantity = getTeamInfo[j].members;
                         const memberCount = this.#countMembers(membersQuantity)
 
@@ -107,7 +108,7 @@ export class TeamsModel {
         }
 
         if (count === 0) {
-            HTMLOutput = this.views.noTeams(inviteUser);
+            HTMLOutput = this.views.noTeams(inviteUser, addToMeeting);
         }
 
         return [HTMLOutput, count];
@@ -123,8 +124,12 @@ export class TeamsModel {
         return count;
     }
 
-    #checkToOutputTeam(userTeams, getAllTeamsById, inviteUser, getTeamInfo, currentUserId) {
+    #checkToOutputTeam(userTeams, getAllTeamsById, inviteUser, getTeamInfo, currentUserId, addToMeeting) {
         if(userTeams === getAllTeamsById) {
+
+            if (addToMeeting === true && getTeamInfo.configuration.allAllowedToScheduleMeeting === false) {
+                return false;
+            }
 
             const allInvitedUsers = Object.entries(getTeamInfo.invitedUsers);
             for (const [_, invitedUsers] of allInvitedUsers) {
