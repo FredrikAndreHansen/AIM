@@ -30,14 +30,18 @@ export class SelectDateModel {
         this.helpers.SET_INNER_HTML_VALUE({ set: dateInfoDOMElement });
 
         if (meetingData.dates.length > 0) {
-            proceedDOMElement.classList.remove('none');
+            if (proceedDOMElement.classList.contains('none')){
+                proceedDOMElement.classList.remove('none');
+            }
 
             for (let i = 0; i < meetingData.dates.length; i++) {
                 dateInfoDOMElement.innerHTML += `<p class="date-container">${this.#formatDateOutput(meetingData.dates[i])} <img id="id${meetingData.dates[i]}" class="exit-icon-image-date" src="../../../graphic/exitIconWhite.svg" title="Remove Date"/></p>`;
             }
         } else {
             dateInfoDOMElement.innerHTML = `<p class="paragraph-center">No dates selected!</p>`;
-            proceedDOMElement.classList.add('none');
+            if (!proceedDOMElement.classList.contains('none')) {
+                proceedDOMElement.classList.add('none');
+            }
         }
     }
 

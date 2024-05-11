@@ -7,13 +7,17 @@ export class SelectDateController {
     }
 
     setView(meetingData) {
+        this.#generateOutput(meetingData);
+
+        this.#setDateEventListener(meetingData);
+    }
+
+    #generateOutput(meetingData) {
         this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.selectDateView(meetingData)});
 
         this.selectDateModel.outputSelectedDateData(meetingData);
 
         this.#addDate(meetingData);
-
-        this.#setDateEventListener(meetingData);
     }
 
     #addDate(meetingData) {
@@ -40,6 +44,8 @@ export class SelectDateController {
         }
 
         this.#goBack(meetingData);
+
+        this.#proceed(meetingData);
     }
 
     #goBack(meetingData) {
@@ -47,6 +53,14 @@ export class SelectDateController {
 
         backArrowIconDOMElement.addEventListener('click', () => {
             this.helpers.initApp('meeting', meetingData);
+        });
+    }
+
+    #proceed(meetingData) {
+        const proceedDOMElement = document.querySelector('#proceed');
+
+        proceedDOMElement.addEventListener('click', () => {
+            this.helpers.initApp('meeting', meetingData, 2);
         });
     }
 }

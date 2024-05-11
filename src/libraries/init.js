@@ -11,10 +11,10 @@ import { SignedOutController } from "../controller/signedOutController.js";
 import { HAS_INTERNET_CONNECTION } from "../helpers/helpers.js";
 import { displayLoading } from "./load.js";
 
-export function initApp(navigate, teamsInfo = false, settings = false, inviteUsersToTeam = false) {
+export function initApp(navigate, data = false, page = false, inviteUsersToTeam = false) {
     const appController = createAppController();
 
-    appController.init(navigate, teamsInfo, settings, inviteUsersToTeam);
+    appController.init(navigate, data, page, inviteUsersToTeam);
  }
 
  function createAppController() {

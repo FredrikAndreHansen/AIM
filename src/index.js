@@ -27,7 +27,7 @@ else {
 
 // ## Schedule meeting
 // When scheduling:
-    // 3. Times (max 5 per date)
+    // 3. Times (max 15 per date)
     // 4. Get a list of all users (so that you can discard users for the meeting(in case someone is sick!))
     // 5. meeting name (optional), meeting length(optional), adding link to join meeting(optional)
     // Pending meeting result page, it will also appear in the notification menu (for all affected users!) Meetings will appear first in the notification menu!
