@@ -6,10 +6,14 @@ export class MeetingController extends AppController {
         super(teamsModel);
     }
 
-    setView(meetingData) {
+    setView(meetingData, page) {
         this.#meetingMenuHighlight();
 
-        this.#generateOutput(meetingData);
+        if (page === false) {
+            this.#generateOutput(meetingData);
+        } else {
+            this.#navigateMeetingWorkflow(meetingData, page)
+        }
     }
 
     #generateOutput(meetingData) {
@@ -79,11 +83,21 @@ export class MeetingController extends AppController {
                             meetingData.teamName = teamName;
                             meetingData.members = members;
                         }
-                        this.selectDateController.setView(meetingData);
+                        this.#navigateMeetingWorkflow(meetingData, 1);
                     });
                 });
             });
         });
+    }
+
+    #navigateMeetingWorkflow(meetingData, page) {
+        if (page === 1) {
+            this.selectDateController.setView(meetingData);
+        }
+
+        if (page === 2) {
+            this.selectTimeController.setView(meetingData);
+        }
     }
 
     #meetingMenuHighlight() {

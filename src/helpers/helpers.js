@@ -366,3 +366,16 @@ export function PRINT_CURRENT_DATE() {
 
     return printedDate;
 }
+
+export function PRINT_TIME_ONE_HOUR_AHEAD() {
+    const date = new Date();
+    let hour = date.getHours() + 1;
+    let minute = date.getMinutes();
+    if (hour >= 23) {
+        hour = 23;
+        minute = 59;
+    }
+    const printedTime = ('0' + hour).slice(-2) + ":" + ('0' + minute).slice(-2);
+    
+    return printedTime;
+}

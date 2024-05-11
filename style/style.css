@@ -349,14 +349,16 @@ body::-webkit-scrollbar {
 }
 
 .paragraph-absolute-center-proceed {
-    text-align: center;
     font-family: var(--font);
     font-size: var(--medium);
     color: var(--white);
     position: absolute;
-    top: 23%;
+    margin: auto;
+    margin-top: 4px;
     left: 50%;
-    transform: translate(-50%, -100%);
+    top: 50%;
+    height: 100%;
+    transform: translate(-50%, -50%);
     overflow-wrap: break-word;
 
 }

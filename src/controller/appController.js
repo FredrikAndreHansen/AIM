@@ -5,11 +5,12 @@ import { usersView, userOutputView, userSearchOutput } from "../view/app/usersVi
 import { individualUserView } from "../view/app/individualUserView.js";
 import { teamsView, teamsOutputView, noTeams, inviteUserToTeamView } from "../view/app/teamsView.js";
 import { individualTeamView, adminSettingsView, userSettingsView } from "../view/app/individualTeamView.js";
-import { meetingView, calendarView, selectDateView } from "../view/app/meetingView.js";
+import { meetingView, calendarView, selectDateView, selectTimeView } from "../view/app/meetingView.js";
 import { IndividualUserController } from "./app/individualUserController.js";
 import { IndividualTeamController } from "./app/individualTeamController.js";
 import { AllUsersController } from "./app/allUsersController.js";
 import { SelectDateController } from "./app/meetingFlow/01_selectDateController.js";
+import { SelectTimeController } from "./app/meetingFlow/02_selectTimeController.js";
 import { IndexModel } from "../model/app/indexModel.js";
 import { UsersModel } from "../model/app/usersModel.js";
 import { IndividualUserModel } from "../model/app/individualUserModel.js";
@@ -26,7 +27,7 @@ import { IndividualTeamModel } from "../model/app/individualTeamModel.js";
 
 export class AppController {
 
-    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, inviteUserToTeamView, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView, meetingView, calendarView, selectDateView };
+    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, inviteUserToTeamView, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView, meetingView, calendarView, selectDateView, selectTimeView };
     _loadDependencies = { displayLoading, removeLoading };
     _handlerDependencies = { displayMessage, throwError, confirmMessage };
     _authDependencies = { validateIfLoggedIn, removeToken, listenForUpdates };
@@ -48,6 +49,7 @@ export class AppController {
         allUsersController = new AllUsersController(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views, individualUserController, usersModel, individualUserModel),
         individualTeamController = new IndividualTeamController(this._handlerDependencies, this._authDependencies, this._loadDependencies, this._encryptDependencies, this._helpers, this._views, individualTeamModel, individualUserModel, allUsersController, individualUserController),
         selectDateController = new SelectDateController(this._helpers, this._views, selectDateModel),
+        selectTimeController = new SelectTimeController(this._helpers, this._views),
         teamsModel = new TeamsModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views)) { 
             this.indexController = indexController;
             this.usersController = usersController;
@@ -63,16 +65,17 @@ export class AppController {
             this.teamsModel = teamsModel;
             this.individualTeamController = individualTeamController;
             this.selectDateController = selectDateController;
+            this.selectTimeController = selectTimeController;
             this.individualTeamModel = individualTeamModel;
     }
 
-    init(navigate = false, data, settings, inviteUsersToTeam) {
+    init(navigate = false, data = false, page = false, inviteUsersToTeam = false) {
         this.#outputNavigation();
 
         if (navigate === false) {this.indexController.setView();}
         if (navigate === 'users') {this.usersController.setView();}
-        if (navigate === 'teams') {this.teamsController.setView(data, settings, inviteUsersToTeam);}
-        if (navigate === 'meeting') {this.meetingController.setView(data);}
+        if (navigate === 'teams') {this.teamsController.setView(data, page, inviteUsersToTeam);}
+        if (navigate === 'meeting') {this.meetingController.setView(data, page);}
     }
 
     #outputNavigation() { 
