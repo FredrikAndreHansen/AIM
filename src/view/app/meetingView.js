@@ -1,5 +1,5 @@
 import { sortTeams } from "./teamsView.js";
-import { PRINT_CURRENT_DATE, PRINT_TIME_ONE_HOUR_AHEAD } from "../../helpers/helpers.js";
+import { PRINT_CURRENT_DATE } from "../../helpers/helpers.js";
 
 export function meetingView(sortTeamsObjectData, totalTeams) { 
     return `
@@ -44,22 +44,13 @@ export function selectDateView(meetingData) {
 export function selectTimeView(meetingData) {
     const { teamName } = meetingData;
 
-
-
     return `
         <div class="content-section">
             <h1 class="header">Add Time(s)</h1>
             <p class="paragraph-center">${teamName}</p>
             <hr class="hr-small">
             <div class="space-medium"></div>
-
-            <div class="settings-members-wrapper">
-                <p class="paragraph-center" style="font-weight: bold;">May 10, 2024</p>
-                <input type="time" id="date" name="time" value="${PRINT_TIME_ONE_HOUR_AHEAD()}" />
-                <div class="circle-blue" id="select-date" title="Add Time">
-                    <img class="circle-img-inner" src="../../graphic/plusIcon.svg" />
-                </div>
-            </div>
+            <div id="time-info"></div>
             <img title="Go back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
         </div>
         <div id="proceed"><p class="paragraph-absolute-center-proceed">Proceed</p></div>

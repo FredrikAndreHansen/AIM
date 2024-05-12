@@ -34,7 +34,7 @@ export class SelectDateController {
 
     #setDateEventListener(meetingData) {
         for(let i = 0; i < meetingData.dates.length; i++) {
-            const id = meetingData.dates[i];
+            const id = meetingData.dates[i].date;
 
             document.querySelector('#id' + id).addEventListener('click', () => {
                 this.selectDateModel.removeDate(id, meetingData);

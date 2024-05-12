@@ -28,8 +28,9 @@ else {
 // ## Schedule meeting
 // When scheduling:
     // 3. Times (max 15 per date)
-    // 4. Get a list of all users (so that you can discard users for the meeting(in case someone is sick!))
-    // 5. meeting name (optional), meeting length(optional), adding link to join meeting(optional)
+    // 4. meeting name (optional), meeting length(optional), adding link to join meeting(optional)
+    // 5. Get a list of all users (so that you can discard users for the meeting(in case someone is sick!)) (optional)
+    // 6. Confirm, change the proceed button to a green button that says "Create Meeting"
     // Pending meeting result page, it will also appear in the notification menu (for all affected users!) Meetings will appear first in the notification menu!
 
 // After scheduling a meeting it will then show as a upcoming meeting in the notification menu(for all users), it will automatically dissapear when the date past the meeting end time!

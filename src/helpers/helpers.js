@@ -56,6 +56,10 @@ export function TRIMSTRING(string) {
     return b.replaceAll(']', '');
 }
 
+export function REMOVE_SEMICOLON(string) {
+    return string.replaceAll(':', '');
+}
+
 export function PARSESTRING(string) {
     let a = JSON.parse(string);
     return JSON.stringify(a);

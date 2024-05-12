@@ -1,10 +1,11 @@
 export class SelectDateModel {
 
-    constructor(authDependencies, loadDependencies, handlerDependencies, helpers) {
+    constructor(authDependencies, loadDependencies, handlerDependencies, helpers, meetingModel) {
         this.authDependencies = authDependencies;
         this.loadDependencies = loadDependencies;
         this.handlerDependencies = handlerDependencies;
         this.helpers = helpers;
+        this.meetingModel = meetingModel;
     }
 
     outputSelectedDateData(meetingData) {
@@ -17,7 +18,10 @@ export class SelectDateModel {
 
     addDate(date, meetingData) {
         if (this.#validateDate(date, meetingData)) {
-            meetingData.dates.push(date);
+            meetingData.dates.push({
+                date: date,
+                time: []
+            });
         
             this.#outputDates(meetingData);
         }
@@ -25,59 +29,36 @@ export class SelectDateModel {
 
     #outputDates(meetingData) {
         const dateInfoDOMElement = document.querySelector('#date-info');
-        const proceedDOMElement = document.querySelector('#proceed');
 
         this.helpers.SET_INNER_HTML_VALUE({ set: dateInfoDOMElement });
 
         if (meetingData.dates.length > 0) {
-            if (proceedDOMElement.classList.contains('none')){
-                proceedDOMElement.classList.remove('none');
-            }
+            this.meetingModel.canProceed(true);
 
-            for (let i = 0; i < meetingData.dates.length; i++) {
-                dateInfoDOMElement.innerHTML += `<p class="date-container">${this.#formatDateOutput(meetingData.dates[i])} <img id="id${meetingData.dates[i]}" class="exit-icon-image-date" src="../../../graphic/exitIconWhite.svg" title="Remove Date"/></p>`;
+            for (let i = meetingData.dates.length; i > 0; i--) {
+                dateInfoDOMElement.innerHTML += this.#generateDateHTML(meetingData, i);
             }
         } else {
             dateInfoDOMElement.innerHTML = `<p class="paragraph-center">No dates selected!</p>`;
-            if (!proceedDOMElement.classList.contains('none')) {
-                proceedDOMElement.classList.add('none');
-            }
+            this.meetingModel.canProceed(false);
         }
     }
 
-    #formatDateOutput(date) {
-        const year = this.#setDateVariables(date).year;
-        const month =  this.#setDateVariables(date).month;
-        const day =  this.#setDateVariables(date).day;
-        const allMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        const currentMonth = allMonths[month-1];
-
-        return currentMonth + ' ' + day + ', ' + year;
-    }
-
-    #setDateVariables(date) {
-        const dateArray = date.split("-");
-
-        const year = dateArray[0];
-        const month = dateArray[1];
-        const day = dateArray[2];
-
-        return {
-            year: year,
-            month: month,
-            day: day
-        };
+    #generateDateHTML(meetingData, i) {
+        return `
+            <p class="date-container">${this.meetingModel.formatDateOutput(meetingData.dates[i-1].date)} <img id="id${meetingData.dates[i-1].date}" class="exit-icon-image-date" src="../../../graphic/exitIconWhite.svg" title="Remove Date"/></p>
+        `;
     }
 
     #validateDate(date, meetingData) {
         let error = false;
 
         for (let i = 0; i < meetingData.dates.length; i ++) {
-            if (meetingData.dates[i] === date) {
+            if (meetingData.dates[i].date === date) {
                 error = "You can't add the same date twice, please select a different date!";
             }
-            if (meetingData.dates.length >= 3) {
-                error = "You have added the maximum number of dates!";
+            if (meetingData.dates.length >= 10) {
+                error = "You have added the maximum amount of dates!";
             }
         }
         
@@ -98,9 +79,9 @@ export class SelectDateModel {
     }
 
     #dateIsInThePast(date) {
-        const year = this.#setDateVariables(date).year;
-        const month =  this.#setDateVariables(date).month;
-        const day =  this.#setDateVariables(date).day;
+        const year = this.meetingModel.setDateVariables(date).year;
+        const month =  this.meetingModel.setDateVariables(date).month;
+        const day =  this.meetingModel.setDateVariables(date).day;
 
         const currentDate = new Date();
         const currentYear = currentDate.getFullYear();
@@ -123,7 +104,7 @@ export class SelectDateModel {
     }
 
     #dateIsToFarInTheFuture(date) {
-        const year = this.#setDateVariables(date).year;
+        const year = this.meetingModel.setDateVariables(date).year;
 
         const currentDate = new Date();
         const futureYear = currentDate.getFullYear() + 5;
@@ -136,9 +117,13 @@ export class SelectDateModel {
     }
 
     removeDate(id, meetingData) {
-        meetingData.dates = meetingData.dates.filter((date) => {
-            return date !== id;
-        });
+        let filterDates = [];
+        for (let i = 0; meetingData.dates.length > i; i++) {
+            if (meetingData.dates[i].date !== id) {
+                filterDates = [...filterDates, meetingData.dates[i]];
+            }
+        }
+        meetingData.dates = filterDates;
 
         this.#outputDates(meetingData);
     }

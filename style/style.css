@@ -1144,3 +1144,7 @@ td {
     cursor: pointer;
     background-color: var(--light-blue);
 }
+
+#date-info {
+    padding-bottom: var(--x-small);
+}
