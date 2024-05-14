@@ -4,4 +4,4 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
       chrome.action.setBadgeText({text: String(newValue)});
     });
   }
-});  
+});

@@ -22,6 +22,7 @@
     --medium-big: 20px;
     --big: 24px;
     --x-big: 32px;
+    --x-medium-big: 48px;
     --xx-big: 64px;
     --xxx-big: 96px;
     --xxxx-big: 128px;
@@ -1148,3 +1149,26 @@ td {
 #date-info {
     padding-bottom: var(--x-small);
 }
+
+.microphone-icon {
+    height: var(--x-medium-big);
+    width: var(--x-medium-big);
+    margin-left: 50%;
+    margin-right: 50%;
+    transform: translateX(-50%);
+    padding: 12px;
+}
+.microphone-icon:hover {
+    cursor: pointer;
+    opacity: 0.75;
+}
+.listen {
+    border-radius: 50%;
+    background-color: var(--light-grey);
+    animation-name: fadeInOpacity;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: 0.3s;
+    opacity: 0.5;
+}
+      

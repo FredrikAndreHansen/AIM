@@ -60,6 +60,10 @@ export function REMOVE_SEMICOLON(string) {
     return string.replaceAll(':', '');
 }
 
+export function REMOVE_FULLSTOP(string) {
+    return string.replaceAll('.', '');
+}
+
 export function PARSESTRING(string) {
     let a = JSON.parse(string);
     return JSON.stringify(a);
@@ -382,4 +386,8 @@ export function PRINT_TIME_ONE_HOUR_AHEAD() {
     const printedTime = ('0' + hour).slice(-2) + ":" + ('0' + minute).slice(-2);
     
     return printedTime;
+}
+
+export function GET_LANGUAGE() {
+    return navigator.language || navigator.userLanguage;
 }

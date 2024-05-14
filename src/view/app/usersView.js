@@ -7,6 +7,7 @@ export function usersView(hasBlockedUsers, displayInTeam) {
                 <img class="icon-btn-cut" src="../../graphic/MagnifyingGlassIcon.svg" />
             </div>
             ${hasBlockedUsers === true ? '<button id="has-blocked-users-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userBlockIcon.svg" />FILTER BY BLOCKED USERS</button>' : ''}
+            <span class="loader"><img class="microphone-icon" src="../../graphic/microphoneIcon.svg" title="Search by voice" /></span>
             <div class="space-medium"></div>
             <hr class="hr-small">
             <div class="space-x-big"></div>

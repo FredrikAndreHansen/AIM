@@ -212,4 +212,50 @@ export class UsersModel {
         }
     }
 
+    searchByVoice(microphoneDOMElement) {
+        return new Promise((resolve, reject) => {
+            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+            .then(() => { 
+                if (!microphoneDOMElement.classList.contains('listen')) {
+                    microphoneDOMElement.classList.add('listen');
+                }
+                
+                window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+                const recognition = new window.SpeechRecognition();
+                recognition.interimResults = true;
+
+                recognition.lang = this.helpers.GET_LANGUAGE();
+
+                recognition.addEventListener('result', (e) => {
+                    const text = Array.from(e.results).map(result => result[0]).map(result => result.transcript).join('');
+        
+                    if(e.results[0].isFinal) {
+                        resolve(this.helpers.REMOVE_FULLSTOP(text));
+                    }
+                });
+
+                microphoneDOMElement.addEventListener('click', () => {
+                    this.#microphoneStopListen(recognition, microphoneDOMElement);
+                })
+
+                recognition.addEventListener('end', () => {
+                    this.#microphoneStopListen(recognition, microphoneDOMElement);
+                });
+        
+                recognition.start();          
+            })
+            .catch(() => {
+                reject(this.handlerDependencies.displayMessage({message: 'You need to enable microphone permission!<br><br> Go to your browser settings and enable microphone.', isError: true}));
+            });
+        });
+    }
+
+    #microphoneStopListen(recognition, microphoneDOMElement) {
+        recognition.stop();
+        if (microphoneDOMElement.classList.contains('listen')) {
+            microphoneDOMElement.classList.remove('listen');
+        }
+    }
+        
 }

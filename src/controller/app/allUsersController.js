@@ -9,6 +9,7 @@ export class AllUsersController {
         this.individualUserController = individualUserController;
         this.usersModel = usersModel;
         this.individualUserModel = individualUserModel;
+    
     }
 
     setView(displayInTeam = false, teamInfo = false) {
@@ -18,6 +19,8 @@ export class AllUsersController {
             this.#displayUsers({searchQuery: '', onlyDisplayBlockedUsers: false, displayInTeam: displayInTeam, teamInfo: teamInfo});
 
             this.#searchUsers(displayInTeam, teamInfo);
+
+            this.#searchByVoiceOnClick(displayInTeam, teamInfo);
 
             this.#toggleAllOrBlockedUsers(hasBlockedUsers, displayInTeam, teamInfo);
 
@@ -70,6 +73,27 @@ export class AllUsersController {
                     });
                 })
             })
+        });
+    }
+
+    #searchByVoiceOnClick(displayInTeam, teamInfo) {
+        const microphoneDOMElement = document.querySelector('.microphone-icon');
+
+        microphoneDOMElement.addEventListener('click', () => {
+            if (!microphoneDOMElement.classList.contains('listen')) {
+                this.usersModel.searchByVoice(microphoneDOMElement).then((searchQuery) => {
+                    try {
+                        this.#displayUsers({
+                            searchQuery: searchQuery, 
+                            onlyDisplayBlockedUsers: false,
+                            displayInTeam: displayInTeam,
+                            teamInfo: teamInfo
+                        });
+                    } catch(error) {
+                        this.handlerController.displayMessage({message: error, isError: true});
+                    }
+                });
+            }
         });
     }
     
