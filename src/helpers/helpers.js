@@ -389,5 +389,14 @@ export function PRINT_TIME_ONE_HOUR_AHEAD() {
 }
 
 export function GET_LANGUAGE() {
-    return navigator.language || navigator.userLanguage;
+    //return navigator.language || navigator.userLanguage;
+    return 'en-US';
+}
+
+export function MICROPHONE_STOP_LISTEN(recognition, microphoneDOMElement) {
+    recognition.stop();
+
+    if (microphoneDOMElement.classList.contains('listen')) {
+        microphoneDOMElement.classList.remove('listen');
+    }   
 }

@@ -52,7 +52,7 @@ export class SelectDateController {
         const backArrowIconDOMElement = document.querySelector('.backarrow-icon');
 
         backArrowIconDOMElement.addEventListener('click', () => {
-            this.helpers.initApp('meeting', meetingData);
+            this.helpers.initApp('meetingTeam', meetingData, 1);
         });
     }
 
@@ -60,7 +60,7 @@ export class SelectDateController {
         const proceedDOMElement = document.querySelector('#proceed');
 
         proceedDOMElement.addEventListener('click', () => {
-            this.helpers.initApp('meeting', meetingData, 2);
+            this.helpers.initApp('meetingTeam', meetingData, 3);
         });
     }
 }

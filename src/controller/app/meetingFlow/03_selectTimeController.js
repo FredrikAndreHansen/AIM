@@ -55,7 +55,7 @@ export class SelectTimeController {
         const backArrowIconDOMElement = document.querySelector('.backarrow-icon');
 
         backArrowIconDOMElement.addEventListener('click', () => {
-            this.helpers.initApp('meeting', meetingData, 1);
+            this.helpers.initApp('meetingTeam', meetingData, 2);
         });
     }
 

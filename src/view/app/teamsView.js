@@ -50,7 +50,7 @@ export function inviteUserToTeamView(inviteUsersToTeam, sortTeamsObjectData, tot
             <div class="space-medium"></div>
             ${sortTeams(sortTeamsObjectData, totalTeams)}
             <table id="teams-list"></table>
-            <img title="Go back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
+            <img title="Go Back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
         </div>
     `;
 }
@@ -59,7 +59,7 @@ export function sortTeams(sortTeamsObjectData, totalTeams) {
     return `
         <hr class="hr-small">
         ${totalTeams > 1 ? '' : '<div style="display: none;"'}
-        <img title="Sort teams" id="sort-teams" class="${sortTeamsObjectData === false ? "arrow-down-icon" : "arrow-down-icon-flipped"}" src="../../../graphic/arrowDownIcon.svg" />
+        <img title="Sort Teams" id="sort-teams" class="${sortTeamsObjectData === false ? "arrow-down-icon" : "arrow-down-icon-flipped"}" src="../../../graphic/arrowDownIcon.svg" />
         ${totalTeams > 1 ? '' : '</div>'}
         <div class="space-x-big"></div>
     `;

@@ -715,6 +715,51 @@ body::-webkit-scrollbar {
 .center-align {
     text-align: center;
 }
+
+.btn-green-small-float {
+    background-color: var(--green);
+    color: var(--white);
+    display: block;
+    position: relative;
+    width: 48%;
+    border: none;
+    border-radius: 25px;
+    margin-top: var(--small);
+    margin-bottom: var(--small);
+    padding: var(--x-small);
+    text-align: center;
+    font-size: var(--small);
+    font-family: var(--font);
+    font-weight: bold;
+    float: left
+}
+.btn-green-small-float:hover {
+    cursor: pointer;
+    background-color: var(--light-green);
+}
+
+.btn-blue-small-float {
+    background-color: var(--blue);
+    color: var(--white);
+    display: block;
+    position: relative;
+    width: 48%;
+    border: none;
+    border-radius: 25px;
+    margin-top: var(--small);
+    margin-bottom: var(--small);
+    padding: var(--x-small);
+    text-align: center;
+    font-size: var(--small);
+    font-family: var(--font);
+    font-weight: bold;
+    float: right
+}
+.btn-blue-small-float:hover {
+    cursor: pointer;
+    background-color: var(--light-blue);
+}
+
 .btn-alert {
     background-color: var(--light-grey);
     color: var(--black-shade);

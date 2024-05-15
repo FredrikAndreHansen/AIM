@@ -5,35 +5,36 @@ import { usersView, userOutputView, userSearchOutput } from "../view/app/usersVi
 import { individualUserView } from "../view/app/individualUserView.js";
 import { teamsView, teamsOutputView, noTeams, inviteUserToTeamView } from "../view/app/teamsView.js";
 import { individualTeamView, adminSettingsView, userSettingsView } from "../view/app/individualTeamView.js";
-import { meetingView, calendarView, selectDateView, selectTimeView } from "../view/app/meetingView.js";
+import { meetingView, meetingViewTeam, calendarView, selectDateView, selectTimeView } from "../view/app/meetingView.js";
 import { IndividualUserController } from "./app/individualUserController.js";
 import { IndividualTeamController } from "./app/individualTeamController.js";
 import { AllUsersController } from "./app/allUsersController.js";
-import { SelectDateController } from "./app/meetingFlow/01_selectDateController.js";
-import { SelectTimeController } from "./app/meetingFlow/02_selectTimeController.js";
+import { SelectTeamController } from "./app/meetingFlow/01_selectTeamController.js";
+import { SelectDateController } from "./app/meetingFlow/02_selectDateController.js";
+import { SelectTimeController } from "./app/meetingFlow/03_selectTimeController.js";
 import { IndexModel } from "../model/app/indexModel.js";
 import { UsersModel } from "../model/app/usersModel.js";
 import { IndividualUserModel } from "../model/app/individualUserModel.js";
 import { TeamsModel } from "../model/app/teamsModel.js";
 import { MeetingModel } from "../model/app/meetingModel.js";
-import { SelectDateModel } from "../model/app/meetingFlow/01_selectDateModel.js";
-import { SelectTimeModel } from "../model/app/meetingFlow/02_selectTimeModel.js";
+import { SelectDateModel } from "../model/app/meetingFlow/02_selectDateModel.js";
+import { SelectTimeModel } from "../model/app/meetingFlow/03_selectTimeModel.js";
 import { displayLoading, removeLoading } from "../libraries/load.js";
 import { displayMessage, throwError, confirmMessage } from "../libraries/handler.js";
 import { validateIfLoggedIn, removeToken, listenForUpdates } from "../helpers/auth.js";
 import { cipher, decipher } from "../helpers/encrypt.js";
 import { initApp } from "../libraries/init.js";
-import { SET_INNER_HTML_VALUE, SALT, GLOBAL_CONFIG, TRIMSTRING, PARSESTRING, REMOVE_SEMICOLON, REMOVE_FULLSTOP, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, CLEAR_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, CANT_BE_THE_SAME_NAME, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_USERS_CONFIG, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL, PRINT_TIME_ONE_HOUR_AHEAD, GET_LANGUAGE, REFRESH_APPLICATION } from "../helpers/helpers.js";
+import { SET_INNER_HTML_VALUE, SALT, GLOBAL_CONFIG, TRIMSTRING, PARSESTRING, REMOVE_SEMICOLON, REMOVE_FULLSTOP, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, CLEAR_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, CANT_BE_THE_SAME_NAME, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_USERS_CONFIG, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL, PRINT_TIME_ONE_HOUR_AHEAD, GET_LANGUAGE, MICROPHONE_STOP_LISTEN, REFRESH_APPLICATION } from "../helpers/helpers.js";
 import { IndividualTeamModel } from "../model/app/individualTeamModel.js";
 
 export class AppController {
 
-    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, inviteUserToTeamView, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView, meetingView, calendarView, selectDateView, selectTimeView };
+    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, inviteUserToTeamView, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView, meetingView, meetingViewTeam, calendarView, selectDateView, selectTimeView };
     _loadDependencies = { displayLoading, removeLoading };
     _handlerDependencies = { displayMessage, throwError, confirmMessage };
     _authDependencies = { validateIfLoggedIn, removeToken, listenForUpdates };
     _encryptDependencies = { cipher, decipher };
-    _helpers = { SET_INNER_HTML_VALUE, SALT, GLOBAL_CONFIG, TRIMSTRING, PARSESTRING, REMOVE_SEMICOLON, REMOVE_FULLSTOP, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, CLEAR_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, CANT_BE_THE_SAME_NAME, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_USERS_CONFIG, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL, PRINT_TIME_ONE_HOUR_AHEAD, GET_LANGUAGE, REFRESH_APPLICATION, initApp };
+    _helpers = { SET_INNER_HTML_VALUE, SALT, GLOBAL_CONFIG, TRIMSTRING, PARSESTRING, REMOVE_SEMICOLON, REMOVE_FULLSTOP, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, CLEAR_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, CANT_BE_THE_SAME_NAME, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_USERS_CONFIG, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL, PRINT_TIME_ONE_HOUR_AHEAD, GET_LANGUAGE, MICROPHONE_STOP_LISTEN, REFRESH_APPLICATION, initApp };
 
     constructor(
         indexController, 
@@ -43,7 +44,7 @@ export class AppController {
         indexModel = new IndexModel(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         individualUserModel = new IndividualUserModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers),
         individualTeamModel = new IndividualTeamModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel),
-        meetingModel = new MeetingModel(),
+        meetingModel = new MeetingModel(this._handlerDependencies, this._helpers),
         selectDateModel = new SelectDateModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._helpers, meetingModel),
         selectTimeModel = new SelectTimeModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._helpers, meetingModel),
         individualUserController = new IndividualUserController(this._authDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel, individualTeamModel),
@@ -52,7 +53,8 @@ export class AppController {
         individualTeamController = new IndividualTeamController(this._handlerDependencies, this._authDependencies, this._loadDependencies, this._encryptDependencies, this._helpers, this._views, individualTeamModel, individualUserModel, allUsersController, individualUserController),
         selectDateController = new SelectDateController(this._helpers, this._views, selectDateModel),
         selectTimeController = new SelectTimeController(this._helpers, this._views, selectTimeModel),
-        teamsModel = new TeamsModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views)) { 
+        teamsModel = new TeamsModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
+        selectTeamController = new SelectTeamController(this._encryptDependencies, this._helpers, this._views, teamsModel, individualTeamModel)) { 
             this.indexController = indexController;
             this.usersController = usersController;
             this.teamsController = teamsController;
@@ -60,6 +62,7 @@ export class AppController {
             this.indexModel = indexModel;
             this.usersModel = usersModel;
             this.meetingModel = meetingModel;
+            this.selectTeamController = selectTeamController;
             this.selectDateModel = selectDateModel;
             this.selectTimeModel = selectTimeModel;
             this.individualUserController = individualUserController;
@@ -78,7 +81,8 @@ export class AppController {
         if (navigate === false) {this.indexController.setView();}
         if (navigate === 'users') {this.usersController.setView();}
         if (navigate === 'teams') {this.teamsController.setView(data, page, inviteUsersToTeam);}
-        if (navigate === 'meeting') {this.meetingController.setView(data, page);}
+        if (navigate === 'meeting') {this.meetingController.setView(data);}
+        if (navigate === 'meetingTeam') {this.meetingController.navigateMeetingForTeam(data, page);}
     }
 
     #outputNavigation() { 

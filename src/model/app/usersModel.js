@@ -236,11 +236,11 @@ export class UsersModel {
                 });
 
                 microphoneDOMElement.addEventListener('click', () => {
-                    this.#microphoneStopListen(recognition, microphoneDOMElement);
+                    this.helpers.MICROPHONE_STOP_LISTEN(recognition, microphoneDOMElement);
                 })
 
                 recognition.addEventListener('end', () => {
-                    this.#microphoneStopListen(recognition, microphoneDOMElement);
+                    this.helpers.MICROPHONE_STOP_LISTEN(recognition, microphoneDOMElement);
                 });
         
                 recognition.start();          
@@ -249,13 +249,6 @@ export class UsersModel {
                 reject(this.handlerDependencies.displayMessage({message: 'You need to enable microphone permission!<br><br> Go to your browser settings and enable microphone.', isError: true}));
             });
         });
-    }
-
-    #microphoneStopListen(recognition, microphoneDOMElement) {
-        recognition.stop();
-        if (microphoneDOMElement.classList.contains('listen')) {
-            microphoneDOMElement.classList.remove('listen');
-        }
     }
         
 }

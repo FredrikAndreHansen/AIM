@@ -2,7 +2,7 @@ export function individualTeamView(teamName, memberQuantity, invitedUsersQuantit
     return `
         <div class="content-section">
             <h1 class="header">${teamName}</h1>
-            <img title="Go back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
+            <img title="Go Back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
             <img title="Settings" class="cogwheel-icon" src="../../../graphic/cogwheelIcon.svg" />
             ${isAdmin === true || config.allAllowedToAddUsers === true ? '<button id="invite-members-button" class="btn-grey"><img class="inside-btn-icon-image" src="../../../graphic/userInviteIcon.svg" />INVITE USERS</button>' : ''}
             <div class="space-medium"></div>
@@ -21,7 +21,7 @@ export function adminSettingsView(teamName, config) {
         <div class="content-section">
             <h1 class="header">Settings</h1>
             <hr class="hr-small">
-            <input title="Change team name" type="text" id="team-name" value="${teamName}" class="input-cut-right" maxlength="24" required />
+            <input title="Change Team Name" type="text" id="team-name" value="${teamName}" class="input-cut-right" maxlength="24" required />
             <div class="btn-cut-left-green-bottom" id="change-team-name">
                 <img class="icon-btn-cut" src="../../graphic/pencilIcon.svg" />
             </div>
@@ -38,7 +38,7 @@ export function adminSettingsView(teamName, config) {
             </div>
             <br />
             <button id="delete-team-button" class="btn-red"><img class="inside-btn-icon-image-right" src="../../../graphic/exitIconWhite.svg" />DELETE TEAM</button>
-            <img title="Go back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
+            <img title="Go Back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
         </div>
     `;
 }
@@ -56,7 +56,7 @@ export function userSettingsView(teamName, adminUser) {
             </div>
             <div class="space-medium"></div>
             <button id="leave-team-button" class="btn-red"><img class="inside-btn-icon-image-right" src="../../../graphic/exitIconWhite.svg" />LEAVE TEAM</button>
-            <img title="Go back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
+            <img title="Go Back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
         </div>
     `;
 }
