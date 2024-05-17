@@ -87,7 +87,6 @@ export class MeetingModel {
     }
 
     #parseVoiceOutput(text) {
-        //let text = "Add Fredrik Hansen from Webhelp and Raffaella and test from hest and hey for June 3rd at 11 and 12 and 13 30 for June 4th at 12 for April 13 2014 at 1 and 2 and 3";
         text += " end";
         const textInput = text.split(" ");
         let parse = [];

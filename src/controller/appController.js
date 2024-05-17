@@ -17,6 +17,7 @@ import { UsersModel } from "../model/app/usersModel.js";
 import { IndividualUserModel } from "../model/app/individualUserModel.js";
 import { TeamsModel } from "../model/app/teamsModel.js";
 import { MeetingModel } from "../model/app/meetingModel.js";
+import { GetOutputByVoiceModel } from "../model/app/meetingFlow/01_getOutputByVoice.js";
 import { SelectDateModel } from "../model/app/meetingFlow/02_selectDateModel.js";
 import { SelectTimeModel } from "../model/app/meetingFlow/03_selectTimeModel.js";
 import { displayLoading, removeLoading } from "../libraries/load.js";
@@ -24,7 +25,7 @@ import { displayMessage, throwError, confirmMessage } from "../libraries/handler
 import { validateIfLoggedIn, removeToken, listenForUpdates } from "../helpers/auth.js";
 import { cipher, decipher } from "../helpers/encrypt.js";
 import { initApp } from "../libraries/init.js";
-import { SET_INNER_HTML_VALUE, SALT, GLOBAL_CONFIG, TRIMSTRING, PARSESTRING, REMOVE_SEMICOLON, REMOVE_FULLSTOP, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, CLEAR_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, CANT_BE_THE_SAME_NAME, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_USERS_CONFIG, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL, PRINT_TIME_ONE_HOUR_AHEAD, GET_LANGUAGE, MICROPHONE_STOP_LISTEN, REFRESH_APPLICATION } from "../helpers/helpers.js";
+import { SET_INNER_HTML_VALUE, SALT, GLOBAL_CONFIG, TRIMSTRING, PARSESTRING, REMOVE_SEMICOLON, REMOVE_FULLSTOP, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, CLEAR_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, CANT_BE_THE_SAME_NAME, GET_DB_REFERENCE, GET_DB_USERS_INFO, GET_DB_ALL_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_USERS_CONFIG, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL, PRINT_TIME_ONE_HOUR_AHEAD, GET_LANGUAGE, MICROPHONE_STOP_LISTEN, REFRESH_APPLICATION } from "../helpers/helpers.js";
 import { IndividualTeamModel } from "../model/app/individualTeamModel.js";
 
 export class AppController {
@@ -34,7 +35,7 @@ export class AppController {
     _handlerDependencies = { displayMessage, throwError, confirmMessage };
     _authDependencies = { validateIfLoggedIn, removeToken, listenForUpdates };
     _encryptDependencies = { cipher, decipher };
-    _helpers = { SET_INNER_HTML_VALUE, SALT, GLOBAL_CONFIG, TRIMSTRING, PARSESTRING, REMOVE_SEMICOLON, REMOVE_FULLSTOP, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, CLEAR_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, CANT_BE_THE_SAME_NAME, GET_DB_REFERENCE, GET_DB_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_USERS_CONFIG, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL, PRINT_TIME_ONE_HOUR_AHEAD, GET_LANGUAGE, MICROPHONE_STOP_LISTEN, REFRESH_APPLICATION, initApp };
+    _helpers = { SET_INNER_HTML_VALUE, SALT, GLOBAL_CONFIG, TRIMSTRING, PARSESTRING, REMOVE_SEMICOLON, REMOVE_FULLSTOP, GET_TOKEN, SET_MENU_HIGHLIGHT, GET_DOM_VALUE, CLEAR_DOM_VALUE, ANIMATE_FADE_IN, VALIDATE_USER_INPUT, CANT_BE_THE_SAME_NAME, GET_DB_REFERENCE, GET_DB_USERS_INFO, GET_DB_ALL_USERS_INFO, IF_EXISTS, GET_VALUE, GET_USER_ID, CHECK_IF_BLOCKED_USERS_EXISTS, SAVE_TO_DB_IN_USERS, SAVE_TO_DB_IN_USERS_CONFIG, SAVE_TO_DB_IN_TEAMS, SAVE_TO_DB_IN_TEAMS_CONFIGURATION, CLOSE_MODAL, IF_ANY_BLOCKED_USERS, USERS_REF, TEAMS_REF, USERS_GET_CHILD_REF, TEAMS_GET_CHILD_REF, GET_DB_TEAMS_INFO, GET_DB_INDIVIDUAL_TEAM_INFO, GET_DB_ALL_USERS, CONVERT_STRING_TO_ARRAY, GET_DB_USERS_INVITEDTEAMS, DISABLE_SCROLL, PRINT_TIME_ONE_HOUR_AHEAD, GET_LANGUAGE, MICROPHONE_STOP_LISTEN, REFRESH_APPLICATION, initApp };
 
     constructor(
         indexController, 
@@ -43,8 +44,10 @@ export class AppController {
         meetingController,
         indexModel = new IndexModel(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         individualUserModel = new IndividualUserModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers),
+        teamsModel = new TeamsModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         individualTeamModel = new IndividualTeamModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel),
         meetingModel = new MeetingModel(this._handlerDependencies, this._helpers),
+        getOutputByVoiceModel = new GetOutputByVoiceModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         selectDateModel = new SelectDateModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._helpers, meetingModel),
         selectTimeModel = new SelectTimeModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._helpers, meetingModel),
         individualUserController = new IndividualUserController(this._authDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel, individualTeamModel),
@@ -53,7 +56,6 @@ export class AppController {
         individualTeamController = new IndividualTeamController(this._handlerDependencies, this._authDependencies, this._loadDependencies, this._encryptDependencies, this._helpers, this._views, individualTeamModel, individualUserModel, allUsersController, individualUserController),
         selectDateController = new SelectDateController(this._helpers, this._views, selectDateModel),
         selectTimeController = new SelectTimeController(this._helpers, this._views, selectTimeModel),
-        teamsModel = new TeamsModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         selectTeamController = new SelectTeamController(this._encryptDependencies, this._helpers, this._views, teamsModel, individualTeamModel)) { 
             this.indexController = indexController;
             this.usersController = usersController;
@@ -61,14 +63,15 @@ export class AppController {
             this.meetingController = meetingController;
             this.indexModel = indexModel;
             this.usersModel = usersModel;
+            this.teamsModel = teamsModel;
             this.meetingModel = meetingModel;
+            this.getOutputByVoiceModel = getOutputByVoiceModel;
             this.selectTeamController = selectTeamController;
             this.selectDateModel = selectDateModel;
             this.selectTimeModel = selectTimeModel;
             this.individualUserController = individualUserController;
             this.individualUserModel = individualUserModel;
             this.allUsersController = allUsersController;
-            this.teamsModel = teamsModel;
             this.individualTeamController = individualTeamController;
             this.selectDateController = selectDateController;
             this.selectTimeController = selectTimeController;

@@ -15,7 +15,6 @@ export class UsersModel {
         this.authDependencies.validateIfLoggedIn();
 
         const getAllUsers = this.helpers.GET_DB_ALL_USERS();
-
         const userId = this.helpers.GET_USER_ID();
         
         return await new Promise((resolve, reject) => {
