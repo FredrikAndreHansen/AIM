@@ -9,7 +9,7 @@ export class GetOutputByVoiceModel {
         this.views = views;
     }
 
-    getClosestUser(userName = 'fredrik', company = 'fredrik ltd') {
+    getClosestUsers(voiceInput) {
         this.authDependencies.validateIfLoggedIn();
 
         const LoggedInUserId = this.helpers.GET_USER_ID();
@@ -23,7 +23,22 @@ export class GetOutputByVoiceModel {
                     
                     this.helpers.GET_DB_ALL_USERS_INFO(dbRef).then(users => {
                         const allUsers = this.helpers.GET_VALUE(users);
-                        resolve(console.log(this.#checkForClosestUser(allUsers, userName, company, decryptedCurrentUserId)));
+
+                        let outputUsers = [];
+                        for (let i = 0; voiceInput.length > i; i ++) {
+                          
+                          if (voiceInput[i].person) {
+                            outputUsers.push(this.#checkForClosestUser(allUsers, voiceInput[i].person.name, voiceInput[i].person.company, decryptedCurrentUserId));
+                          }
+                        }
+
+                        outputUsers = this.#filterDuplicateUsers(outputUsers);
+
+                        if (outputUsers.length > 0) {
+                          resolve(outputUsers);
+                        } else {
+                          reject(this.handlerController.displayMessage({message: 'An unknown error occured, please try again!', isError: true}))
+                        }
                     });
                 });
             } catch(error) {
@@ -34,8 +49,12 @@ export class GetOutputByVoiceModel {
 
     #checkForClosestUser(allUsers, userName, company, LoggedInUserId) {
         let allUsersData = [];
+        let loggedInUserBlockedUsers = [];
         for (const key in allUsers) {
-            if (key === LoggedInUserId) { continue; }
+            if (key === LoggedInUserId) {
+              loggedInUserBlockedUsers = allUsers[key].blockedUsers; 
+              continue;
+            }
             const getUserName = allUsers[key].username;
             const getCompany= allUsers[key].company;
             const getBlockedUsers = allUsers[key].blockedUsers;
@@ -54,19 +73,25 @@ export class GetOutputByVoiceModel {
             });
         }
 
-        return this.#returnClosestUserData(allUsersData, LoggedInUserId);
+        return this.#returnClosestUserData(allUsersData, LoggedInUserId, loggedInUserBlockedUsers);
     }
 
-    #returnClosestUserData(allUsersData, LoggedInUserId) {
+    #returnClosestUserData(allUsersData, LoggedInUserId, loggedInUserBlockedUsers) {
         let returnedFilteredUser = false;
 
         for (let i = 0; allUsersData.length > i; i++) {
         let exclude = false;
+
+        for (let k = 0; loggedInUserBlockedUsers.length > k; k++) {
+          if (allUsersData[i].userId === loggedInUserBlockedUsers[k]) {
+            exclude = true;
+          }
+        }
             for (let j = 0; allUsersData[i].blockedUsers.length > j; j++) {
 
                 if (allUsersData[i].blockedUsers[j] === LoggedInUserId) { exclude = true; }
-                alert(j+1 + " + " + allUsersData[i].blockedUsers.length)
-                if (returnedFilteredUser === false && allUsersData[i].blockedUsers.length === j+1) { returnedFilteredUser = allUsersData[i]; exclude = true; }
+                
+                if (returnedFilteredUser === false && allUsersData[i].blockedUsers.length === j+1 && exclude === false) { returnedFilteredUser = allUsersData[i]; exclude = true; }
 
                 if (allUsersData[i].score > returnedFilteredUser.score && exclude === false && allUsersData[i].blockedUsers.length === j+1) {
                     returnedFilteredUser = allUsersData[i];
@@ -116,6 +141,14 @@ export class GetOutputByVoiceModel {
             costs[s2.length] = lastValue;
         }
         return costs[s2.length];
+      }
+
+      #filterDuplicateUsers(outputUsers) {
+        const ids = outputUsers.map(({ userId }) => userId);
+        const filtered = outputUsers.filter(({ userId }, index) =>
+        !ids.includes(userId, index + 1));
+
+        return filtered;
       }
 
 }

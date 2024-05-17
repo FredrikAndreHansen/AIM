@@ -51,12 +51,10 @@ export class MeetingController extends AppController {
         const microphoneDOMElement = document.querySelector('.microphone-icon');
 
         microphoneDOMElement.addEventListener('click', () => {
-            this.getOutputByVoiceModel.getClosestUser();
             if (!microphoneDOMElement.classList.contains('listen')) {
                 this.meetingModel.addMeetingByVoice(microphoneDOMElement).then((voiceOutput) => {
                     try {
-                        console.log(voiceOutput);
-                        alert(voiceOutput)
+                        this.getOutputByVoiceController.setView(voiceOutput);
                     } catch(error) {
                         this._handlerController.displayMessage({message: error, isError: true});
                     }

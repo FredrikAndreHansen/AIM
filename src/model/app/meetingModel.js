@@ -43,7 +43,7 @@ export class MeetingModel {
         };
     }
 
-    addMeetingByVoice(microphoneDOMElement) {
+    addMeetingByVoice(microphoneDOMElement) {        
         return new Promise((resolve, reject) => {
             navigator.mediaDevices.getUserMedia({ audio: true, video: false })
             .then(() => { 
