@@ -9,7 +9,7 @@ export class GetOutputByVoiceModel {
         this.views = views;
     }
 
-    getClosestUser(userName = 'frederick', company = 'co') {
+    getClosestUser(userName = 'fredrik', company = 'fredrik ltd') {
         this.authDependencies.validateIfLoggedIn();
 
         const LoggedInUserId = this.helpers.GET_USER_ID();
@@ -38,25 +38,39 @@ export class GetOutputByVoiceModel {
             if (key === LoggedInUserId) { continue; }
             const getUserName = allUsers[key].username;
             const getCompany= allUsers[key].company;
+            const getBlockedUsers = allUsers[key].blockedUsers;
             const getKey = key;
             
             const mostSimilarUsername = this.#similarity(userName, getUserName);
             const mostSimilarCompany = this.#similarity(company, getCompany);
             const mostSimilar = mostSimilarUsername + mostSimilarCompany;
 
-            allUsersData.push({userId: getKey, username: getUserName, company: getCompany, score: mostSimilar});
+            allUsersData.push({
+                userId: getKey, 
+                username: getUserName, 
+                company: getCompany, 
+                score: mostSimilar,
+                blockedUsers: getBlockedUsers
+            });
         }
 
-        return this.#returnClosestUserData(allUsersData);
+        return this.#returnClosestUserData(allUsersData, LoggedInUserId);
     }
 
-    #returnClosestUserData(allUsersData) {
-        let returnedFilteredUser = {};
-        for (let i = 0; allUsersData.length > i; i++) {
-            if (i === 0) { returnedFilteredUser = allUsersData[i]; continue;}
+    #returnClosestUserData(allUsersData, LoggedInUserId) {
+        let returnedFilteredUser = false;
 
-            if (allUsersData[i].score > returnedFilteredUser.score) {
-                returnedFilteredUser = allUsersData[i];
+        for (let i = 0; allUsersData.length > i; i++) {
+        let exclude = false;
+            for (let j = 0; allUsersData[i].blockedUsers.length > j; j++) {
+
+                if (allUsersData[i].blockedUsers[j] === LoggedInUserId) { exclude = true; }
+                alert(j+1 + " + " + allUsersData[i].blockedUsers.length)
+                if (returnedFilteredUser === false && allUsersData[i].blockedUsers.length === j+1) { returnedFilteredUser = allUsersData[i]; exclude = true; }
+
+                if (allUsersData[i].score > returnedFilteredUser.score && exclude === false && allUsersData[i].blockedUsers.length === j+1) {
+                    returnedFilteredUser = allUsersData[i];
+                }
             }
         }
 
