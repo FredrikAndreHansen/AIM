@@ -16,12 +16,18 @@ export class GetOutputByVoiceModel {
         const dbRef = this.helpers.GET_DB_REFERENCE();
 
         return new Promise((resolve, reject) => {
-            try{
+            try {
+              this.helpers.GLOBAL_CONFIG('MAXIMUM_PEOPLE_PER_TEAM').then((MAXIMUM_PEOPLE_PER_TEAM) => {
                 this.helpers.SALT().then((salt) => {
-                    const decrypt = this.encryptDependencies.decipher(salt);
-                    const decryptedCurrentUserId = decrypt(LoggedInUserId);
-                    
-                    this.helpers.GET_DB_ALL_USERS_INFO(dbRef).then(users => {
+                  const decrypt = this.encryptDependencies.decipher(salt);
+                  const decryptedCurrentUserId = decrypt(LoggedInUserId);
+                  
+                  this.helpers.GET_DB_USERS_INFO(dbRef, decryptedCurrentUserId).then((loggedInUser) => {
+                    const userData = this.helpers.GET_VALUE(loggedInUser);
+                    const isUserSubscribed = userData.configuration.isSubscribed;
+
+                    if (this.helpers.IF_EXISTS(loggedInUser)) {
+                      this.helpers.GET_DB_ALL_USERS_INFO(dbRef).then(users => {
                         const allUsers = this.helpers.GET_VALUE(users);
 
                         let outputUsers = [];
@@ -34,17 +40,43 @@ export class GetOutputByVoiceModel {
 
                         outputUsers = this.#filterDuplicateUsers(outputUsers);
 
-                        if (outputUsers.length > 0) {
+                        if (this.#validateOutputUsers(outputUsers, MAXIMUM_PEOPLE_PER_TEAM, isUserSubscribed) === false) {
                           resolve(outputUsers);
                         } else {
-                          reject(this.handlerController.displayMessage({message: 'An unknown error occured, please try again!', isError: true}))
+                          const errorMessage = this.#validateOutputUsers(outputUsers, MAXIMUM_PEOPLE_PER_TEAM, isUserSubscribed);
+                          reject(this.handlerDependencies.displayMessage({message: errorMessage, isError: true}));
                         }
-                    });
-                });
+                      });
+                    }else {
+                      reject(this.handlerDependencies.throwError("No data available!"));
+                    }
+                  });
+                });  
+              });
             } catch(error) {
-                reject(this.handlerController.displayMessage({message: error, isError: true}));
+                reject(this.handlerDependencies.displayMessage({message: error, isError: true }));
             }
         });
+    }
+
+    #validateOutputUsers(outputUsers, MAXIMUM_PEOPLE_PER_TEAM, isUserSubscribed) {
+      if (outputUsers.length > 0 && outputUsers.length < MAXIMUM_PEOPLE_PER_TEAM && isUserSubscribed === false) {
+        return false;
+      }
+
+      if (isUserSubscribed === true && outputUsers.length > 0) {
+        return false;
+      }
+
+      if(outputUsers.length === 0) {
+        return 'An unknown error occured, please try again!';
+      }
+
+      if (outputUsers.length >= MAXIMUM_PEOPLE_PER_TEAM && isUserSubscribed === false) {
+        return `You can only add a maximum of ${MAXIMUM_PEOPLE_PER_TEAM} people!`;
+      }
+
+      return 'An unknown error occured, please try again!';
     }
 
     #checkForClosestUser(allUsers, userName, company, LoggedInUserId) {
@@ -149,6 +181,28 @@ export class GetOutputByVoiceModel {
         !ids.includes(userId, index + 1));
 
         return filtered;
+      }
+
+      getAllUsers(people) {
+        return new Promise((resolve, reject) => {
+          
+          let outputAllUsers = '';
+          this.helpers.SALT().then((salt) => {
+            try {
+              const encrypt = this.encryptDependencies.cipher(salt);
+
+              for (let i = 0; i < people.length; i++) {
+                  const decryptedUserId = encrypt(people[i].userId);
+                  
+                  outputAllUsers += this.views.outputUsersView(decryptedUserId, people[i].username, people[i].company); 
+                }
+                
+              resolve(outputAllUsers);
+            } catch(error) {
+              reject(this.handlerDependencies.displayMessage({message: error, isError: true }));
+            }
+          });
+        });
       }
 
 }

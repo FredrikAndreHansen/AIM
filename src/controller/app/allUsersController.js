@@ -29,7 +29,7 @@ export class AllUsersController {
     }
 
     #generateOutput(hasBlockedUsers, displayInTeam) {
-        return this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.usersView(hasBlockedUsers, displayInTeam)});
+        this.helpers.SET_INNER_HTML_VALUE({set: this.views.viewDOMElement, to: this.views.usersView(hasBlockedUsers, displayInTeam)});
     }
 
     #displayUsers(input) {
