@@ -1,6 +1,7 @@
 export class MeetingModel {
 
-    constructor(handlerDependencies, helpers) {
+    constructor(loadDependencies, handlerDependencies, helpers) {
+        this.loadDependencies = loadDependencies;
         this.handlerDependencies = handlerDependencies;
         this.helpers = helpers;
     }
@@ -43,14 +44,14 @@ export class MeetingModel {
         };
     }
 
-    addMeetingByVoice(microphoneDOMElement) {        
+    addMeetingByVoice(microphoneDOMElement) {
         return new Promise((resolve, reject) => {
             navigator.mediaDevices.getUserMedia({ audio: true, video: false })
             .then(() => { 
                 if (!microphoneDOMElement.classList.contains('listen')) {
                     microphoneDOMElement.classList.add('listen');
                 }
-                
+
                 window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
                 const recognition = new window.SpeechRecognition();
@@ -63,8 +64,9 @@ export class MeetingModel {
                     const text = Array.from(e.results).map(result => result[0]).map(result => result.transcript).join('');
         
                     if(e.results[0].isFinal) {
+                        this.loadDependencies.displayLoading();
                         const finalOutputText = this.#parseVoiceOutput(text);
-                        resolve(finalOutputText)
+                        resolve(finalOutputText);
                     }
                 });
 

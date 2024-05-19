@@ -26,6 +26,7 @@ else {
 // Todo
 
 // ## Schedule meeting
+// Rearrange MeetingsFlow in views! The meetingView.js now contain the views for when you create a meeting with teams, create meetingByTeamView and add it there!
 // When scheduling:
     // 3. Times (max 15 per date)
     // 4. meeting name (optional), meeting length(standard 30 minutes), adding link to join meeting(optional)
@@ -43,6 +44,7 @@ else {
     // Change password
     // Change email
     // Always signed in or sign out when removing the app
+    // Subscribe - Change all subscribe error message to go to this page instead of nomad.co.uk!
     // Delete account, inform that all user data will be removed from the server
 
 // Check to integrate with Google calendar and perhaps Microsoft/Outlook calendar, to automatically add it in! Add to Settings in the main menu, and also as a popup for the first time when accepting a meeting schedule, or when creating a meeting! Create a value in the user configuration object

@@ -6,6 +6,7 @@ import { individualUserView } from "../view/app/individualUserView.js";
 import { teamsView, teamsOutputView, noTeams, inviteUserToTeamView } from "../view/app/teamsView.js";
 import { individualTeamView, adminSettingsView, userSettingsView } from "../view/app/individualTeamView.js";
 import { meetingView, meetingViewTeam, calendarView, selectDateView, selectTimeView } from "../view/app/meetingView.js";
+import { meetingByVoiceView, outputUsersView } from "../view/app/meetingFlow/meetingByVoiceView.js";
 import { IndividualUserController } from "./app/individualUserController.js";
 import { IndividualTeamController } from "./app/individualTeamController.js";
 import { AllUsersController } from "./app/allUsersController.js";
@@ -31,7 +32,7 @@ import { IndividualTeamModel } from "../model/app/individualTeamModel.js";
 
 export class AppController {
 
-    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, inviteUserToTeamView, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView, meetingView, meetingViewTeam, calendarView, selectDateView, selectTimeView };
+    _views = { viewDOMElement, indexView, invitedUsersHeadingView, invitedUsersView, noAlertsView, menuAlertsView, usersView, userOutputView, userSearchOutput, individualUserView, teamsView, teamsOutputView, noTeams, inviteUserToTeamView, popupDOMElement, individualTeamView, adminSettingsView, userSettingsView, meetingView, meetingViewTeam, calendarView, selectDateView, selectTimeView, meetingByVoiceView, outputUsersView };
     _loadDependencies = { displayLoading, removeLoading };
     _handlerDependencies = { displayMessage, throwError, confirmMessage };
     _authDependencies = { validateIfLoggedIn, removeToken, listenForUpdates };
@@ -47,7 +48,7 @@ export class AppController {
         individualUserModel = new IndividualUserModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers),
         teamsModel = new TeamsModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         individualTeamModel = new IndividualTeamModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views, individualUserModel),
-        meetingModel = new MeetingModel(this._handlerDependencies, this._helpers),
+        meetingModel = new MeetingModel(this._loadDependencies, this._handlerDependencies, this._helpers),
         getOutputByVoiceModel = new GetOutputByVoiceModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         selectDateModel = new SelectDateModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._helpers, meetingModel),
         selectTimeModel = new SelectTimeModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._helpers, meetingModel),
@@ -55,7 +56,7 @@ export class AppController {
         usersModel = new UsersModel(this._authDependencies, this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views),
         allUsersController = new AllUsersController(this._loadDependencies, this._handlerDependencies, this._encryptDependencies, this._helpers, this._views, individualUserController, usersModel, individualUserModel),
         individualTeamController = new IndividualTeamController(this._handlerDependencies, this._authDependencies, this._loadDependencies, this._encryptDependencies, this._helpers, this._views, individualTeamModel, individualUserModel, allUsersController, individualUserController),
-        getOutputByVoiceController = new GetOutputByVoiceController(getOutputByVoiceModel),
+        getOutputByVoiceController = new GetOutputByVoiceController(this._loadDependencies, this._helpers, this._views, getOutputByVoiceModel),
         selectDateController = new SelectDateController(this._helpers, this._views, selectDateModel),
         selectTimeController = new SelectTimeController(this._helpers, this._views, selectTimeModel),
         selectTeamController = new SelectTeamController(this._encryptDependencies, this._helpers, this._views, teamsModel, individualTeamModel)) { 
