@@ -16,7 +16,7 @@ export class MeetingController extends AppController {
 
         this.#goToSelectTeams(meetingData);
 
-        this.#createMeetingByVoiceOnClick()
+        this.#createMeetingByVoiceOnClick(meetingData)
     }
 
     navigateMeetingForTeam(meetingData, page) {
@@ -47,16 +47,16 @@ export class MeetingController extends AppController {
         });
     }
 
-    #createMeetingByVoiceOnClick() {
+    #createMeetingByVoiceOnClick(meetingData) {
         const microphoneDOMElement = document.querySelector('.microphone-icon');
 
         microphoneDOMElement.addEventListener('click', () => {
             if (!microphoneDOMElement.classList.contains('listen')) {
                 this.meetingModel.addMeetingByVoice(microphoneDOMElement).then((voiceOutput) => {
                     try {
-                        this.getOutputByVoiceController.setView(voiceOutput);
+                        this.getOutputByVoiceController.setView(voiceOutput, meetingData);
                     } catch(error) {
-                        this._handlerController.displayMessage({message: error, isError: true});
+                        this._handlerDependencies.displayMessage({message: error, isError: true});
                     }
                 });
             }

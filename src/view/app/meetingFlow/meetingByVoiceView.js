@@ -1,15 +1,19 @@
-export function meetingByVoiceView() {
+export function meetingByVoiceView(peopleQuantity) {
     return `
         <div class="content-section">
-            <h1 class="header">Schedule Meeting</h1>
+            <h1 class="header">Schedule a Meeting</h1>
+            <hr class="hr-small">
+
+            <h1 class="header-small">People (${peopleQuantity})</h1>
             <table id="user-list"></table>
+            <img title="Go Back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
         </div>
     `;
 }
 
 export function outputUsersView(id, username, company) {
     return `
-        <tr class="tr tr-not-self" id="all-users" data-id="${id}">
+        <tr class="tr" id="all-users" data-id="${id}">
             <td class="user-td">
                 <img class="user-icon" src="../../graphic/userIcon.svg" />
             </td>

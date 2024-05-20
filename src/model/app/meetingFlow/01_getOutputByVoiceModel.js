@@ -31,7 +31,7 @@ export class GetOutputByVoiceModel {
                         const allUsers = this.helpers.GET_VALUE(users);
 
                         let outputUsers = [];
-                        for (let i = 0; voiceInput.length > i; i ++) {
+                        for (let i = 0; voiceInput.length > i; i++) {
                           
                           if (voiceInput[i].person) {
                             outputUsers.push(this.#checkForClosestUser(allUsers, voiceInput[i].person.name, voiceInput[i].person.company, decryptedCurrentUserId));
@@ -54,7 +54,7 @@ export class GetOutputByVoiceModel {
                 });  
               });
             } catch(error) {
-                reject(this.handlerDependencies.displayMessage({message: error, isError: true }));
+                reject(this.handlerDependencies.displayMessage({ message: error, isError: true }));
             }
         });
     }
@@ -199,10 +199,30 @@ export class GetOutputByVoiceModel {
                 
               resolve(outputAllUsers);
             } catch(error) {
-              reject(this.handlerDependencies.displayMessage({message: error, isError: true }));
+              reject(this.handlerDependencies.displayMessage({ message: error, isError: true }));
             }
           });
         });
       }
 
+      #daysInMonth (month, day) {
+        const date = new Date();
+        let year = date.getFullYear();
+        const currentMonth = date.getMonth() + 1;
+        const currentDay = date.getDate();
+        
+        if (month === currentMonth) {
+          if (day < currentDay) {
+            year = date.getFullYear() + 1;
+          }
+        }
+
+        if (month < currentMonth) {
+          year = date.getFullYear() + 1;
+        }
+
+        const totalDays = new Date(year, month, 0).getDate();
+        
+        return totalDays;
+      }
 }
