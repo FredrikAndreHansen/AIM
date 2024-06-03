@@ -26,17 +26,18 @@ else {
 // Todo
 
 // ## Schedule meeting
-// Rearrange MeetingsFlow in views! The meetingView.js now contain the views for when you create a meeting with teams, create meetingByTeamView and add it there!
+// Continue on formatting the date and after the time!
 // When scheduling:
     // 3. Times (max 15 per date)
     // 4. meeting name (optional), meeting length(standard 30 minutes), adding link to join meeting(optional)
     // 5. Get a list of all users (so that you can discard users for the meeting(in case someone is sick!)) (optional)
     // 6. Confirm, change the proceed button to a green button that says "Create Meeting"
+
     // Pending meeting result page, it will also appear in the notification menu (for all affected users!) Meetings will appear first in the notification menu!
     // After creating meeting by inviting by teams, voice and users, make it so that you can go back in the pages and keep the data! The data is reset when going back from add a meeting by voice!
 
 // After scheduling a meeting it will then show as a upcoming meeting in the notification menu(for all users), it will automatically dissapear when the date past the meeting end time!
-// Edit a meeting - meeting name (optional), meeting length(optional), adding link to join meeting(optional), or delete the meeting (Only the meeting creator and team admin can edit the meeting)
+// Edit a meeting - meeting name (optional), meeting length(optional), adding link to join meeting(optional), or delete the meeting (Only the meeting creator can delete the meeting)
 
 // ## Main menu
 // Settings in main menu

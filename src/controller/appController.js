@@ -5,7 +5,8 @@ import { usersView, userOutputView, userSearchOutput } from "../view/app/usersVi
 import { individualUserView } from "../view/app/individualUserView.js";
 import { teamsView, teamsOutputView, noTeams, inviteUserToTeamView } from "../view/app/teamsView.js";
 import { individualTeamView, adminSettingsView, userSettingsView } from "../view/app/individualTeamView.js";
-import { meetingView, meetingViewTeam, calendarView, selectDateView, selectTimeView } from "../view/app/meetingView.js";
+import { meetingView, calendarView, selectDateView, selectTimeView } from "../view/app/meetingView.js";
+import { meetingViewTeam } from "../view/app/meetingFlow/meetingByTeamView.js";
 import { meetingByVoiceView, outputUsersView } from "../view/app/meetingFlow/meetingByVoiceView.js";
 import { IndividualUserController } from "./app/individualUserController.js";
 import { IndividualTeamController } from "./app/individualTeamController.js";

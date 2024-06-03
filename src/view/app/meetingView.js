@@ -1,4 +1,3 @@
-import { sortTeams } from "./teamsView.js";
 import { PRINT_CURRENT_DATE } from "../../helpers/helpers.js";
 
 export function meetingView() {
@@ -18,18 +17,6 @@ export function meetingView() {
                 <p class="paragraph-center-small">E.g: Add Bob from Company Co and John Doe for June 5th at 1 and 2 and 3 for June 6th at 2:30</p>
             </div>
             <div class="space-medium"></div>
-        </div>
-    `;
-}
-
-export function meetingViewTeam(sortTeamsObjectData, totalTeams) { 
-    return `
-        <div class="content-section">
-            <h1 class="header">Choose a Team</h1>
- 
-            ${sortTeams(sortTeamsObjectData, totalTeams)}
-            <table id="teams-list"></table>
-            <img title="Go Back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
         </div>
     `;
 }
