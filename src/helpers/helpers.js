@@ -393,7 +393,6 @@ export function PRINT_TIME_ONE_HOUR_AHEAD() {
 }
 
 export function GET_LANGUAGE() {
-    //return navigator.language || navigator.userLanguage;
     return 'en-US';
 }
 

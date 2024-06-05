@@ -82,6 +82,7 @@ export class GetOutputByVoiceModel {
     #checkForClosestUser(allUsers, userName, company, LoggedInUserId) {
         let allUsersData = [];
         let loggedInUserBlockedUsers = [];
+
         for (const key in allUsers) {
             if (key === LoggedInUserId) {
               loggedInUserBlockedUsers = allUsers[key].blockedUsers; 
@@ -205,7 +206,68 @@ export class GetOutputByVoiceModel {
         });
       }
 
-      #daysInMonth (month, day) {
+      getClosestDatesAndTimes(voiceInput) {
+        for (let i = 0; i < voiceInput.length; i++) {
+          if (voiceInput[i].meeting) {
+            const date = voiceInput[i].meeting.date;
+
+            const formattedMonth = this.#getClosestMonth(date)[0];
+            const month = this.#getClosestMonth(date)[1];
+            const day = this.#getClosestDay(date, month);
+
+            alert(formattedMonth + ' ' + day)
+          }
+        }
+      }
+
+      #getClosestMonth(date) {
+        const allMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        let score = 0;
+        let returnedDate = '';
+        let month = 0;
+
+        for (let i = 0; i < allMonths.length; i++) {
+          const newScore = this.#similarity(date, allMonths[i]);
+          if (newScore > score) {
+            score = newScore;
+            returnedDate = allMonths[i];
+            month = i + 1;
+          }
+        }
+
+        return [returnedDate, month];
+      }
+
+      #getClosestDay(date, month) {
+        let score = 0;
+        let returnedDay = 0;
+
+        for (let i = 1; i < 31; i++) {
+          const newScore = this.#similarity(date, i.toString());
+          if (newScore > score) {
+            score = newScore;
+
+            returnedDay = i;
+
+            if (returnedDay >= this.#daysInMonth(month, i)) {
+              returnedDay = this.#daysInMonth(month, i);
+            }
+          }
+        }
+        return this.#formatReturnedDay(returnedDay);
+      }
+
+      #formatReturnedDay(returnedDay) {
+        if (returnedDay < 10) {
+          returnedDay = '0' + returnedDay.toString();
+        } else {
+          returnedDay.toString();
+        }
+
+        return returnedDay;
+      }
+
+      #daysInMonth(month, day) {
         const date = new Date();
         let year = date.getFullYear();
         const currentMonth = date.getMonth() + 1;

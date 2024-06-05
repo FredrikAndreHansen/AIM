@@ -9,6 +9,7 @@ export class GetOutputByVoiceController {
 
     setView(voiceOutput, meetingData) {
         this.getOutputByVoiceModel.getClosestUsers(voiceOutput).then((people) => {
+            this.getOutputByVoiceModel.getClosestDatesAndTimes(voiceOutput);
             this.#outputUsers(people);
 
             this.#goBack(meetingData);
