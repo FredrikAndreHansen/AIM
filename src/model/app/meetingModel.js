@@ -52,7 +52,7 @@ export class MeetingModel {
                     microphoneDOMElement.classList.add('listen');
                 }
 
-                const testText = "add fredrik from webhelp and jon and raffaella for june 5th at 1 and 2 for june 7th at 12";
+                const testText = "add fredrik from webhelp and jon and raffaella for june 5th at 1 and 2 for june 7th at 12 AM";
                 resolve(this.#parseVoiceOutput(testText))
 
                 window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;

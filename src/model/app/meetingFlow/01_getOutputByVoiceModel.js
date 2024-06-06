@@ -225,7 +225,7 @@ export class GetOutputByVoiceModel {
 
                 let times = [];
                 for (let j = 0; j < voiceInput[i].meeting.time.length; j++) {
-                  times.push(voiceInput[i].meeting.time[j]);
+                  times.push(this.#formatTime(voiceInput[i].meeting.time[j]));
                 }
     
                 meetings.push({
@@ -271,7 +271,25 @@ export class GetOutputByVoiceModel {
           return 'An unknown error occured, please try again!';
         }
 
+        for (let i = 0; i < meetings.length; i++) {
+          for(let j = 0; j < meetings.length; j++) {
+            if (meetings[i].date === meetings[j].date && i !== j) {
+              return 'An unknown error occured, please try again!';
+            }
+          }
+        }
+
         return false;
+      }
+
+      #formatTime(time) {
+        time = this.helpers.REMOVE_FULLSTOP(time);
+
+        if(!time.includes('AM') && !time.includes('PM')){
+
+        }
+
+        return time;
       }
 
       #getClosestMonth(date) {
