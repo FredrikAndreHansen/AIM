@@ -34,8 +34,6 @@ body{
     height: 500px;
     background-color: #F5FFFA;
     overflow: hidden;
-    /* -ms-overflow-style: none;
-    scrollbar-width: none; */
     margin: 0;
 }
 body::-webkit-scrollbar {

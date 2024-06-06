@@ -3,9 +3,13 @@ export function meetingByVoiceView(peopleQuantity) {
         <div class="content-section">
             <h1 class="header">Schedule a Meeting</h1>
             <hr class="hr-small">
+            <div class="space-medium"></div>
+            
+            <div id="time-info"></div>
 
             <h1 class="header-small">People (${peopleQuantity})</h1>
             <table id="user-list"></table>
+
             <img title="Go Back" class="backarrow-icon" src="../../../graphic/backArrowIcon.svg" />
         </div>
     `;

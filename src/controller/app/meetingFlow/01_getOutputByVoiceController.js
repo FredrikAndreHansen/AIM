@@ -9,12 +9,15 @@ export class GetOutputByVoiceController {
 
     setView(voiceOutput, meetingData) {
         this.getOutputByVoiceModel.getClosestUsers(voiceOutput).then((people) => {
-            this.getOutputByVoiceModel.getClosestDatesAndTimes(voiceOutput);
-            this.#outputUsers(people);
+            this.getOutputByVoiceModel.getClosestDatesAndTimes(voiceOutput).then((meetings) => {
+                this.#outputUsers(people);
 
-            this.#goBack(meetingData);
+                this.#outputMeetings(meetings);
 
-            this.loadDependencies.removeLoading();
+                this.#goBack(meetingData);
+    
+                this.loadDependencies.removeLoading();
+            });
         });
     }
 
@@ -23,11 +26,16 @@ export class GetOutputByVoiceController {
 
         this.getOutputByVoiceModel.getAllUsers(people).then((allUsers) => {
             const userListDOMElement = document.querySelector('#user-list');
-            this.helpers.SET_INNER_HTML_VALUE({set: userListDOMElement, to: allUsers});
+            this.helpers.SET_INNER_HTML_VALUE({ set: userListDOMElement, to: allUsers });
     
             const allUsersDOMElement = document.querySelectorAll("#all-users");
             this.helpers.ANIMATE_FADE_IN(allUsersDOMElement);
         });
+    }
+
+    #outputMeetings(meetings) {
+        const timeInfoDOMElement = document.querySelector("#time-info");
+        this.helpers.SET_INNER_HTML_VALUE({ set: timeInfoDOMElement, to: meetings });
     }
 
     #goBack(meetingData) {

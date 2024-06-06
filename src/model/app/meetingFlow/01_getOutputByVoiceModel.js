@@ -186,7 +186,7 @@ export class GetOutputByVoiceModel {
 
       getAllUsers(people) {
         return new Promise((resolve, reject) => {
-          
+
           let outputAllUsers = '';
           this.helpers.SALT().then((salt) => {
             try {
@@ -207,17 +207,71 @@ export class GetOutputByVoiceModel {
       }
 
       getClosestDatesAndTimes(voiceInput) {
-        for (let i = 0; i < voiceInput.length; i++) {
-          if (voiceInput[i].meeting) {
-            const date = voiceInput[i].meeting.date;
+        return new Promise((resolve, reject) => {
 
-            const formattedMonth = this.#getClosestMonth(date)[0];
-            const month = this.#getClosestMonth(date)[1];
-            const day = this.#getClosestDay(date, month);
+          try {
+            let meetings = [];
 
-            alert(formattedMonth + ' ' + day)
+            for (let i = 0; i < voiceInput.length; i++) {
+              if (voiceInput[i].meeting) {
+                const date = voiceInput[i].meeting.date;
+    
+                const formattedMonth = this.#getClosestMonth(date)[0];
+                const month = this.#getClosestMonth(date)[1];
+                const formattedDay = this.#getClosestDay(date, month)[0];
+                const day = this.#getClosestDay(date, month)[1];
+    
+                const year = this.#getYear(month, day);
+
+                let times = [];
+                for (let j = 0; j < voiceInput[i].meeting.time.length; j++) {
+                  times.push(voiceInput[i].meeting.time[j]);
+                }
+    
+                meetings.push({
+                  date: formattedMonth + ' ' + formattedDay + ', ' + year,
+                  times: times
+                });
+              }
+            }
+
+            if (this.#validateMeetings(meetings) === false) {
+              resolve(this.#generateMeetingsHTML(meetings));
+            } else {
+              const errorMessage = this.#validateMeetings(meetings);
+              reject(this.handlerDependencies.displayMessage({ message: errorMessage, isError: true }));
+            }
+
+          } catch(error) {
+            reject(this.handlerDependencies.displayMessage({ message: error, isError: true }));
           }
+        });
+      }
+
+      #generateMeetingsHTML(meetings) {
+        let meetingsHTML = '';
+
+        for (let i = 0; i < meetings.length; i++) {
+
+          let timesHTML = '';
+          for (let j = 0; j < meetings[i].times.length; j++) {
+            if (meetings[i].times[j]) {
+              timesHTML += `<p class="date-container">${meetings[i].times[j]}</p>`
+            }
+          }
+          meetingsHTML += `
+            <div class="settings-members-wrapper"><p class="paragraph-center" style="font-weight: bold;">${meetings[i].date}</p>${timesHTML}</div><div class="space-medium"></div>`;
         }
+
+        return meetingsHTML;
+      }
+
+      #validateMeetings(meetings) {
+        if (meetings.length === 0) {
+          return 'An unknown error occured, please try again!';
+        }
+
+        return false;
       }
 
       #getClosestMonth(date) {
@@ -254,7 +308,7 @@ export class GetOutputByVoiceModel {
             }
           }
         }
-        return this.#formatReturnedDay(returnedDay);
+        return [this.#formatReturnedDay(returnedDay), returnedDay];
       }
 
       #formatReturnedDay(returnedDay) {
@@ -286,5 +340,21 @@ export class GetOutputByVoiceModel {
         const totalDays = new Date(year, month, 0).getDate();
         
         return totalDays;
+      }
+
+      #getYear(month, day) {
+        const date = new Date();
+        let year = date.getFullYear();
+        const currentMonth = date.getMonth() + 1;
+        const currentDay = date.getDate();
+
+        if (currentMonth > month) {
+          year += 1;
+        }
+        if (currentMonth === month && currentDay > day) {
+          year += 1;
+        }
+
+        return year;
       }
 }
