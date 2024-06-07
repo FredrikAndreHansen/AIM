@@ -52,9 +52,6 @@ export class MeetingModel {
                     microphoneDOMElement.classList.add('listen');
                 }
 
-                const testText = "add fredrik from webhelp and jon and raffaella for june 5th at 1 and 2 for june 7th at 12 AM";
-                resolve(this.#parseVoiceOutput(testText))
-
                 window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
                 const recognition = new window.SpeechRecognition();
@@ -65,10 +62,11 @@ export class MeetingModel {
 
                 recognition.addEventListener('result', (e) => {
                     const text = Array.from(e.results).map(result => result[0]).map(result => result.transcript).join('');
-        
+ 
                     if(e.results[0].isFinal) {
                         this.loadDependencies.displayLoading();
                         const finalOutputText = this.#parseVoiceOutput(text);
+
                         resolve(finalOutputText);
                     }
                 });
@@ -93,7 +91,8 @@ export class MeetingModel {
 
     #parseVoiceOutput(text) {
         text += " end";
-        const textInput = text.split(" ");
+        let textInput = text.split(" ");
+        textInput[0] = '';
         let parse = [];
         let stringBuild = '';
         let reset = false;
@@ -109,7 +108,6 @@ export class MeetingModel {
         let time = false;
 
         for (let i = 0; i < textInput.length; i++) {
-            if (textInput[0] !== "add" && textInput[0] !== "Add") { break; }
             if (textInput[i] === "from" || textInput[i] === "From") { reset = true; }
             if (textInput[i] === "and" && time === false || textInput[i] === "And" && time === false) { fullReset = true; reset = true; }
             if (textInput[i] === "and" && time === true || textInput[i] === "And" && time === true) { reset = true; }
@@ -147,6 +145,7 @@ export class MeetingModel {
             }
             
         }
+
         return parse;
     }
 

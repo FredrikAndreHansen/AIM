@@ -285,11 +285,35 @@ export class GetOutputByVoiceModel {
       #formatTime(time) {
         time = this.helpers.REMOVE_FULLSTOP(time);
 
+        // If the time is military time
         if(!time.includes('AM') && !time.includes('PM')){
-
+          if (!time.includes(':')) {
+            time = this.#getClosestTimeHour(time, true);
+            time += ':00';
+            time = time.replaceAll(' ', '');
+          } else {
+            
+          }
         }
 
         return time;
+      }
+
+      #getClosestTimeHour(time, militaryTime = false) {
+        let score = 0;
+        let returnedTime = '';
+
+        if(militaryTime === true) {
+          for (let i = 0; i < 23; i++) {
+            const newScore = this.#similarity(time, i.toString());
+            if (newScore > score) {
+              score = newScore;
+              returnedTime = i.toString();
+            }
+          }
+        }
+
+        return returnedTime;
       }
 
       #getClosestMonth(date) {

@@ -26,7 +26,7 @@ else {
 // Todo
 
 // ## Schedule meeting
-// Continue on formatting the date and after the time!
+// Continue on formatting the time (#formatTime function). Add it so if any of the times uses PM or AM then convert everything to PM and AM! Also, validate time in the #validateMeetings function
 // When scheduling:
     // 3. Times (max 15 per date)
     // 4. meeting name (optional), meeting length(standard 30 minutes), adding link to join meeting(optional)
