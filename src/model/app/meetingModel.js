@@ -52,6 +52,9 @@ export class MeetingModel {
                     microphoneDOMElement.classList.add('listen');
                 }
 
+                // const t = "Add fredrik from web and test for june 26 at 25 to 5 at half 6 pm at quarter past 3 am";
+                // resolve(this.#parseVoiceOutput(t));
+
                 window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
                 const recognition = new window.SpeechRecognition();
@@ -66,7 +69,7 @@ export class MeetingModel {
                     if(e.results[0].isFinal) {
                         this.loadDependencies.displayLoading();
                         const finalOutputText = this.#parseVoiceOutput(text);
-
+                        alert(text)
                         resolve(finalOutputText);
                     }
                 });

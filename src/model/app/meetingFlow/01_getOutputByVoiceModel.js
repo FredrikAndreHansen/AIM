@@ -284,16 +284,78 @@ export class GetOutputByVoiceModel {
 
       #formatTime(time) {
         time = this.helpers.REMOVE_FULLSTOP(time);
+        time = this.#formatTimeSaidConventional(time);
+        time = time.replaceAll(' ', '');
+        
+        const date = new Date(Date.UTC(2012, 11, 12, 3, 0, 0));
+        const dateString = date.toLocaleTimeString();
 
-        // If the time is military time
-        if(!time.includes('AM') && !time.includes('PM')){
-          if (!time.includes(':')) {
-            time = this.#getClosestTimeHour(time, true);
-            time += ':00';
-            time = time.replaceAll(' ', '');
-          } else {
-            
-          }
+        // If the time is not military time
+        if (dateString.match(/am|pm/i) || date.toString().match(/am|pm/i) ) {
+
+        } 
+        // If the time is millitary time
+        else {
+          time = this.#formatTimeCheckForSemicolon(time);
+        }
+
+        return time;
+      }
+
+      #formatTimeCheckForSemicolon(time) {
+        if (!time.includes(':')) {
+          time = this.#changeToConvenientTime(time);
+          time = this.#formatTimeToMilitary(time);
+          time = this.#getClosestTimeHour(time, true);
+          time += ':00';
+        } else {
+          const timeSplitArr = time.split(':');
+          let formatHour = this.#changeToConvenientTime(timeSplitArr[0], timeSplitArr[1]);
+          formatHour = this.#formatTimeToMilitary(formatHour, timeSplitArr[1]);
+          formatHour = this.#getClosestTimeHour(formatHour, true);
+          const formatMinute = this.#getClosestTimeMinute(timeSplitArr[1]);
+          time = formatHour + ":" + formatMinute;
+        }
+
+        return time;
+      }
+
+      #changeToConvenientTime(time, checkForAMPM = '') {
+        if (!time.includes('pm') && !time.includes('PM') && !checkForAMPM.includes('pm') && !checkForAMPM.includes('PM') && !time.includes('am') && !time.includes('AM') && !checkForAMPM.includes('am') && !checkForAMPM.includes('AM')) {
+          if (time === "1") {time = "13";}
+          if (time === "2") {time = "14";}
+          if (time === "3") {time = "15";}
+          if (time === "4") {time = "16";}
+          if (time === "5") {time = "17";}
+          if (time === "6") {time = "18";}
+          if (time === "7") {time = "19";}
+        }
+
+        return time;
+      }
+
+      #formatTimeToMilitary(time, checkForAMPM = '') {
+        if (time.includes('pm') || time.includes('PM') || checkForAMPM.includes('pm') || checkForAMPM.includes('PM')) {
+          time = time.replaceAll('pm', '');
+          time = time.replaceAll('PM', '');
+
+          if (time === "1") {time = "13";}
+          if (time === "2") {time = "14";}
+          if (time === "3") {time = "15";}
+          if (time === "4") {time = "16";}
+          if (time === "5") {time = "17";}
+          if (time === "6") {time = "18";}
+          if (time === "7") {time = "19";}
+          if (time === "8") {time = "20";}
+          if (time === "9") {time = "21";}
+          if (time === "10") {time = "22";}
+          if (time === "11") {time = "23";}
+          if (time === "12") {time = "0";}
+        }
+
+        if (time.includes('am') || time.includes('AM')) {
+          time = time.replaceAll('am', '');
+          time = time.replaceAll('AM', '');
         }
 
         return time;
@@ -301,7 +363,7 @@ export class GetOutputByVoiceModel {
 
       #getClosestTimeHour(time, militaryTime = false) {
         let score = 0;
-        let returnedTime = '';
+        let returnedTime = '0';
 
         if(militaryTime === true) {
           for (let i = 0; i < 23; i++) {
@@ -314,6 +376,25 @@ export class GetOutputByVoiceModel {
         }
 
         return returnedTime;
+      }
+
+      #getClosestTimeMinute(minute) {
+        let score = 0;
+        let returnedMinute = '00';
+
+        for (let i = 0; i < 60; i++) {
+          const newScore = this.#similarity(minute, i.toString());
+          if (newScore > score) {
+            score = newScore;
+            if (i <= 9) {
+              returnedMinute = "0" + i.toString();
+            } else {
+              returnedMinute = i.toString();
+            }
+          }
+        }
+
+        return returnedMinute;
       }
 
       #getClosestMonth(date) {
@@ -398,5 +479,135 @@ export class GetOutputByVoiceModel {
         }
 
         return year;
+      }
+
+      #formatTimeSaidConventional(time) {
+        let ampm = '';
+
+        if (time.includes('am') || time.includes('AM')) {
+          time = time.replaceAll('am', '');
+          time = time.replaceAll('AM', '');
+          ampm = 'AM';
+        }
+
+        if (time.includes('pm') || time.includes('PM')) {
+          time = time.replaceAll('pm', '');
+          time = time.replaceAll('PM', '');
+          ampm = 'PM';
+        }
+
+        let minute = '0';
+        const timeArr = time.split(' ');
+
+        let checkMinutes = '';
+        for (let i = 0; i < timeArr.length - 2; i ++) {
+          checkMinutes += timeArr[i];
+        }
+        let hour = timeArr[timeArr.length - 2];
+        alert(hour)
+        hour = this.#setHour(hour);
+
+        if (checkMinutes.includes('past')) {
+          minute = this.#setMinute(checkMinutes, true);
+        }
+
+        if (!checkMinutes.includes('past')) {
+          if (checkMinutes.includes('half')) {
+            minute = '30';
+            +hour--;
+            hour.toString();
+          }
+        }
+
+        if (checkMinutes.includes('to')) {
+          minute = this.#setMinute(checkMinutes, false);  
+
+          +hour--;
+          hour.toString();
+        }
+        
+        if (minute !== '0') {
+          time = hour + ':' + minute;
+        }
+
+        return time + ampm;
+      }
+
+      #setHour(hour) {
+        if (hour.includes('one') || hour.includes('1:00') || hour.includes('13:00')) {hour = '1';}
+        if (hour.includes('two') || hour.includes('2:00') || hour.includes('14:00')) {hour = '2';}
+        if (hour.includes('three') || hour.includes('3:00') || hour.includes('15:00')) {hour = '3';}
+        if (hour.includes('four') || hour.includes('4:00') || hour.includes('16:00')) {hour = '4';}
+        if (hour.includes('five') || hour.includes('5:00') || hour.includes('17:00')) {hour = '5';}
+        if (hour.includes('six') || hour.includes('6:00') || hour.includes('18:00')) {hour = '6';}
+        if (hour.includes('seven') || hour.includes('7:00') || hour.includes('19:00')) {hour = '7';}
+        if (hour.includes('eight') || hour.includes('8:00') || hour.includes('20:00')) {hour = '8';}
+        if (hour.includes('nine') || hour.includes('9:00') || hour.includes('21:00')) {hour = '9';}
+        if (hour.includes('ten') || hour.includes('10:00') || hour.includes('22:00')) {hour = '10';}
+        if (hour.includes('eleven')|| hour.includes('11:00') || hour.includes('23:00')) {hour = '11';}
+        if (hour.includes('twelve') || hour.includes('12:00') || hour.includes('0:00')) {hour = '12';}
+ 
+        return hour;
+      }
+
+      #setMinute(checkMinutes, after) {
+        let minute = '0';
+
+        if (checkMinutes.includes('1') || checkMinutes.includes('one') || checkMinutes.includes('1:00')) {
+          if (after === true) {minute = '1'} else {minute = '59';}
+        }
+        if (checkMinutes.includes('2') || checkMinutes.includes('two') || checkMinutes.includes('2:00')) {
+          if (after === true) {minute = '2'} else {minute = '58';}
+        }
+        if (checkMinutes.includes('3') || checkMinutes.includes('three') || checkMinutes.includes('3:00')) {
+          if (after === true) {minute = '3'} else {minute = '57';}
+        }
+        if (checkMinutes.includes('4') || checkMinutes.includes('four') || checkMinutes.includes('4:00')) {
+          if (after === true) {minute = '4'} else {minute = '56';}
+        }
+        if (checkMinutes.includes('5') || checkMinutes.includes('five') || checkMinutes.includes('5:00')) {
+          if (after === true) {minute = '5'} else {minute = '55';}
+        }
+        if (checkMinutes.includes('6') || checkMinutes.includes('six') || checkMinutes.includes('6:00')) {
+          if (after === true) {minute = '6'} else {minute = '54';}
+        }
+        if (checkMinutes.includes('7') || checkMinutes.includes('seven') || checkMinutes.includes('7:00')) {
+          if (after === true) {minute = '7'} else {minute = '53';}
+        }
+        if (checkMinutes.includes('8') || checkMinutes.includes('eight') || checkMinutes.includes('8:00')) {
+          if (after === true) {minute = '8'} else {minute = '52';}
+        }
+        if (checkMinutes.includes('9') || checkMinutes.includes('nine') || checkMinutes.includes('9:00')) {
+          if (after === true) {minute = '9'} else {minute = '51';}
+        }
+        if (checkMinutes.includes('10') || checkMinutes.includes('ten') || checkMinutes.includes('10:00')) {
+          if (after === true) {minute = '10'} else {minute = '50';}
+        }
+        if (checkMinutes.includes('11') || checkMinutes.includes('eleven') || checkMinutes.includes('11:00')) {
+          if (after === true) {minute = '11'} else {minute = '49';}
+        }
+        if (checkMinutes.includes('12') || checkMinutes.includes('twelve') || checkMinutes.includes('12:00')) {
+          if (after === true) {minute = '12'} else {minute = '48';}
+        }
+        if (checkMinutes.includes('13') || checkMinutes.includes('thirteen') || checkMinutes.includes('13:00')) {
+          if (after === true) {minute = '13'} else {minute = '47';}
+        }
+        if (checkMinutes.includes('14') || checkMinutes.includes('fourteen') || checkMinutes.includes('14:00')) {
+          if (after === true) {minute = '14'} else {minute = '46';}
+        }
+        if (checkMinutes.includes('quarter') || checkMinutes.includes('15') || checkMinutes.includes('fifteen') || checkMinutes.includes('15:00')) {
+          if (after === true) {minute = '15'} else {minute = '45';}
+        }
+        if (checkMinutes.includes('20') || checkMinutes.includes('twenty')) {
+          if (after === true) {minute = '20'} else {minute = '40';}
+        }
+        if (checkMinutes.includes('25') | checkMinutes.includes('twenty five') || checkMinutes.includes('twentyfive')) {
+          if (after === true) {minute = '25'} else {minute = '35';}
+        }
+        if (checkMinutes.includes('half') || checkMinutes.includes('thirty') || checkMinutes.includes('30')) {
+          minute = '30';
+        }
+
+        return minute;
       }
 }
