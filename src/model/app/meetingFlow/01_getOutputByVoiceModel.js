@@ -227,10 +227,14 @@ export class GetOutputByVoiceModel {
                 for (let j = 0; j < voiceInput[i].meeting.time.length; j++) {
                   times.push(this.#formatTime(voiceInput[i].meeting.time[j]));
                 }
+
+                const timesFilterDuplicate = times.filter(function(item, pos) {
+                  return times.indexOf(item) === pos;
+                });
     
                 meetings.push({
                   date: formattedMonth + ' ' + formattedDay + ', ' + year,
-                  times: times
+                  times: timesFilterDuplicate
                 });
               }
             }
@@ -497,14 +501,18 @@ export class GetOutputByVoiceModel {
         }
 
         let minute = '0';
+
         const timeArr = time.split(' ');
+        const timeArrFilterEmpty = timeArr.filter(filter => {
+          return filter !== "";
+        });
 
         let checkMinutes = '';
-        for (let i = 0; i < timeArr.length - 2; i ++) {
-          checkMinutes += timeArr[i];
+        for (let i = 0; i < timeArrFilterEmpty.length - 1; i ++) {
+          checkMinutes += timeArrFilterEmpty[i];
         }
-        let hour = timeArr[timeArr.length - 2];
-        alert(hour)
+
+        let hour = timeArrFilterEmpty[timeArrFilterEmpty.length - 1];
         hour = this.#setHour(hour);
 
         if (checkMinutes.includes('past')) {
@@ -598,14 +606,137 @@ export class GetOutputByVoiceModel {
         if (checkMinutes.includes('quarter') || checkMinutes.includes('15') || checkMinutes.includes('fifteen') || checkMinutes.includes('15:00')) {
           if (after === true) {minute = '15'} else {minute = '45';}
         }
-        if (checkMinutes.includes('20') || checkMinutes.includes('twenty')) {
+        if (checkMinutes.includes('16') || checkMinutes.includes('sixteen') || checkMinutes.includes('16:00')) {
+          if (after === true) {minute = '16'} else {minute = '44';}
+        }
+        if (checkMinutes.includes('17') || checkMinutes.includes('seventeen') || checkMinutes.includes('17:00')) {
+          if (after === true) {minute = '17'} else {minute = '43';}
+        }
+        if (checkMinutes.includes('18') || checkMinutes.includes('eighteen') || checkMinutes.includes('18:00')) {
+          if (after === true) {minute = '18'} else {minute = '42';}
+        }
+        if (checkMinutes.includes('19') || checkMinutes.includes('nineteen') || checkMinutes.includes('19:00')) {
+          if (after === true) {minute = '19'} else {minute = '41';}
+        }
+        if (checkMinutes.includes('20') || checkMinutes.includes('twenty') || checkMinutes.includes('20:00')) {
           if (after === true) {minute = '20'} else {minute = '40';}
         }
-        if (checkMinutes.includes('25') | checkMinutes.includes('twenty five') || checkMinutes.includes('twentyfive')) {
+        if (checkMinutes.includes('21') || checkMinutes.includes('twentyone') || checkMinutes.includes('21:00')) {
+          if (after === true) {minute = '21'} else {minute = '39';}
+        }
+        if (checkMinutes.includes('22') || checkMinutes.includes('twentytwo') || checkMinutes.includes('22:00')) {
+          if (after === true) {minute = '22'} else {minute = '38';}
+        }
+        if (checkMinutes.includes('23') || checkMinutes.includes('twentythree') || checkMinutes.includes('23:00')) {
+          if (after === true) {minute = '23'} else {minute = '37';}
+        }
+        if (checkMinutes.includes('24') || checkMinutes.includes('twentyfour') || checkMinutes.includes('24:00')) {
+          if (after === true) {minute = '24'} else {minute = '36';}
+        }
+        if (checkMinutes.includes('25') || checkMinutes.includes('twentyfive')) {
           if (after === true) {minute = '25'} else {minute = '35';}
+        }
+        if (checkMinutes.includes('26') || checkMinutes.includes('twentysix')) {
+          if (after === true) {minute = '26'} else {minute = '34';}
+        }
+        if (checkMinutes.includes('27') || checkMinutes.includes('twentyseven')) {
+          if (after === true) {minute = '27'} else {minute = '33';}
+        }
+        if (checkMinutes.includes('28') || checkMinutes.includes('twentyeight')) {
+          if (after === true) {minute = '28'} else {minute = '32';}
+        }
+        if (checkMinutes.includes('29') || checkMinutes.includes('twentynine')) {
+          if (after === true) {minute = '29'} else {minute = '31';}
         }
         if (checkMinutes.includes('half') || checkMinutes.includes('thirty') || checkMinutes.includes('30')) {
           minute = '30';
+        }
+        if (checkMinutes.includes('31') || checkMinutes.includes('thirtyone')) {
+          if (after === true) {minute = '31'} else {minute = '29';}
+        }
+        if (checkMinutes.includes('32') || checkMinutes.includes('thirtytwo')) {
+          if (after === true) {minute = '32'} else {minute = '28';}
+        }
+        if (checkMinutes.includes('33') || checkMinutes.includes('thirtythree')) {
+          if (after === true) {minute = '33'} else {minute = '27';}
+        }
+        if (checkMinutes.includes('34') || checkMinutes.includes('thirtyfour')) {
+          if (after === true) {minute = '34'} else {minute = '26';}
+        }
+        if (checkMinutes.includes('35') || checkMinutes.includes('thirtyfive')) {
+          if (after === true) {minute = '35'} else {minute = '25';}
+        }
+        if (checkMinutes.includes('36') || checkMinutes.includes('thirtysix')) {
+          if (after === true) {minute = '36'} else {minute = '24';}
+        }
+        if (checkMinutes.includes('37') || checkMinutes.includes('thirtyseven')) {
+          if (after === true) {minute = '37'} else {minute = '23';}
+        }
+        if (checkMinutes.includes('38') || checkMinutes.includes('thirtyeight')) {
+          if (after === true) {minute = '38'} else {minute = '22';}
+        }
+        if (checkMinutes.includes('39') || checkMinutes.includes('thirtynine')) {
+          if (after === true) {minute = '39'} else {minute = '21';}
+        }
+        if (checkMinutes.includes('40') || checkMinutes.includes('fourty')) {
+          if (after === true) {minute = '40'} else {minute = '20';}
+        }
+        if (checkMinutes.includes('41') || checkMinutes.includes('fourtyone')) {
+          if (after === true) {minute = '41'} else {minute = '19';}
+        }
+        if (checkMinutes.includes('42') || checkMinutes.includes('fourtytwo')) {
+          if (after === true) {minute = '42'} else {minute = '18';}
+        }
+        if (checkMinutes.includes('43') || checkMinutes.includes('fourtythree')) {
+          if (after === true) {minute = '43'} else {minute = '17';}
+        }
+        if (checkMinutes.includes('44') || checkMinutes.includes('fourtyfour')) {
+          if (after === true) {minute = '44'} else {minute = '16';}
+        }
+        if (checkMinutes.includes('45') || checkMinutes.includes('fourtyfive')) {
+          if (after === true) {minute = '45'} else {minute = '15';}
+        }
+        if (checkMinutes.includes('46') || checkMinutes.includes('fourtysix')) {
+          if (after === true) {minute = '46'} else {minute = '14';}
+        }
+        if (checkMinutes.includes('47') || checkMinutes.includes('fourtyseven')) {
+          if (after === true) {minute = '47'} else {minute = '13';}
+        }
+        if (checkMinutes.includes('48') || checkMinutes.includes('fourtyeight')) {
+          if (after === true) {minute = '48'} else {minute = '12';}
+        }
+        if (checkMinutes.includes('49') || checkMinutes.includes('fourtynine')) {
+          if (after === true) {minute = '49'} else {minute = '11';}
+        }
+        if (checkMinutes.includes('50') || checkMinutes.includes('fifty')) {
+          if (after === true) {minute = '50'} else {minute = '10';}
+        }
+        if (checkMinutes.includes('51') || checkMinutes.includes('fiftyone')) {
+          if (after === true) {minute = '51'} else {minute = '9';}
+        }
+        if (checkMinutes.includes('52') || checkMinutes.includes('fiftytwo')) {
+          if (after === true) {minute = '52'} else {minute = '8';}
+        }
+        if (checkMinutes.includes('53') || checkMinutes.includes('fiftythree')) {
+          if (after === true) {minute = '53'} else {minute = '7';}
+        }
+        if (checkMinutes.includes('54') || checkMinutes.includes('fiftyfour')) {
+          if (after === true) {minute = '54'} else {minute = '6';}
+        }
+        if (checkMinutes.includes('55') || checkMinutes.includes('fiftyfive')) {
+          if (after === true) {minute = '55'} else {minute = '5';}
+        }
+        if (checkMinutes.includes('56') || checkMinutes.includes('fiftysix')) {
+          if (after === true) {minute = '56'} else {minute = '4';}
+        }
+        if (checkMinutes.includes('57') || checkMinutes.includes('fiftyseven')) {
+          if (after === true) {minute = '57'} else {minute = '3';}
+        }
+        if (checkMinutes.includes('58') || checkMinutes.includes('fiftyeight')) {
+          if (after === true) {minute = '58'} else {minute = '2';}
+        }
+        if (checkMinutes.includes('59') || checkMinutes.includes('fiftynine')) {
+          if (after === true) {minute = '59'} else {minute = '1';}
         }
 
         return minute;

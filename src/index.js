@@ -27,10 +27,11 @@ else {
 
 // ## Schedule meeting
 // Continue on formatting the time (#formatTime function). 
-    // Format hour and checkMinutes correctly, they need to get the last word in the string! in 01_getOutputByVoiceModel.js in the #formatTimeSaidConventional function!
-    // #Add it so that duplicate times will be merged! 
     // #Format on the contrary, if you use pm, then add that if you say 14, change it to 2 pm!
-    // #Validate time in the #validateMeetings function (time should not be in the past! Only validate time if the day are the current day!)
+    // #Validate time in the #validateMeetings function (time should not be in the past! Only validate time if the day are the current day!) Add maximum amount of times and dates (15 times and 10 dates)
+
+// Add it so that you cant have duplicate when adding time when scheduling with teams!
+
 // When scheduling:
     // 3. Times (max 15 per date)
     // 4. meeting name (optional), meeting length(standard 30 minutes), adding link to join meeting(optional)
